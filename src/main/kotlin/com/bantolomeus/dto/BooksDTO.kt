@@ -1,23 +1,21 @@
 package com.bantolomeus.dto
 
-import java.util.*
-
 data class BookDTO(
-        val name: String,
-        val author: String,
-        val pagesTotal: Int,
-        val pagesRead: Int?,
-        val dateStarted: Date?,
-        val readTime: Int?
+        val name: String = "",
+        val author: String = "",
+        val pagesTotal: Long = 0,
+        val pagesRead: Long? = 0,
+        val dateStarted: String? = "",
+        val readTime: Long? = 0
 )
 
 data class BookUpdateDTO(
-        val name: String,
-        val pagesRead: Int,
-        val date: Date?
+        val name: String = "",
+        val pagesRead: Long = 0,
+        val date: String? = ""
 )
 
 data class BookDataDTO(
         val bookDTO: BookDTO,
-        val updates: List<Map<Date, Int>>
+        val updates: List<Map<String, Long>>
 )

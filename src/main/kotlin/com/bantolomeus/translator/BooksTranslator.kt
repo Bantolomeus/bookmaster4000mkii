@@ -7,4 +7,4 @@ import java.util.*
 
 private val dateFormat = SimpleDateFormat("dd/MM/yyyy")
 
-fun BookDTO.toBookUpdateDTO(): BookUpdateDTO = BookUpdateDTO(name, pagesRead!!, dateFormat.parse(dateFormat.format(Date())))
+fun BookDTO.toBookUpdateDTO(): BookUpdateDTO = BookUpdateDTO(name, pagesRead!!, dateFormat.format(Date()))

@@ -14,6 +14,6 @@ class BookRepository(private val objectMapper: ObjectMapper) {
     }
 
     fun saveBookUpdate(bookUpdate: BookUpdateDTO) {
-        objectMapper.writeValue(File("book.json"), bookUpdate)
+        objectMapper.writeValue(File("bookUpates.json"), bookUpdate)
     }
 }
