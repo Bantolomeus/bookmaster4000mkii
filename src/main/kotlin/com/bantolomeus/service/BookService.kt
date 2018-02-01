@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service
 class BookService(private val bookRepository: BookRepository) {
 
     fun createBook(bookDTO: BookDTO){
-        bookRepository.saveBook(bookDTO)
+        val books = bookRepository.getBooks()
+        var update = true
+        books?.books?.forEach { if (it.name == bookDTO.name) update = false}
+        if (update) books?.books?.add(bookDTO)
+        bookRepository.saveBook(books)
         if (bookDTO.pagesRead != null) { bookRepository.saveBookUpdate(bookDTO.toBookUpdateDTO())}
     }
 
