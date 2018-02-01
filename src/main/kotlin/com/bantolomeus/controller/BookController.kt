@@ -18,15 +18,13 @@ import javax.validation.Valid
 class BookController(private val bookService: BookService) {
 
     @PostMapping
-    fun createBook(@Valid @RequestBody book: BookDTO): Any {
+    fun createBook(@Valid @RequestBody book: BookDTO) {
         bookService.createBook(book)
-        return "saved"
     }
 
     @PutMapping(path = ["update"])
-    fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateDTO): Any {
+    fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateDTO) {
         bookService.updateBook(bookUpdate)
-        return "updated"
     }
 
     @GetMapping()
