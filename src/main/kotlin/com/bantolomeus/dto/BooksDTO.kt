@@ -11,12 +11,16 @@ data class BookDTO(
 
 data class BookUpdateDTO(
         val name: String = "",
-        val pagesRead: Long = 0,
+        val pagesRead: Long? = null,
         val date: String? = ""
 )
 
-data class BookFileDTO(
+data class BooksFileDTO(
         val books: MutableList<BookDTO> = emptyList<BookDTO>().toMutableList()
+)
+
+data class BooksUpdatesFileDTO(
+        val booksUpdate: MutableList<BookUpdateDTO> = emptyList<BookUpdateDTO>().toMutableList()
 )
 
 data class BookDataDTO(
