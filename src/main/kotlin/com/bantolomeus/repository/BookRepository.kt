@@ -1,7 +1,6 @@
 package com.bantolomeus.repository
 
 import com.bantolomeus.dto.BooksFileDTO
-import com.bantolomeus.dto.BookUpdateDTO
 import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Repository
@@ -15,7 +14,7 @@ class BookRepository(private val objectMapper: ObjectMapper) {
     }
 
     fun saveBookUpdate(bookUpdate: BooksUpdatesFileDTO?) {
-        objectMapper.writeValue(File("booksUpates.json"), bookUpdate)
+        objectMapper.writeValue(File("booksUpdates.json"), bookUpdate)
     }
 
     fun getBooks(): BooksFileDTO? {
@@ -28,7 +27,7 @@ class BookRepository(private val objectMapper: ObjectMapper) {
 
     fun getBooksUpdates(): BooksUpdatesFileDTO? {
         return try {
-            objectMapper.readValue(File("booksUpates.json"), BooksUpdatesFileDTO::class.java)
+            objectMapper.readValue(File("booksUpdates.json"), BooksUpdatesFileDTO::class.java)
         } catch (e: Exception) {
             BooksUpdatesFileDTO()
         }

@@ -4,23 +4,29 @@ data class BookDTO(
         val name: String = "",
         val author: String = "",
         val pagesTotal: Long = 0,
-        val pagesRead: Long? = null,
+        var currentPage: Long? = null,
         val dateStarted: String? = null,
-        val readTime: Long? = null
-)
-
-data class BookUpdateDTO(
-        val name: String = "",
-        val pagesRead: Long? = null,
-        val date: String? = ""
+        var readTime: Long? = null
 )
 
 data class BooksFileDTO(
         val books: MutableList<BookDTO> = emptyList<BookDTO>().toMutableList()
 )
 
+data class BookUpdateInputDTO(
+        val name: String = "",
+        val currentPage: Long? = null,
+        val date: String? = ""
+)
+
+data class BookUpdateOutputDTO(
+        val name: String = "",
+        val pagesRead: Long? = null,
+        val date: String? = ""
+)
+
 data class BooksUpdatesFileDTO(
-        val booksUpdate: MutableList<BookUpdateDTO> = emptyList<BookUpdateDTO>().toMutableList()
+        val booksUpdate: MutableList<BookUpdateOutputDTO> = emptyList<BookUpdateOutputDTO>().toMutableList()
 )
 
 data class BookDataDTO(
