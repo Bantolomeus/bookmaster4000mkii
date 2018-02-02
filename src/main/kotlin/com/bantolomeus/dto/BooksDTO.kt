@@ -5,7 +5,7 @@ data class BookDTO(
         val author: String = "",
         val pagesTotal: Long = 0,
         var currentPage: Long? = null,
-        val dateStarted: String? = null,
+        var dateStarted: String? = null,
         var readTime: Long? = null
 )
 

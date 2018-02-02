@@ -15,9 +15,10 @@ class BookService(private val bookRepository: BookRepository) {
     fun createBook(bookDTO: BookDTO){
         val books = bookRepository.getBooks()
         val booksUpdates = bookRepository.getBooksUpdates()
-        var update = true
-        books?.books?.forEach { if (it.name == bookDTO.name) update = false}
-        if (update) {
+        var toSave = true
+        books?.books?.forEach { if (it.name == bookDTO.name) toSave = false}
+        if (toSave) {
+            bookDTO.dateStarted = dateFormat.format(Date())
             books?.books?.add(bookDTO)
             booksUpdates?.booksUpdate?.add(bookDTO.toBookUpdateDTO())
         }
