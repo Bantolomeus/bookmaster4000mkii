@@ -35,7 +35,7 @@ class BookService(private val bookRepository: BookRepository) {
             if (it.name == bookUpdate.name) {
                 it.currentPage?.let { oldPage = it }
                 it.currentPage = bookUpdate.currentPage
-                if (it.currentPage == it.pagesTotal) it.readTime = (dateFormat.format(Date()).toLong() - it.dateStarted?.toLong()!!) / divisorDay
+                if (it.currentPage == it.pagesTotal) it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / divisorDay
             }
         }
         bookRepository.saveBook(books)
