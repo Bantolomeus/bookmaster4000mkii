@@ -29,7 +29,7 @@ data class BooksUpdatesFileDTO(
         val booksUpdate: MutableList<BookUpdateOutputDTO> = emptyList<BookUpdateOutputDTO>().toMutableList()
 )
 
-data class BookDataDTO(
+data class BookGetDTO(
         val bookDTO: BookDTO,
         val updates: List<Map<String, Long>>
 )

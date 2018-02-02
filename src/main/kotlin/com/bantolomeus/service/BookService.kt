@@ -43,8 +43,10 @@ class BookService(private val bookRepository: BookRepository) {
         val bookUpdateToSave = BookUpdateOutputDTO(name = bookUpdate.name,
                                                    pagesRead = bookUpdate.currentPage?.minus(oldPage!!),
                                                    date = dateFormat.format(Date()))
-        booksUpdates?.booksUpdate?.add(bookUpdateToSave)
-        bookRepository.saveBookUpdate(booksUpdates)
+        if (bookUpdateToSave.pagesRead!! > 0) {
+            booksUpdates?.booksUpdate?.add(bookUpdateToSave)
+            bookRepository.saveBookUpdate(booksUpdates)
+        }
     }
 
     fun getBook(allBooks: Boolean, bookName: String) {
