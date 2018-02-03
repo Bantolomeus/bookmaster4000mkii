@@ -1,6 +1,7 @@
 package com.bantolomeus.service
 
 import com.bantolomeus.dto.BookDTO
+import com.bantolomeus.dto.BookGetDTO
 import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.dto.BookUpdateOutputDTO
 import com.bantolomeus.repository.BookRepository
@@ -49,7 +50,19 @@ class BookService(private val bookRepository: BookRepository) {
         }
     }
 
-    fun getBook(allBooks: Boolean, bookName: String) {
+    fun getBook(allBooks: Boolean, bookName: String): Any? {
+        if (bookName.isNotEmpty()) {
+            var book = BookDTO()
+            val books = bookRepository.getBooks()
+            books?.books?.forEach { if (it.name == bookName) book = it }
 
+
+            val booksUpdates = bookRepository.getBooksUpdates()
+            val bookUpdates = booksUpdates?.booksUpdate?.map { it }?.filter { it.name == bookName }?.map { mapOf(it.date to it.pagesRead)}
+
+            return BookGetDTO(book, bookUpdates)
+        }
+        //TODO: handle allBooks parameter
+        return BookGetDTO()
     }
 }
