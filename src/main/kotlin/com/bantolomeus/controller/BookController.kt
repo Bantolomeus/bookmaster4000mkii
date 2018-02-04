@@ -28,8 +28,7 @@ class BookController(private val bookService: BookService) {
     }
 
     @GetMapping()
-    fun getBook(@RequestParam(value = "allBooks", required = false) allBooks: Boolean,
-                @RequestParam(value = "bookName", required = false) bookName: String): Any? {
-        return bookService.getBook(allBooks, bookName)
+    fun getBook(@RequestParam(value = "option", required = true) option: String): Any? {
+        return bookService.getBook(option)
     }
 }
