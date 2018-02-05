@@ -4,6 +4,7 @@ import com.bantolomeus.dto.BookDTO
 import com.bantolomeus.dto.BookGetDTO
 import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.dto.BookUpdateOutputDTO
+import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
 import com.bantolomeus.util.dateFormat
@@ -31,6 +32,7 @@ class BookService(private val bookRepository: BookRepository) {
     fun updateBook(bookUpdate: BookUpdateInputDTO) {
         val books = bookRepository.getBooks()
         val booksUpdates = bookRepository.getBooksUpdates()
+        val booksUpdates2 = bookRepository.getBooksUpdates()
         var oldPage: Long? = 0
         books?.books?.forEach {
             if (it.name == bookUpdate.name) {
@@ -41,12 +43,22 @@ class BookService(private val bookRepository: BookRepository) {
         }
         bookRepository.saveBook(books)
 
+        var bookUpdateFound = BookUpdateOutputDTO()
+        booksUpdates?.booksUpdate?.forEach { if (it.date == dateFormat.format(Date())) {bookUpdateFound = it} }
+
         val bookUpdateToSave = BookUpdateOutputDTO(name = bookUpdate.name,
                                                    pagesRead = bookUpdate.currentPage?.minus(oldPage!!),
                                                    date = dateFormat.format(Date()))
-        if (bookUpdateToSave.pagesRead!! > 0) {
+        if (bookUpdateToSave.pagesRead!! > 0 && bookUpdateFound.date == "") {
             booksUpdates?.booksUpdate?.add(bookUpdateToSave)
             bookRepository.saveBookUpdate(booksUpdates)
+        } else if (bookUpdateFound.date != "") {
+            val bookUpdateToSave2 = BookUpdateOutputDTO(name = bookUpdate.name,
+                                                        pagesRead = bookUpdate.currentPage?.minus(oldPage!!)?.plus(bookUpdateFound.pagesRead!!),
+                                                        date = dateFormat.format(Date()))
+            val bla = booksUpdates2?.booksUpdate?.filter { it.date != bookUpdateFound.date }
+            (bla as ArrayList).add(bookUpdateToSave2)
+            bookRepository.saveBookUpdate(BooksUpdatesFileDTO(bla.toMutableList()))
         }
     }
 
