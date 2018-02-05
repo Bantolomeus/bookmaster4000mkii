@@ -61,7 +61,7 @@ class BookService(private val bookRepository: BookRepository) {
 
             BookGetDTO(book, bookUpdates)
         } else if (option == "allBooks") {
-            bookRepository.getBooks()?.books?.map { it.name }
+            bookRepository.getBooks()?.books?.map { it.name }?.sorted()
         } else {
             null
         }
