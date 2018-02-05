@@ -32,7 +32,6 @@ class BookService(private val bookRepository: BookRepository) {
     fun updateBook(bookUpdate: BookUpdateInputDTO) {
         val books = bookRepository.getBooks()
         val booksUpdates = bookRepository.getBooksUpdates()
-        val booksUpdates2 = bookRepository.getBooksUpdates()
         var oldPage: Long? = 0
         books?.books?.forEach {
             if (it.name == bookUpdate.name) {
@@ -56,7 +55,7 @@ class BookService(private val bookRepository: BookRepository) {
             val bookUpdateToSave2 = BookUpdateOutputDTO(name = bookUpdate.name,
                                                         pagesRead = bookUpdate.currentPage?.minus(oldPage!!)?.plus(bookUpdateFound.pagesRead!!),
                                                         date = dateFormat.format(Date()))
-            val bla = booksUpdates2?.booksUpdate?.filter { it.date != bookUpdateFound.date }
+            val bla = booksUpdates?.booksUpdate?.filter { it.date != bookUpdateFound.date }
             (bla as ArrayList).add(bookUpdateToSave2)
             bookRepository.saveBookUpdate(BooksUpdatesFileDTO(bla.toMutableList()))
         }
