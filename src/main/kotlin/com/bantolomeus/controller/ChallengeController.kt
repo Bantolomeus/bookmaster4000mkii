@@ -1,5 +1,6 @@
 package com.bantolomeus.controller
 
+import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.service.ChallengeService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 class ChallengeController(private val challengeService: ChallengeService) {
 
     @GetMapping()
-    fun getChallengeData(): Any? {
+    fun getChallengeData(): ChallengeDTO? {
         return challengeService.getData()
     }
 }
