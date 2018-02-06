@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class BookService(private val bookRepository: BookRepository) {
+class BookService(private val bookRepository: BookRepository,
+                  private val challengeService: ChallengeService) {
 
     fun createBook(bookDTO: BookDTO){
         val books = bookRepository.getBooks()
@@ -26,7 +27,10 @@ class BookService(private val bookRepository: BookRepository) {
             booksUpdates?.booksUpdate?.add(bookDTO.toBookUpdateDTO())
         }
         bookRepository.saveBook(books)
-        if (bookDTO.currentPage != null)  bookRepository.saveBookUpdate(booksUpdates)
+        if (bookDTO.currentPage != null) {
+            bookRepository.saveBookUpdate(booksUpdates)
+            challengeService.savePagesEverRead(bookDTO.currentPage)
+        }
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO) {
