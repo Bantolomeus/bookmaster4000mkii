@@ -46,24 +46,22 @@ class BookService(private val bookRepository: BookRepository,
         }
         bookRepository.saveBook(books)
 
-        var bookUpdateFound = BookUpdateOutputDTO()
-        booksUpdates?.booksUpdate?.forEach { if (it.date == dateFormat.format(Date())) {bookUpdateFound = it} }
+        var foundBookUpdate = BookUpdateOutputDTO()
+        booksUpdates?.booksUpdate?.forEach { if (it.date == dateFormat.format(Date())) {foundBookUpdate = it} }
 
         val bookUpdateToSave = BookUpdateOutputDTO(name = bookUpdate.name,
                                                    pagesRead = bookUpdate.currentPage?.minus(oldPage!!),
                                                    date = dateFormat.format(Date()))
-        if (bookUpdateToSave.pagesRead!! > 0 && bookUpdateFound.date == "") {
+        if (bookUpdateToSave.pagesRead!! > 0 && foundBookUpdate.date == "") {
             booksUpdates?.booksUpdate?.add(bookUpdateToSave)
             bookRepository.saveBookUpdate(booksUpdates)
             challengeService.savePagesEverRead(bookUpdateToSave.pagesRead)
-        } else if (bookUpdateFound.date != "") {
-            val bookUpdateToSave2 = BookUpdateOutputDTO(name = bookUpdate.name,
-                                                        pagesRead = bookUpdate.currentPage?.minus(oldPage!!)?.plus(bookUpdateFound.pagesRead!!),
-                                                        date = dateFormat.format(Date()))
-            val bla = booksUpdates?.booksUpdate?.filter { it.date != bookUpdateFound.date }
-            (bla as ArrayList).add(bookUpdateToSave2)
-            bookRepository.saveBookUpdate(BooksUpdatesFileDTO(bla.toMutableList()))
-            challengeService.savePagesEverRead(bookUpdateToSave2.pagesRead)
+        } else if (foundBookUpdate.date != "") {
+            bookUpdateToSave.apply { this.pagesRead = bookUpdate.currentPage?.minus(oldPage!!)?.plus(foundBookUpdate.pagesRead!!) }
+            val filteredBookUpdates = booksUpdates?.booksUpdate?.filter { it.date != foundBookUpdate.date }
+            (filteredBookUpdates as ArrayList).add(bookUpdateToSave)
+            bookRepository.saveBookUpdate(BooksUpdatesFileDTO(filteredBookUpdates.toMutableList()))
+            challengeService.savePagesEverRead(bookUpdateToSave.pagesRead)
         }
     }
 

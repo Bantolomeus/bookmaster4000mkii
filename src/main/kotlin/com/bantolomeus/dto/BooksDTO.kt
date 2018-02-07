@@ -21,7 +21,7 @@ data class BookUpdateInputDTO(
 
 data class BookUpdateOutputDTO(
         val name: String = "",
-        val pagesRead: Long? = null,
+        var pagesRead: Long? = null,
         val date: String? = ""
 )
 
