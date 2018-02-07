@@ -11,6 +11,11 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
         return challengeRepository.getChallenge()
     }
 
+    fun saveChallenge(pages: Long?) {
+
+        if (pages != null) savePagesEverRead(pages)
+    }
+
     fun savePagesEverRead(pages: Long?) {
         val challenge = challengeRepository.getChallenge()
         challenge?.pagesEverRead = challenge?.pagesEverRead!!.plus(pages!!)
