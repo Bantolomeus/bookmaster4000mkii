@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 @Service
 class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
-    fun getData(): ChallengeDTO? {
+    fun getData(): ChallengeDTO {
         return challengeRepository.getChallenge()
     }
 
@@ -18,7 +18,7 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
     fun savePagesEverRead(pages: Long?) {
         val challenge = challengeRepository.getChallenge()
-        challenge?.pagesEverRead = challenge?.pagesEverRead!!.plus(pages!!)
+        challenge.pagesEverRead = challenge.pagesEverRead.plus(pages!!)
         challengeRepository.saveOrUpdateChallengeData(challenge)
     }
 

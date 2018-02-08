@@ -12,7 +12,7 @@ class ChallengeRepository(private val objectMapper: ObjectMapper) {
         objectMapper.writeValue(File("challenge.json"), challengeDTO)
     }
 
-    fun getChallenge(): ChallengeDTO? {
+    fun getChallenge(): ChallengeDTO {
         return try {
             objectMapper.readValue(File("challenge.json"), ChallengeDTO::class.java)
         } catch (e: Exception) {

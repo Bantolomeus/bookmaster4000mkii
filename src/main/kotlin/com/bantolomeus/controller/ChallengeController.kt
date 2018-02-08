@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 class ChallengeController(private val challengeService: ChallengeService) {
 
     @GetMapping()
-    fun getChallengeData(): ChallengeDTO? {
+    fun getChallengeData(): ChallengeDTO {
         return challengeService.getData()
     }
 }
