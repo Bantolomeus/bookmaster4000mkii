@@ -65,20 +65,18 @@ class BookService(private val bookRepository: BookRepository,
         }
     }
 
-    fun getBook(option: String): Any? {
-        return if (option.isNotEmpty() && option != "allBooks") {
+    fun getBook(bookName: String?): Any? {
+        return if (bookName != null) {
             var book = BookDTO()
             val books = bookRepository.getBooks()
-            books?.books?.forEach { if (it.name == option) book = it }
+            books?.books?.forEach { if (it.name == bookName) book = it }
 
             val booksUpdates = bookRepository.getBooksUpdates()
-            val bookUpdates = booksUpdates?.booksUpdate?.map { it }?.filter { it.name == option }?.map { mapOf(it.date to it.pagesRead)}
+            val bookUpdates = booksUpdates?.booksUpdate?.map { it }?.filter { it.name == bookName }?.map { mapOf(it.date to it.pagesRead)}
 
             BookGetDTO(book, bookUpdates)
-        } else if (option == "allBooks") {
-            bookRepository.getBooks()?.books?.map { it.name }?.sorted()
         } else {
-            null
+            bookRepository.getBooks()?.books?.map { it.name }?.sorted()
         }
     }
 }
