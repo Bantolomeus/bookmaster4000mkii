@@ -16,7 +16,11 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
     fun saveChallenge(pages: Long?) {
         val challenge = challengeRepository.getChallenge()
-        challenge.pagesSurplus = (-((Date().time - dateFormat.parse(challenge.dateStarted).time)/ divisorDay)).times(challenge.pagesPerDay).plus(challenge.startPagesSurplus).plus(pages!!).plus(challenge.pagesSinceStart)
+        challenge.pagesSurplus = (-((Date().time - dateFormat.parse(challenge.dateStarted).time)/ divisorDay))
+                .times(challenge.pagesPerDay)
+                .plus(challenge.startPagesSurplus)
+                .plus(pages!!)
+                .plus(challenge.pagesSinceStart)
         challenge.pagesEverRead = challenge.pagesEverRead.plus(pages)
         challenge.pagesSinceStart = challenge.pagesSinceStart.plus(pages)
         challengeRepository.saveOrUpdateChallengeData(challenge)

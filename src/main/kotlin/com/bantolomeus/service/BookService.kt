@@ -46,10 +46,8 @@ class BookService(private val bookRepository: BookRepository,
         }
         bookRepository.saveBook(books)
 
-//        val foundBookUpdate = booksUpdates?.booksUpdate?.filter { it.date == dateFormat.format(Date()) }?.getOrElse(0, {_ -> BookUpdateOutputDTO() })
-
         var foundBookUpdate = BookUpdateOutputDTO()
-        booksUpdates?.booksUpdate?.forEach { if (it.date == dateFormat.format(Date())) {foundBookUpdate = it} }
+        booksUpdates?.booksUpdate?.forEach { if (it.date == dateFormat.format(Date()) && it.name == bookUpdate.name) {foundBookUpdate = it} }
 
         val bookUpdateToSave = BookUpdateOutputDTO(name = bookUpdate.name,
                                                    pagesRead = bookUpdate.currentPage?.minus(oldPage!!),
