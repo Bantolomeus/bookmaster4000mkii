@@ -3,7 +3,7 @@ package com.bantolomeus.service
 import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.repository.ChallengeRepository
 import com.bantolomeus.util.dateFormat
-import com.bantolomeus.util.divisorDay
+import com.bantolomeus.util.divisorForDay
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -16,7 +16,10 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
     fun saveChallenge(pages: Long?) {
         val challenge = challengeRepository.getChallenge()
-        challenge.pagesAheadOfPlan = (-((Date().time - dateFormat.parse(challenge.dateStarted).time)/ divisorDay))
+        val currentTime = Date().time
+        val startTime = dateFormat.parse(challenge.dateStarted).time
+        val daysSinceStartNegated = -((currentTime - startTime) / divisorForDay)
+        challenge.pagesAheadOfPlan = daysSinceStartNegated
                 .times(challenge.pagesPerDay)
                 .plus(challenge.startPagesAheadOfPlan)
                 .plus(pages!!)
