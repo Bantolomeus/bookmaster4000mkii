@@ -8,7 +8,7 @@ import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
 import com.bantolomeus.util.dateFormat
-import com.bantolomeus.util.divisorForDay
+import com.bantolomeus.util.DIVISOR_FOR_DAY
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -41,7 +41,7 @@ class BookService(private val bookRepository: BookRepository,
             if (it.name == bookUpdate.name) {
                 it.currentPage?.let { oldPage = it }
                 if (oldPage < bookUpdate.currentPage!!) { it.currentPage = bookUpdate.currentPage }
-                if (it.currentPage == it.pagesTotal) { it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / divisorForDay
+                if (it.currentPage == it.pagesTotal) { it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY
                 }
             }
         }
