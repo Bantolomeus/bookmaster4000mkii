@@ -57,18 +57,20 @@ class BookService(private val bookRepository: BookRepository,
                 }
             }
 
+            val currentDate = dateFormat.format(Date())
             val bookUpdateToSave = BookUpdateOutputDTO(name = bookUpdate.name,
                     pagesRead = bookUpdate.currentPage.minus(oldPage),
-                    date = dateFormat.format(Date()))
+                    date = currentDate)
             if (bookUpdateToSave.pagesRead > 0 && foundBookUpdate.date == "") {
                 booksUpdates?.booksUpdate?.add(bookUpdateToSave)
                 bookRepository.saveBookUpdate(booksUpdates)
                 challengeService.saveChallenge(bookUpdateToSave.pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val readPages = bookUpdateToSave.pagesRead
-                bookUpdateToSave.pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead)
+                val bookUpdateToSaveCopy = bookUpdateToSave.copy(name = bookUpdateToSave.name,
+                        pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead), date = currentDate)
                 val filteredBookUpdates = booksUpdates?.booksUpdate?.filter { it.date != foundBookUpdate.date || it.name != bookUpdate.name }
-                (filteredBookUpdates as ArrayList).add(bookUpdateToSave)
+                (filteredBookUpdates as ArrayList).add(bookUpdateToSaveCopy)
                 bookRepository.saveBookUpdate(BooksUpdatesFileDTO(filteredBookUpdates.toMutableList()))
                 challengeService.saveChallenge(readPages)
             }
