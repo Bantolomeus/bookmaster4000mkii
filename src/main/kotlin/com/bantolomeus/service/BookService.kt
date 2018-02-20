@@ -66,7 +66,7 @@ class BookService(private val bookRepository: BookRepository,
                 challengeService.saveChallenge(bookUpdateToSave.pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val readPages = bookUpdateToSave.pagesRead
-                bookUpdateToSave.apply { this.pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead) }
+                bookUpdateToSave.pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead)
                 val filteredBookUpdates = booksUpdates?.booksUpdate?.filter { it.date != foundBookUpdate.date || it.name != bookUpdate.name }
                 (filteredBookUpdates as ArrayList).add(bookUpdateToSave)
                 bookRepository.saveBookUpdate(BooksUpdatesFileDTO(filteredBookUpdates.toMutableList()))
