@@ -5,8 +5,8 @@ data class BookDTO(
         val author: String = "",
         val pagesTotal: Long = 0,
         var currentPage: Long = 0,
-        var dateStarted: String? = null,
-        var readTime: Long? = null
+        var dateStarted: String = "",
+        var readTime: Long = 0
 )
 
 data class BooksFileDTO(
@@ -16,13 +16,13 @@ data class BooksFileDTO(
 data class BookUpdateInputDTO(
         val name: String = "",
         val currentPage: Long = 0,
-        val date: String? = ""
+        val date: String = ""
 )
 
 data class BookUpdateOutputDTO(
         val name: String = "",
         var pagesRead: Long = 0,
-        val date: String? = ""
+        val date: String = ""
 )
 
 data class BooksUpdatesFileDTO(
@@ -31,5 +31,5 @@ data class BooksUpdatesFileDTO(
 
 data class BookGetDTO(
         val bookDTO: BookDTO? = null,
-        val updates: List<Map<String?, Long?>>? = null
+        val updates: List<Map<String, Long>>? = null
 )

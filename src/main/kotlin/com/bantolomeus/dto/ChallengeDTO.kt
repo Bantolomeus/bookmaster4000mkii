@@ -6,5 +6,5 @@ data class ChallengeDTO(
         val startPagesAheadOfPlan: Long = 0,
         var pagesSinceStart: Long = 0,
         var pagesEverRead: Long = 0,
-        val dateStarted: String? = ""
+        val dateStarted: String = ""
 )
