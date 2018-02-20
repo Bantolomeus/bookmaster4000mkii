@@ -27,7 +27,7 @@ class BookService(private val bookRepository: BookRepository,
             booksUpdates?.booksUpdate?.add(bookDTO.toBookUpdateDTO())
         }
         bookRepository.saveBook(books)
-        if (bookDTO.currentPage != null) {
+        if (bookDTO.currentPage > 0) {
             bookRepository.saveBookUpdate(booksUpdates)
             challengeService.saveChallenge(bookDTO.currentPage)
         }
@@ -39,8 +39,8 @@ class BookService(private val bookRepository: BookRepository,
         var oldPage: Long = 0
         books?.books?.forEach {
             if (it.name == bookUpdate.name) {
-                it.currentPage?.let { oldPage = it }
-                if (oldPage < bookUpdate.currentPage!!) { it.currentPage = bookUpdate.currentPage }
+                it.currentPage.let { oldPage = it }
+                if (oldPage < bookUpdate.currentPage) { it.currentPage = bookUpdate.currentPage }
                 if (it.currentPage == it.pagesTotal) { it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY
                 }
             }
@@ -48,7 +48,7 @@ class BookService(private val bookRepository: BookRepository,
         bookRepository.saveBook(books)
         bookRepository.saveBookUpdate(booksUpdates)
 
-        if (oldPage < bookUpdate.currentPage!!) {
+        if (oldPage < bookUpdate.currentPage) {
 
             var foundBookUpdate = BookUpdateOutputDTO()
             booksUpdates?.booksUpdate?.forEach {
@@ -60,13 +60,13 @@ class BookService(private val bookRepository: BookRepository,
             val bookUpdateToSave = BookUpdateOutputDTO(name = bookUpdate.name,
                     pagesRead = bookUpdate.currentPage.minus(oldPage),
                     date = dateFormat.format(Date()))
-            if (bookUpdateToSave.pagesRead!! > 0 && foundBookUpdate.date == "") {
+            if (bookUpdateToSave.pagesRead > 0 && foundBookUpdate.date == "") {
                 booksUpdates?.booksUpdate?.add(bookUpdateToSave)
                 bookRepository.saveBookUpdate(booksUpdates)
                 challengeService.saveChallenge(bookUpdateToSave.pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val readPages = bookUpdateToSave.pagesRead
-                bookUpdateToSave.apply { this.pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead!!) }
+                bookUpdateToSave.apply { this.pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead) }
                 val filteredBookUpdates = booksUpdates?.booksUpdate?.filter { it.date != foundBookUpdate.date || it.name != bookUpdate.name }
                 (filteredBookUpdates as ArrayList).add(bookUpdateToSave)
                 bookRepository.saveBookUpdate(BooksUpdatesFileDTO(filteredBookUpdates.toMutableList()))
