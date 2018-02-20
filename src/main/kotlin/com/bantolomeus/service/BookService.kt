@@ -20,11 +20,11 @@ class BookService(private val bookRepository: BookRepository,
         val books = bookRepository.getBooks()
         val booksUpdates = bookRepository.getBooksUpdates()
         var toSave = true
-        books?.books?.forEach { if (it.name == bookDTO.name) toSave = false}
+        books.books.forEach { if (it.name == bookDTO.name) toSave = false}
         if (toSave) {
             bookDTO.dateStarted = dateFormat.format(Date())
-            books?.books?.add(bookDTO)
-            booksUpdates?.booksUpdate?.add(bookDTO.toBookUpdateDTO())
+            books.books.add(bookDTO)
+            booksUpdates.booksUpdate.add(bookDTO.toBookUpdateDTO())
         }
         bookRepository.saveBook(books)
         if (bookDTO.currentPage > 0) {
@@ -37,7 +37,7 @@ class BookService(private val bookRepository: BookRepository,
         val books = bookRepository.getBooks()
         val booksUpdates = bookRepository.getBooksUpdates()
         var oldPage: Long = 0
-        books?.books?.forEach {
+        books.books.forEach {
             if (it.name == bookUpdate.name) {
                 it.currentPage.let { oldPage = it }
                 if (oldPage < bookUpdate.currentPage) { it.currentPage = bookUpdate.currentPage }
@@ -51,7 +51,7 @@ class BookService(private val bookRepository: BookRepository,
         if (oldPage < bookUpdate.currentPage) {
 
             var foundBookUpdate = BookUpdateOutputDTO()
-            booksUpdates?.booksUpdate?.forEach {
+            booksUpdates.booksUpdate.forEach {
                 if (it.date == dateFormat.format(Date()) && it.name == bookUpdate.name) {
                     foundBookUpdate = it
                 }
@@ -62,14 +62,14 @@ class BookService(private val bookRepository: BookRepository,
                     pagesRead = bookUpdate.currentPage.minus(oldPage),
                     date = currentDate)
             if (bookUpdateToSave.pagesRead > 0 && foundBookUpdate.date == "") {
-                booksUpdates?.booksUpdate?.add(bookUpdateToSave)
+                booksUpdates.booksUpdate.add(bookUpdateToSave)
                 bookRepository.saveBookUpdate(booksUpdates)
                 challengeService.saveChallenge(bookUpdateToSave.pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val readPages = bookUpdateToSave.pagesRead
                 val bookUpdateToSaveCopy = bookUpdateToSave.copy(name = bookUpdateToSave.name,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead), date = currentDate)
-                val filteredBookUpdates = booksUpdates?.booksUpdate?.filter { it.date != foundBookUpdate.date || it.name != bookUpdate.name }
+                val filteredBookUpdates = booksUpdates.booksUpdate.filter { it.date != foundBookUpdate.date || it.name != bookUpdate.name }
                 (filteredBookUpdates as ArrayList).add(bookUpdateToSaveCopy)
                 bookRepository.saveBookUpdate(BooksUpdatesFileDTO(filteredBookUpdates.toMutableList()))
                 challengeService.saveChallenge(readPages)
@@ -81,14 +81,14 @@ class BookService(private val bookRepository: BookRepository,
         return if (bookName != null) {
             var book = BookDTO()
             val books = bookRepository.getBooks()
-            books?.books?.forEach { if (it.name == bookName) book = it }
+            books.books.forEach { if (it.name == bookName) book = it }
 
             val booksUpdates = bookRepository.getBooksUpdates()
-            val bookUpdates = booksUpdates?.booksUpdate?.map { it }?.filter { it.name == bookName }?.map { mapOf(it.date to it.pagesRead)}
+            val bookUpdates = booksUpdates.booksUpdate.map { it }.filter { it.name == bookName }.map { mapOf(it.date to it.pagesRead)}
 
             BookGetDTO(book, bookUpdates)
         } else {
-            bookRepository.getBooks()?.books?.map { it.name }?.sorted()
+            bookRepository.getBooks().books.map { it.name }.sorted()
         }
     }
 }

@@ -17,7 +17,7 @@ class BookRepository(private val objectMapper: ObjectMapper) {
         objectMapper.writeValue(File("booksUpdates.json"), bookUpdate)
     }
 
-    fun getBooks(): BooksFileDTO? {
+    fun getBooks(): BooksFileDTO {
         return try {
             objectMapper.readValue(File("books.json"), BooksFileDTO::class.java)
         } catch (e: Exception) {
@@ -25,7 +25,7 @@ class BookRepository(private val objectMapper: ObjectMapper) {
         }
     }
 
-    fun getBooksUpdates(): BooksUpdatesFileDTO? {
+    fun getBooksUpdates(): BooksUpdatesFileDTO {
         return try {
             objectMapper.readValue(File("booksUpdates.json"), BooksUpdatesFileDTO::class.java)
         } catch (e: Exception) {
