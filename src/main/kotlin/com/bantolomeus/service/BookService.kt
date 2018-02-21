@@ -37,18 +37,18 @@ class BookService(private val bookRepository: BookRepository,
         val books = bookRepository.getBooks()
         val booksUpdates = bookRepository.getBooksUpdates()
         var oldPage: Long = 0
+        var bookFound = false
         books.books.forEach {
             if (it.name == bookUpdate.name) {
+                bookFound = true
                 it.currentPage.let { oldPage = it }
                 if (oldPage < bookUpdate.currentPage) { it.currentPage = bookUpdate.currentPage }
-                if (it.currentPage == it.pagesTotal) { it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY
-                }
+                if (it.currentPage == it.pagesTotal) { it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY }
             }
         }
         bookRepository.saveBook(books)
-        bookRepository.saveBookUpdate(booksUpdates)
 
-        if (oldPage < bookUpdate.currentPage) {
+        if (oldPage < bookUpdate.currentPage && bookFound) {
 
             var foundBookUpdate = BookUpdateOutputDTO()
             booksUpdates.booksUpdate.forEach {
