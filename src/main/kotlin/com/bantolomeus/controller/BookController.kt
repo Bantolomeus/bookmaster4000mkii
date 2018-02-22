@@ -29,8 +29,8 @@ class BookController(private val bookService: BookService) {
         bookService.updateBook(bookUpdate)
     }
 
-    @GetMapping(path = ["{id}"])
-    fun getBook(@PathVariable("id") bookName: String): BookGetDTO {
+    @GetMapping(path = ["{bookName}"])
+    fun getBook(@PathVariable("bookName") bookName: String): BookGetDTO {
         return bookService.getBook(bookName)
     }
 
