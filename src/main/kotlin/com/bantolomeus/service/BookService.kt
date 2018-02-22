@@ -4,6 +4,7 @@ import com.bantolomeus.dto.BookDTO
 import com.bantolomeus.dto.BookGetDTO
 import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.dto.BookUpdateOutputDTO
+import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
@@ -36,22 +37,21 @@ class BookService(private val bookRepository: BookRepository,
 
     fun updateBook(bookUpdate: BookUpdateInputDTO) {
         val books = bookRepository.getBooks()
-        var oldPage = 0L
-        var bookFound = false
-        var pagesTotal = 0L
-        books.books.forEach {
-            if (it.name == bookUpdate.name) {
-                bookFound = true
-                pagesTotal = it.pagesTotal
-                it.currentPage.let { oldPage = it }
-                it.currentPage = bookUpdate.currentPage
-                if (it.currentPage == it.pagesTotal) {
-                    it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY
+        var oldPage = 5000L
+        val foundBook = books.books.filter { it.name == bookUpdate.name }
+
+        if (foundBook != emptyList<BooksFileDTO>()) {
+            foundBook.let {
+                oldPage = it[0].currentPage
+                it[0].currentPage = bookUpdate.currentPage
+                if (it[0].currentPage == it[0].pagesTotal) {
+                    it[0].readTime = (Date().time - dateFormat.parse(it[0].dateStarted).time) / DIVISOR_FOR_DAY
                 }
             }
         }
 
-        if (oldPage < bookUpdate.currentPage && bookFound && bookUpdate.currentPage <= pagesTotal) {
+        if (oldPage < bookUpdate.currentPage && foundBook != emptyList<BooksFileDTO>()
+                && bookUpdate.currentPage <= foundBook[0].pagesTotal) {
             bookRepository.saveBook(books)
             val booksUpdates = bookRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
