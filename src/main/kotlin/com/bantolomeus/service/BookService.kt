@@ -53,12 +53,8 @@ class BookService(private val bookRepository: BookRepository,
             bookRepository.saveBook(books)
             val booksUpdates = bookRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
-            var foundBookUpdate = BookUpdateOutputDTO()
-            booksUpdates.booksUpdate.forEach {
-                if (it.date == currentDate && it.name == bookUpdate.name) {
-                    foundBookUpdate = it
-                }
-            }
+            val foundBookUpdate = booksUpdates.booksUpdate.filter { it.date == currentDate && it.name == bookUpdate.name }
+                    .getOrElse(0, {_ -> BookUpdateOutputDTO()})
 
             val pagesRead = bookUpdate.currentPage.minus(oldPage)
             if (pagesRead > 0 && foundBookUpdate.date == "") {
