@@ -24,7 +24,7 @@ class BookController(private val bookService: BookService) {
         bookService.createBook(book)
     }
 
-    @PutMapping(path = ["update"])
+    @PutMapping()
     fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateInputDTO) {
         bookService.updateBook(bookUpdate)
     }
