@@ -36,11 +36,13 @@ class BookService(private val bookRepository: BookRepository,
 
     fun updateBook(bookUpdate: BookUpdateInputDTO) {
         val books = bookRepository.getBooks()
-        var oldPage: Long = 0
+        var oldPage = 0L
         var bookFound = false
+        var pagesTotal = 0L
         books.books.forEach {
             if (it.name == bookUpdate.name) {
                 bookFound = true
+                pagesTotal = it.pagesTotal
                 it.currentPage.let { oldPage = it }
                 it.currentPage = bookUpdate.currentPage
                 if (it.currentPage == it.pagesTotal) {
@@ -49,7 +51,7 @@ class BookService(private val bookRepository: BookRepository,
             }
         }
 
-        if (oldPage < bookUpdate.currentPage && bookFound) {
+        if (oldPage < bookUpdate.currentPage && bookFound && bookUpdate.currentPage <= pagesTotal) {
             bookRepository.saveBook(books)
             val booksUpdates = bookRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
