@@ -3,6 +3,8 @@ package com.bantolomeus.service
 import com.bantolomeus.dto.BookDTO
 import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.repository.BookRepository
+import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
@@ -23,6 +25,8 @@ class BookServiceTest {
     @InjectMocks
     private lateinit var booksService: BookService
 
+    private val booksFileDTOCaptor = argumentCaptor<BooksFileDTO>()
+
     @Test
     fun getAllBooks() {
 
@@ -34,7 +38,7 @@ class BookServiceTest {
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
         val allBooks = booksService.getAllBooks()
 
-        assertEquals(expectedList,allBooks)
+        assertEquals(expectedList, allBooks)
     }
 
     @Test
@@ -46,6 +50,21 @@ class BookServiceTest {
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
         val allBooks = booksService.getAllBooks()
 
-        assertEquals(expectedList,allBooks)
+        assertEquals(expectedList, allBooks)
     }
+
+    @Test
+    fun createBookWithoutCurrentPage() {
+        val bookDTO1 = BookDTO(name = "Wohlfahrtsverlust durch Steuern", author = "Your Mother", pagesTotal = 521)
+        val bookDTO2 = BookDTO(name = "Hasenklo ist so fro", author = "Vin Diesel", pagesTotal = 51)
+        val expectedBooks = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
+
+        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1))
+        given(bookRepository.getBooks()).willReturn(booksFileDTO)
+        booksService.createBook(bookDTO2)
+
+        verify(bookRepository).saveBook(booksFileDTOCaptor.capture())
+        assertEquals(expectedBooks, booksFileDTOCaptor.firstValue)
+    }
+
 }
