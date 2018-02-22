@@ -6,6 +6,7 @@ import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.service.BookService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -28,8 +29,8 @@ class BookController(private val bookService: BookService) {
         bookService.updateBook(bookUpdate)
     }
 
-    @GetMapping(path = ["book"])
-    fun getBook(@RequestParam(value = "bookName") bookName: String): BookGetDTO {
+    @GetMapping(path = ["{id}"])
+    fun getBook(@PathVariable("id") bookName: String): BookGetDTO {
         return bookService.getBook(bookName)
     }
 
