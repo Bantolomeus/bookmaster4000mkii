@@ -9,27 +9,27 @@ import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.springframework.test.context.junit4.SpringRunner
-import kotlin.math.exp
 import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 class BookServiceTest {
 
     @Mock
-    lateinit var bookRepository: BookRepository
+    private lateinit var bookRepository: BookRepository
 
     @Mock
     lateinit var challengeService: ChallengeService
 
     @InjectMocks
-    lateinit var booksService: BookService
+    private lateinit var booksService: BookService
 
     @Test
     fun getAllBooks() {
 
-        val bookDTO = BookDTO(name = "testName", author = "testAuthor", pagesTotal = 521)
-        val expectedList = listOf("testName")
-        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO))
+        val bookDTO1 = BookDTO(name = "testName", author = "testAuthor", pagesTotal = 521)
+        val bookDTO2 = BookDTO(name = "testName2", author = "testAuthor", pagesTotal = 51)
+        val expectedList = listOf("testName", "testName2")
+        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
 
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
         val allBooks = booksService.getAllBooks()
@@ -37,4 +37,15 @@ class BookServiceTest {
         assertEquals(expectedList,allBooks)
     }
 
+    @Test
+    fun getAllBooksWithoutBooks() {
+
+        val expectedList = listOf<String>()
+        val booksFileDTO = BooksFileDTO(mutableListOf())
+
+        given(bookRepository.getBooks()).willReturn(booksFileDTO)
+        val allBooks = booksService.getAllBooks()
+
+        assertEquals(expectedList,allBooks)
+    }
 }
