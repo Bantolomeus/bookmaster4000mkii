@@ -84,12 +84,12 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     fun getBook(bookName: String): BookGetDTO {
-            var book = BookDTO()
-            bookRepository.getBooks().books.forEach { if (it.name == bookName) book = it }
-            val bookUpdates = bookRepository.getBooksUpdates().booksUpdate.map { it }
-                    .filter { it.name == bookName }
-                    .map { mapOf(it.date to it.pagesRead)}
-            return BookGetDTO(book, bookUpdates)
+        var book = BookDTO()
+        bookRepository.getBooks().books.forEach { if (it.name == bookName) book = it }
+        val bookUpdates = bookRepository.getBooksUpdates().booksUpdate.map { it }
+                .filter { it.name == bookName }
+                .map { mapOf(it.date to it.pagesRead)}
+        return BookGetDTO(book, bookUpdates)
     }
 
     fun getAllBooks(): List<String> {
