@@ -18,21 +18,8 @@ class BookService(private val bookRepository: BookRepository,
                   private val challengeService: ChallengeService) {
 
     fun createBook(bookDTO: BookDTO){
-        val books = bookRepository.getBooks()
-        var toSave = true
-        books.books.forEach { if (it.name == bookDTO.name) toSave = false}
-        if (toSave) {
-            bookDTO.dateStarted = dateFormat.format(Date())
-            books.books.add(bookDTO)
-            bookRepository.saveBook(books)
-        }
-
-        if (bookDTO.currentPage > 0) {
-        val booksUpdates = bookRepository.getBooksUpdates()
-            booksUpdates.booksUpdate.add(bookDTO.toBookUpdateDTO())
-            bookRepository.saveBookUpdate(booksUpdates)
-            challengeService.saveChallenge(bookDTO.currentPage)
-        }
+        val bookDTOChanged = saveBook(bookDTO)
+        saveBookUpdate(bookDTOChanged)
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO) {
@@ -93,4 +80,26 @@ class BookService(private val bookRepository: BookRepository,
     fun getAllBooks(): List<String> {
         return bookRepository.getBooks().books.map { it.name }.sorted()
     }
+
+    private fun saveBook(bookDTO: BookDTO): BookDTO {
+        val books = bookRepository.getBooks()
+        var toSave = true
+        books.books.forEach { if (it.name == bookDTO.name) toSave = false}
+        if (toSave) {
+            bookDTO.dateStarted = dateFormat.format(Date())
+            books.books.add(bookDTO)
+            bookRepository.saveBook(books)
+        }
+        return bookDTO
+    }
+
+    private fun saveBookUpdate(bookDTO: BookDTO) {
+        if (bookDTO.currentPage > 0) {
+            val booksUpdates = bookRepository.getBooksUpdates()
+            booksUpdates.booksUpdate.add(bookDTO.toBookUpdateDTO())
+            bookRepository.saveBookUpdate(booksUpdates)
+            challengeService.saveChallenge(bookDTO.currentPage)
+        }
+    }
+
 }
