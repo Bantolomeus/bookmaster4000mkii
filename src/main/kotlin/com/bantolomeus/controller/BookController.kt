@@ -5,14 +5,7 @@ import com.bantolomeus.dto.BookGetDTO
 import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.service.BookService
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -30,12 +23,12 @@ class BookController(private val bookService: BookService) {
     }
 
     @GetMapping(path = ["{bookName}"])
-    fun getBook(@PathVariable("bookName") bookName: String): BookGetDTO {
-        return bookService.getBook(bookName)
+    fun getBookWithUpdates(@PathVariable("bookName") bookName: String): BookGetDTO {
+        return bookService.getBookWithUpdates(bookName)
     }
 
     @GetMapping()
-    fun getAllBooks(): List<String> {
-        return bookService.getAllBooks()
+    fun getAllBookNames(): List<String> {
+        return bookService.getAllBookNames()
     }
 }
