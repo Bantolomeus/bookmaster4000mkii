@@ -71,7 +71,7 @@ class BookService(private val bookRepository: BookRepository,
     fun getBookWithUpdates(bookName: String): BookGetDTO {
         var book = BookDTO()
         bookRepository.getBooks().books.forEach { if (it.name == bookName) book = it }
-        val bookUpdates = bookRepository.getBooksUpdates().booksUpdate.map { it }
+        val bookUpdates = bookRepository.getBooksUpdates().booksUpdate
                 .filter { it.name == bookName }
                 .map { mapOf(it.date to it.pagesRead)}
         return BookGetDTO(book, bookUpdates)
