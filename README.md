@@ -29,7 +29,7 @@ You should see an output similar to this
 2018-05-25 18:03:39.591   c.b.Bookmaster4000mkiiApplicationKt      : Started Bookmaster4000mkiiApplicationKt in 3.535 seconds (JVM running for 4.09)
 ```
 
-The app is now running on `localhost:8080/ ???`
+The app is now running on `localhost:8080/`
 
 ### API
 
@@ -50,4 +50,4 @@ Since this is also about learning Kotlin, please also leave remarks on the codin
 
 ### License
 
-???
+Apache License Version 2.0
