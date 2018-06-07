@@ -48,7 +48,7 @@ Please do not forget to save your books.json, booksUpdates.json and challenge.js
 
 ### Contribute
 
-Please check the repo out, use it yourself and come back with feature requests/bug tickets 
+Please check out the repo, use it yourself and come back with feature requests/bug tickets 
 
 Also on any open issue we would be happy to get some help. So far they're not labeled with a 'good for beginner' label.
 
