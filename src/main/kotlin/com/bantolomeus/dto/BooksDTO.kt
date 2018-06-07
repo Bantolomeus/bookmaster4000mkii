@@ -29,6 +29,6 @@ data class BooksUpdatesFileDTO(
 )
 
 data class BookGetDTO(
-        val bookDTO: BookDTO? = null,
+        val book: BookDTO? = null,
         val updates: List<Map<String, Long>>? = null
 )
