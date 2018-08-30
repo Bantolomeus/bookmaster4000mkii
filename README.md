@@ -33,7 +33,7 @@ The app is now running on `localhost:8080/`
 
 ### API
 
-Find a description of the api endpoints under `$ src/main/kotlin/com/bantolomeus/controller/*`
+Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/controller`](src/main/kotlin/com/bantolomeus/controller).
 
 You can use the test files books.json, booksUpdates.json and challenge.json to become familiar with the api calls.
 
