@@ -66,5 +66,4 @@ class BookServiceTest {
         verify(bookRepository).saveBook(booksFileDTOCaptor.capture())
         assertEquals(expectedBooks, booksFileDTOCaptor.firstValue)
     }
-
 }
