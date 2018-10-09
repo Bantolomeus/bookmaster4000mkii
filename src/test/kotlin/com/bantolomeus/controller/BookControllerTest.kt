@@ -1,6 +1,7 @@
 package com.bantolomeus.controller
 
 import com.bantolomeus.dto.BookDTO
+import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.service.BookService
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
@@ -30,30 +31,23 @@ class BookControllerTest {
         verify(bookService).createBook(book)
     }
 
-    // TODO:
     @Test
     fun updateBook() {
-        val book = BookDTO(
+        val bookUpdate = BookUpdateInputDTO(
                 name = "this is a wonderful book",
-                author = "Mr. White",
-                pagesTotal = 294
+                currentPage = 21
         )
 
-        bookController.createBook(book)
-        verify(bookService).createBook(book)
+        bookController.updateBook(bookUpdate, bookName = "this is a wonderful book")
+        verify(bookService).updateBook(bookUpdate)
     }
 
-    // TODO:
     @Test
     fun getBookWithUpdates() {
-        val book = BookDTO(
-                name = "this is a wonderful book",
-                author = "Mr. White",
-                pagesTotal = 294
-        )
+        val bookName = "Haus"
 
-        bookController.createBook(book)
-        verify(bookService).createBook(book)
+        bookController.getBookWithUpdates(bookName)
+        verify(bookService).getBookWithUpdates(bookName)
     }
 
     @Test
