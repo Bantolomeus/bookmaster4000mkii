@@ -28,7 +28,7 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
         challenge.pagesSinceStart = challenge.pagesSinceStart.plus(pages)
         challengeRepository.saveOrUpdateChallengeData(challenge)
     }
-    
+
     fun updateChallenge() {
         val challenge = challengeRepository.getChallenge()
         val currentTime = Date().time
