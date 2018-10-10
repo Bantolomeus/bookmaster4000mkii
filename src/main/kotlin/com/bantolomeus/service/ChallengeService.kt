@@ -28,4 +28,18 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
         challenge.pagesSinceStart = challenge.pagesSinceStart.plus(pages)
         challengeRepository.saveOrUpdateChallengeData(challenge)
     }
+    
+    fun updateChallenge() {
+        val challenge = challengeRepository.getChallenge()
+        val currentTime = Date().time
+        val startTime = dateFormat.parse(challenge.dateStarted).time
+        val daysSinceStartNegated = -((currentTime - startTime) / DIVISOR_FOR_DAY)
+        challenge.pagesAheadOfPlan = daysSinceStartNegated
+                .times(challenge.pagesPerDay)
+                .plus(challenge.startPagesAheadOfPlan)
+                .plus(challenge.pagesSinceStart)
+        challenge.pagesEverRead = challenge.pagesEverRead
+        challenge.pagesSinceStart = challenge.pagesSinceStart
+        challengeRepository.saveOrUpdateChallengeData(challenge)
+    }
 }
