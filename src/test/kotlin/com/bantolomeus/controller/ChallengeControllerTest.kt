@@ -21,6 +21,5 @@ class ChallengeControllerTest {
     fun getChallengeData() {
         challengeController.getChallengeData()
         verify(challengeService).saveOrUpdateChallenge()
-        verify(challengeService).getData()
     }
 }
