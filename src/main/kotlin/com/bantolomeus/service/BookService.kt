@@ -22,10 +22,10 @@ class BookService(private val bookRepository: BookRepository,
         saveBookUpdate(bookDTOChanged)
     }
 
-    fun updateBook(bookUpdate: BookUpdateInputDTO) {
+    fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String) {
         val books = bookRepository.getBooks()
         var oldPage = 5000L
-        val foundBook = books.books.filter { it.name == bookUpdate.name }
+        val foundBook = books.books.filter { it.name == bookName }
 
         if (foundBook != emptyList<BooksFileDTO>()) {
             foundBook.let {
@@ -42,13 +42,13 @@ class BookService(private val bookRepository: BookRepository,
             bookRepository.saveBook(books)
             val booksUpdates = bookRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
-            val foundBookUpdate = booksUpdates.booksUpdate.filter { it.date == currentDate && it.name == bookUpdate.name }
+            val foundBookUpdate = booksUpdates.booksUpdate.filter { it.date == currentDate && it.name == bookName }
                     .getOrElse(0, {_ -> BookUpdateOutputDTO()})
 
             val pagesRead = bookUpdate.currentPage.minus(oldPage)
             if (pagesRead > 0 && foundBookUpdate.date == "") {
                 booksUpdates.booksUpdate.add(BookUpdateOutputDTO(
-                        name = bookUpdate.name,
+                        name = bookName,
                         pagesRead = pagesRead,
                         date = currentDate)
                 )
@@ -56,10 +56,10 @@ class BookService(private val bookRepository: BookRepository,
                 challengeService.saveOrUpdateChallenge(pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val oldBookUpdates = booksUpdates.booksUpdate.filter {
-                    it.date != foundBookUpdate.date || it.name != bookUpdate.name
+                    it.date != foundBookUpdate.date || it.name != bookName
                 }
                 bookRepository.saveBookUpdate(BooksUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
-                        name = bookUpdate.name,
+                        name = bookName,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
                         date = currentDate)).toMutableList())
                 )

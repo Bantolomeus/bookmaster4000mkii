@@ -33,18 +33,18 @@ class BookControllerTest {
 
     @Test
     fun updateBook() {
+        val bookName = "this is a wonderful book"
         val bookUpdate = BookUpdateInputDTO(
-                name = "this is a wonderful book",
                 currentPage = 21
         )
 
         bookController.updateBook(bookUpdate, bookName = "this is a wonderful book")
-        verify(bookService).updateBook(bookUpdate)
+        verify(bookService).updateBook(bookUpdate, bookName)
     }
 
     @Test
     fun getBookWithUpdates() {
-        val bookName = "Haus"
+        val bookName = "House"
 
         bookController.getBookWithUpdates(bookName)
         verify(bookService).getBookWithUpdates(bookName)
