@@ -43,7 +43,7 @@ class BookService(private val bookRepository: BookRepository,
             val booksUpdates = bookRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
             val foundBookUpdate = booksUpdates.booksUpdate.filter { it.date == currentDate && it.name == bookName }
-                    .getOrElse(0, {_ -> BookUpdateOutputDTO()})
+                    .getOrElse(0) { _ -> BookUpdateOutputDTO()}
 
             val pagesRead = bookUpdate.currentPage.minus(oldPage)
             if (pagesRead > 0 && foundBookUpdate.date == "") {
@@ -72,13 +72,15 @@ class BookService(private val bookRepository: BookRepository,
         var book = BookDTO()
         bookRepository.getBooks().books.forEach { if (it.name == bookName) book = it }
         val bookUpdates = bookRepository.getBooksUpdates().booksUpdate
+                .asSequence()
                 .filter { it.name == bookName }
                 .map { mapOf(it.date to it.pagesRead)}
+                .toList()
         return BookGetDTO(book, bookUpdates)
     }
 
     fun getAllBookNames(): List<String> {
-        return bookRepository.getBooks().books.map { it.name }.sorted()
+        return bookRepository.getBooks().books.asSequence().map { it.name }.sorted().toList()
     }
 
     private fun saveBook(bookDTO: BookDTO): BookDTO {
