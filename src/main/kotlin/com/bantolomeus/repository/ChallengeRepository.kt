@@ -8,13 +8,13 @@ import java.io.File
 @Repository
 class ChallengeRepository(private val objectMapper: ObjectMapper) {
 
-    fun saveOrUpdateChallengeData(challengeDTO: ChallengeDTO?) {
-        objectMapper.writeValue(File("challenge.json"), challengeDTO)
+    fun saveOrUpdateChallengeData(challengeDTO: ChallengeDTO?, fileName: String = "challenge.json") {
+        objectMapper.writeValue(File(fileName), challengeDTO)
     }
 
-    fun getChallenge(): ChallengeDTO {
+    fun getChallenge(fileName: String = "challenge.json"): ChallengeDTO {
         return try {
-            objectMapper.readValue(File("challenge.json"), ChallengeDTO::class.java)
+            objectMapper.readValue(File(fileName), ChallengeDTO::class.java)
         } catch (e: Exception) {
             ChallengeDTO()
         }

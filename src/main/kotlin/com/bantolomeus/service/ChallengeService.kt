@@ -10,8 +10,8 @@ import java.util.*
 @Service
 class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
-    fun getData(): ChallengeDTO {
-        return challengeRepository.getChallenge()
+    fun getData(fileName: String = "challenge.json"): ChallengeDTO {
+        return challengeRepository.getChallenge(fileName)
     }
 
     fun saveChallenge(pages: Long) {
@@ -26,11 +26,11 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
                 .plus(challenge.pagesSinceStart)
         challenge.pagesEverRead = challenge.pagesEverRead.plus(pages)
         challenge.pagesSinceStart = challenge.pagesSinceStart.plus(pages)
-        challengeRepository.saveOrUpdateChallengeData(challenge)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge)
     }
 
-    fun updateChallenge() {
-        val challenge = challengeRepository.getChallenge()
+    fun updateChallenge(challengeFile: String = "challenge.json") {
+        val challenge = challengeRepository.getChallenge(fileName = challengeFile)
         val currentTime = Date().time
         val startTime = dateFormat.parse(challenge.dateStarted).time
         val daysSinceStartNegated = -((currentTime - startTime) / DIVISOR_FOR_DAY)
@@ -40,6 +40,6 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
                 .plus(challenge.pagesSinceStart)
         challenge.pagesEverRead = challenge.pagesEverRead
         challenge.pagesSinceStart = challenge.pagesSinceStart
-        challengeRepository.saveOrUpdateChallengeData(challenge)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge, fileName = challengeFile)
     }
 }
