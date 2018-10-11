@@ -13,7 +13,7 @@ class ChallengeController(private val challengeService: ChallengeService) {
 
     @GetMapping()
     fun getChallengeData(): ChallengeDTO {
-        challengeService.updateChallenge()
+        challengeService.saveOrUpdateChallenge()
         return challengeService.getData()
     }
 }

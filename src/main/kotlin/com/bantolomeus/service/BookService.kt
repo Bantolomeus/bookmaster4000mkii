@@ -53,7 +53,7 @@ class BookService(private val bookRepository: BookRepository,
                         date = currentDate)
                 )
                 bookRepository.saveBookUpdate(booksUpdates)
-                challengeService.saveChallenge(pagesRead)
+                challengeService.saveOrUpdateChallenge(pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val oldBookUpdates = booksUpdates.booksUpdate.filter {
                     it.date != foundBookUpdate.date || it.name != bookUpdate.name
@@ -63,7 +63,7 @@ class BookService(private val bookRepository: BookRepository,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
                         date = currentDate)).toMutableList())
                 )
-                challengeService.saveChallenge(pagesRead)
+                challengeService.saveOrUpdateChallenge(pagesRead)
             }
         }
     }
@@ -98,7 +98,7 @@ class BookService(private val bookRepository: BookRepository,
             val booksUpdates = bookRepository.getBooksUpdates()
             booksUpdates.booksUpdate.add(bookDTO.toBookUpdateDTO())
             bookRepository.saveBookUpdate(booksUpdates)
-            challengeService.saveChallenge(bookDTO.currentPage)
+            challengeService.saveOrUpdateChallenge(bookDTO.currentPage)
         }
     }
 

@@ -17,6 +17,7 @@ class ChallengeServiceIT {
 
     private val challengeRepository = ChallengeRepository(ObjectMapper())
     private val challengeService = ChallengeService(challengeRepository)
+    private val challengeController = ChallengeController(challengeService)
 
     @Test
     fun updateChallenge() {
@@ -29,7 +30,7 @@ class ChallengeServiceIT {
 
         challengeRepository.saveOrUpdateChallengeData(challengeDTO, fileName = fileName)
 
-        challengeService.updateChallenge(fileName)
+        challengeService.saveOrUpdateChallenge(fileName = fileName)
         val updatedChallenge = challengeService.getData(fileName)
 
         assertEquals("01/01/2018", updatedChallenge.dateStarted)
@@ -38,5 +39,26 @@ class ChallengeServiceIT {
         assertEquals(challengeDTO.pagesSinceStart, updatedChallenge.pagesSinceStart)
         assertEquals(challengeDTO.pagesEverRead, updatedChallenge.pagesEverRead)
         assertEquals(-challengeDTO.pagesPerDay.times(daysDifference), updatedChallenge.pagesAheadOfPlan)
+    }
+
+    @Test
+    fun getChallenge() {
+        val challengeDTO = ChallengeDTO(pagesPerDay = 15, pagesAheadOfPlan = 0,
+                startPagesAheadOfPlan = 0, pagesSinceStart = 0, pagesEverRead = 0,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+
+        val today = Date().time
+        val daysDifference = (today - dateFormat.parse(challengeDTO.dateStarted).time) / DIVISOR_FOR_DAY
+
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val updatedDTO = challengeController.getChallengeData()
+
+        assertEquals("22/05/2018", updatedDTO.dateStarted)
+        assertEquals(challengeDTO.pagesPerDay, updatedDTO.pagesPerDay)
+        assertEquals(challengeDTO.startPagesAheadOfPlan, updatedDTO.startPagesAheadOfPlan)
+        assertEquals(challengeDTO.pagesSinceStart, updatedDTO.pagesSinceStart)
+        assertEquals(challengeDTO.pagesEverRead, updatedDTO.pagesEverRead)
+        assertEquals(-challengeDTO.pagesPerDay.times(daysDifference), updatedDTO.pagesAheadOfPlan)
     }
 }

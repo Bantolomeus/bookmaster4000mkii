@@ -14,8 +14,8 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
         return challengeRepository.getChallenge(fileName)
     }
 
-    fun saveChallenge(pages: Long) {
-        val challenge = challengeRepository.getChallenge()
+    fun saveOrUpdateChallenge(pages: Long = 0, fileName: String = "challenge.json") {
+        val challenge = challengeRepository.getChallenge(fileName = fileName)
         val currentTime = Date().time
         val startTime = dateFormat.parse(challenge.dateStarted).time
         val daysSinceStartNegated = -((currentTime - startTime) / DIVISOR_FOR_DAY)
@@ -26,20 +26,20 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
                 .plus(challenge.pagesSinceStart)
         challenge.pagesEverRead = challenge.pagesEverRead.plus(pages)
         challenge.pagesSinceStart = challenge.pagesSinceStart.plus(pages)
-        challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge, fileName = fileName)
     }
 
-    fun updateChallenge(challengeFile: String = "challenge.json") {
-        val challenge = challengeRepository.getChallenge(fileName = challengeFile)
-        val currentTime = Date().time
-        val startTime = dateFormat.parse(challenge.dateStarted).time
-        val daysSinceStartNegated = -((currentTime - startTime) / DIVISOR_FOR_DAY)
-        challenge.pagesAheadOfPlan = daysSinceStartNegated
-                .times(challenge.pagesPerDay)
-                .plus(challenge.startPagesAheadOfPlan)
-                .plus(challenge.pagesSinceStart)
-        challenge.pagesEverRead = challenge.pagesEverRead
-        challenge.pagesSinceStart = challenge.pagesSinceStart
-        challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge, fileName = challengeFile)
-    }
+//    fun saveOrUpdateChallenge(challengeFile: String = "challenge.json") {
+//        val challenge = challengeRepository.getChallenge(fileName = challengeFile)
+//        val currentTime = Date().time
+//        val startTime = dateFormat.parse(challenge.dateStarted).time
+//        val daysSinceStartNegated = -((currentTime - startTime) / DIVISOR_FOR_DAY)
+//        challenge.pagesAheadOfPlan = daysSinceStartNegated
+//                .times(challenge.pagesPerDay)
+//                .plus(challenge.startPagesAheadOfPlan)
+//                .plus(challenge.pagesSinceStart)
+//        challenge.pagesEverRead = challenge.pagesEverRead
+//        challenge.pagesSinceStart = challenge.pagesSinceStart
+//        challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge, fileName = challengeFile)
+//    }
 }

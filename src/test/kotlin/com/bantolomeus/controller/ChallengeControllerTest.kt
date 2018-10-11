@@ -20,7 +20,7 @@ class ChallengeControllerTest {
     @Test
     fun getChallengeData() {
         challengeController.getChallengeData()
-        verify(challengeService).updateChallenge()
+        verify(challengeService).saveOrUpdateChallenge()
         verify(challengeService).getData()
     }
 }
