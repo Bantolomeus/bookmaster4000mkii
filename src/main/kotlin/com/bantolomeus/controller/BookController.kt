@@ -1,8 +1,6 @@
 package com.bantolomeus.controller
 
-import com.bantolomeus.dto.BookDTO
-import com.bantolomeus.dto.BookGetDTO
-import com.bantolomeus.dto.BookUpdateInputDTO
+import com.bantolomeus.dto.*
 import com.bantolomeus.service.BookService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -18,8 +16,9 @@ class BookController(private val bookService: BookService) {
     }
 
     @PutMapping(path = ["{bookName}"])
-    fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateInputDTO, @PathVariable("bookName") bookName: String) {
-        bookService.updateBook(bookUpdate, bookName)
+    fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateInputDTO, @PathVariable("bookName") bookName: String):
+            BooksUpdatesFileDTO {
+        return bookService.updateBook(bookUpdate, bookName)
     }
 
     @GetMapping(path = ["{bookName}"])

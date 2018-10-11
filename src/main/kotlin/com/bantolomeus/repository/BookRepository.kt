@@ -1,5 +1,6 @@
 package com.bantolomeus.repository
 
+import com.bantolomeus.dto.BookUpdateOutputDTO
 import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -13,8 +14,9 @@ class BookRepository(private val objectMapper: ObjectMapper) {
         objectMapper.writeValue(File("books.json"), books)
     }
 
-    fun saveBookUpdate(bookUpdate: BooksUpdatesFileDTO?) {
+    fun saveBookUpdate(bookUpdate: BooksUpdatesFileDTO): BooksUpdatesFileDTO {
         objectMapper.writeValue(File("booksUpdates.json"), bookUpdate)
+        return bookUpdate
     }
 
     fun getBooks(): BooksFileDTO {

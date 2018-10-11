@@ -22,7 +22,8 @@ class BookService(private val bookRepository: BookRepository,
         saveBookUpdate(bookDTOChanged)
     }
 
-    fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String) {
+    fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BooksUpdatesFileDTO {
+        var response = BooksUpdatesFileDTO()
         val books = bookRepository.getBooks()
         var oldPage = 5000L
         val foundBook = books.books.filter { it.name == bookName }
@@ -52,13 +53,13 @@ class BookService(private val bookRepository: BookRepository,
                         pagesRead = pagesRead,
                         date = currentDate)
                 )
-                bookRepository.saveBookUpdate(booksUpdates)
+                response = bookRepository.saveBookUpdate(booksUpdates)
                 challengeService.saveOrUpdateChallenge(pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val oldBookUpdates = booksUpdates.booksUpdate.filter {
                     it.date != foundBookUpdate.date || it.name != bookName
                 }
-                bookRepository.saveBookUpdate(BooksUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
+                response = bookRepository.saveBookUpdate(BooksUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
                         date = currentDate)).toMutableList())
@@ -66,6 +67,7 @@ class BookService(private val bookRepository: BookRepository,
                 challengeService.saveOrUpdateChallenge(pagesRead)
             }
         }
+        return response
     }
 
     fun getBookWithUpdates(bookName: String): BookGetDTO {
