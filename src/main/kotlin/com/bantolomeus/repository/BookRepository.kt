@@ -1,5 +1,6 @@
 package com.bantolomeus.repository
 
+import com.bantolomeus.dto.BookUpdateOutputDTO
 import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -36,6 +37,20 @@ class BookRepository(private val objectMapper: ObjectMapper) {
                     .sortedBy { it.date }
                     .toMutableList())
         } catch (e: Exception) {
+            BooksUpdatesFileDTO()
+        }
+    }
+
+    fun sortBookUpdates(): BooksUpdatesFileDTO {
+        return try {
+            val bookUpdates = BooksUpdatesFileDTO(objectMapper.readValue(File("booksUpdates.json"), BooksUpdatesFileDTO::class.java)
+                    .booksUpdate
+                    .asSequence()
+                    .sortedBy { it.date }
+                    .toMutableList())
+            objectMapper.writeValue(File("booksUpdates.json"), bookUpdates)
+            bookUpdates
+        } catch (exception: Exception) {
             BooksUpdatesFileDTO()
         }
     }

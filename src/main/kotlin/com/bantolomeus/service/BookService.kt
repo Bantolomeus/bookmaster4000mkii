@@ -85,6 +85,10 @@ class BookService(private val bookRepository: BookRepository,
         return bookRepository.getBooks().books.asSequence().map { it.name }.sorted().toList()
     }
 
+    fun sortBookUpdates(): BooksUpdatesFileDTO {
+        return bookRepository.sortBookUpdates()
+    }
+
     private fun saveBook(bookDTO: BookDTO): BookDTO {
         val books = bookRepository.getBooks()
         var toSave = true

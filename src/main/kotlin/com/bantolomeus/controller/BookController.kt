@@ -30,4 +30,9 @@ class BookController(private val bookService: BookService) {
     fun getAllBookNames(): List<String> {
         return bookService.getAllBookNames()
     }
+
+    @GetMapping()
+    fun sortBookUpdates(): BooksUpdatesFileDTO {
+        return bookService.sortBookUpdates()
+    }
 }
