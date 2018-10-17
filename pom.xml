@@ -5,7 +5,7 @@
 
 	<groupId>com.bantolomeus</groupId>
 	<artifactId>bookmaster4000mkii</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>bookmaster4000mkii</name>
