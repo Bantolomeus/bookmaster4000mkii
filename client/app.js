@@ -1,4 +1,5 @@
 // todo remove axios
+// todo remove npm warnings
 let axios = require('../node_modules/axios/dist/axios.min.js');
 
 'use strict';

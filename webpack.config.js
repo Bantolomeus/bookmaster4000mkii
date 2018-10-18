@@ -1,11 +1,12 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
     // This is the "main" file which should include all other modules
     entry: {app: './client/main.js'},
     // Where should the compiled file go?
     output: {
-        path: __dirname + '/src/main/resources/public',
+        path: path.join(__dirname + '/src/main/resources/public'),
         publicPath: '/',
         filename: 'bundle.js'
     },
