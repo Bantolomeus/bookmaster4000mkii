@@ -31,7 +31,7 @@ class BookController(private val bookService: BookService) {
         return bookService.getAllBookNames()
     }
 
-    @GetMapping()
+    @GetMapping(path = ["/sortBookUpdates"])
     fun sortBookUpdates(): BooksUpdatesFileDTO {
         return bookService.sortBookUpdates()
     }
