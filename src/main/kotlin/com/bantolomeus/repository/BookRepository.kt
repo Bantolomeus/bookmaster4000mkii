@@ -10,7 +10,8 @@ const val BOOK_FILE = "book.json"
 const val BOOK_UPDATES_FILE = "booksUpdates.json"
 
 @Repository
-class BookRepository(private val objectMapper: ObjectMapper) {
+class BookRepository {
+    private val objectMapper = ObjectMapper()
 
     fun saveBook(books: BooksFileDTO?) {
         objectMapper.writeValue(File(BOOK_FILE), books)
@@ -18,7 +19,11 @@ class BookRepository(private val objectMapper: ObjectMapper) {
 
     fun saveBookUpdate(bookUpdate: BooksUpdatesFileDTO): BooksUpdatesFileDTO {
         objectMapper.writeValue(File(BOOK_UPDATES_FILE), bookUpdate)
-        return BooksUpdatesFileDTO(bookUpdate.booksUpdate.asSequence().sortedBy { it.date }.toMutableList())
+        return BooksUpdatesFileDTO(
+                bookUpdate
+                        .booksUpdate
+                        .asSequence()
+                        .sortedBy { it.date }.toMutableList())
     }
 
     fun getBooks(): BooksFileDTO {
@@ -33,11 +38,10 @@ class BookRepository(private val objectMapper: ObjectMapper) {
         return try {
             BooksUpdatesFileDTO(
                     objectMapper
-                    .readValue(File(BOOK_UPDATES_FILE), BooksUpdatesFileDTO::class.java)
-                    .booksUpdate
-                    .asSequence()
-                    .sortedBy { it.date }
-                    .toMutableList())
+                            .readValue(File(BOOK_UPDATES_FILE), BooksUpdatesFileDTO::class.java)
+                            .booksUpdate
+                            .asSequence()
+                            .sortedBy { it.date }.toMutableList())
         } catch (e: Exception) {
             BooksUpdatesFileDTO()
         }
@@ -48,8 +52,7 @@ class BookRepository(private val objectMapper: ObjectMapper) {
             val bookUpdates = BooksUpdatesFileDTO(objectMapper.readValue(File(BOOK_UPDATES_FILE), BooksUpdatesFileDTO::class.java)
                     .booksUpdate
                     .asSequence()
-                    .sortedBy { it.date }
-                    .toMutableList())
+                    .sortedBy { it.date }.toMutableList())
             objectMapper.writeValue(File(BOOK_UPDATES_FILE), bookUpdates)
             bookUpdates
         } catch (exception: Exception) {

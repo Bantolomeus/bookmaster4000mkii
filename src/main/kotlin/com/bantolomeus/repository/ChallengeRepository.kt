@@ -8,7 +8,8 @@ import java.io.File
 const val CHALLENGE_FILE = "challenge.json"
 
 @Repository
-class ChallengeRepository(private val objectMapper: ObjectMapper) {
+class ChallengeRepository {
+    private val objectMapper = ObjectMapper()
 
     fun saveOrUpdateChallengeData(challengeDTO: ChallengeDTO?, fileName: String = CHALLENGE_FILE): ChallengeDTO {
         objectMapper.writeValue(File(fileName), challengeDTO)

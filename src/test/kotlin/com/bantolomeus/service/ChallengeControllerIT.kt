@@ -3,7 +3,7 @@ package com.bantolomeus.service
 import com.bantolomeus.controller.ChallengeController
 import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.repository.ChallengeRepository
-import com.bantolomeus.util.dateFormat
+import com.bantolomeus.date.dateFormat
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 @RunWith(SpringRunner::class)
 class ChallengeControllerIT {
 
-    private val challengeRepository = ChallengeRepository(ObjectMapper())
+    private val challengeRepository = ChallengeRepository()
     private val challengeService = ChallengeService(challengeRepository)
     private val challengeController = ChallengeController(challengeService)
 

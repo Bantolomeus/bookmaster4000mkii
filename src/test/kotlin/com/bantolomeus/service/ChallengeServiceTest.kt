@@ -2,7 +2,7 @@ package com.bantolomeus.service
 
 import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.repository.ChallengeRepository
-import com.bantolomeus.util.dateFormat
+import com.bantolomeus.date.dateFormat
 import com.nhaarman.mockito_kotlin.given
 import org.junit.Test
 import org.junit.runner.RunWith

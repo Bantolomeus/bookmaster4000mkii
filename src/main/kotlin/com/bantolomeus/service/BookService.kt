@@ -8,8 +8,8 @@ import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
-import com.bantolomeus.util.dateFormat
-import com.bantolomeus.util.DIVISOR_FOR_DAY
+import com.bantolomeus.date.dateFormat
+import com.bantolomeus.date.DIVISOR_FOR_DAY
 import org.springframework.stereotype.Service
 import java.util.*
 

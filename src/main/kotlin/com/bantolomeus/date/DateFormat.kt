@@ -1,4 +1,4 @@
-package com.bantolomeus.util
+package com.bantolomeus.date
 
 import java.text.SimpleDateFormat
 

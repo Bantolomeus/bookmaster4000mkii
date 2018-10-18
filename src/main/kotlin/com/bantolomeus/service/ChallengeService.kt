@@ -3,8 +3,8 @@ package com.bantolomeus.service
 import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.repository.CHALLENGE_FILE
 import com.bantolomeus.repository.ChallengeRepository
-import com.bantolomeus.util.dateFormat
-import com.bantolomeus.util.DIVISOR_FOR_DAY
+import com.bantolomeus.date.dateFormat
+import com.bantolomeus.date.DIVISOR_FOR_DAY
 import org.springframework.stereotype.Service
 import java.util.*
 

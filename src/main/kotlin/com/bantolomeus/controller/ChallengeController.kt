@@ -10,7 +10,7 @@ import javax.validation.Valid
 @RequestMapping("/challenge", produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
 class ChallengeController(private val challengeService: ChallengeService) {
 
-    // TODO: remove it if unused
+
     @GetMapping()
     fun getChallengeData(): ChallengeDTO {
         return challengeService.saveOrUpdateChallenge()
