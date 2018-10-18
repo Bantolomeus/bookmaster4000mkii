@@ -18,7 +18,8 @@
     <div ng-controller="home">
         <div class="panel panel-default">
             <div class="panel-heading">Pages Ahead of Plan</div>
-            <div class="panel-body" ng-style="{'background-color': calcRgb()}">
+            <div class="panel-body"
+                 ng-style="{'background-color': progress.pagesAheadOfPlan < 0 ? 'rgb(255, 1, 1)' : 'rgb(223, 240, 216)'}">
                 {{progress.pagesAheadOfPlan}}
             </div>
         </div>
