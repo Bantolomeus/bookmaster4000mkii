@@ -15,7 +15,7 @@ class ChallengeController(private val challengeService: ChallengeService) {
         return challengeService.saveOrUpdateChallenge()
     }
 
-    @PutMapping()
+    @PostMapping()
     fun updateChallenge(@Valid @RequestBody challenge: ChallengeDTO): ChallengeDTO {
         return challengeService.updateChallenge(challenge)
     }
