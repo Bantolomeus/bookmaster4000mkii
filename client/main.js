@@ -3,9 +3,11 @@ window.$ = window.jQuery = window.jquery = require('../node_modules/jquery/dist/
 
 // angular
 require('../node_modules/angular/angular.min.js');
+// require('../node_modules/angular/angular.js');
 require('../node_modules/angular-sanitize/angular-sanitize.min.js');
 require('../node_modules/@uirouter/angularjs/release/angular-ui-router.min.js');
 require('../node_modules/angular-route/angular-route.min.js');
+require('../node_modules/angular-resource/angular-resource.min.js');
 
 // the rest
 require('../node_modules/bootstrap/dist/js/bootstrap.min.js');
