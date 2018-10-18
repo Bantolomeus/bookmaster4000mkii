@@ -8,13 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.test.context.junit4.SpringRunner
+import java.io.File
 import java.util.*
 import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 class ChallengeControllerIT {
 
-    private val challengeRepository = ChallengeRepository()
+    private val fileName = "testChallenge.json"
+    private val challengeRepository = ChallengeRepository(fileName)
     private val challengeService = ChallengeService(challengeRepository)
     private val challengeController = ChallengeController(challengeService)
 
@@ -29,6 +31,13 @@ class ChallengeControllerIT {
                 dateStarted = dateFormat.format(GregorianCalendar(2011, 6, 30).time))
 
         challengeRepository.saveOrUpdateChallengeData(dtoBeforeUpdate)
+        val challengeAfterSave = challengeRepository.getChallenge()
+        assertEquals(challengeAfterSave.pagesAheadOfPlan, dtoBeforeUpdate.pagesAheadOfPlan)
+        assertEquals(challengeAfterSave.pagesEverRead, dtoBeforeUpdate.pagesEverRead)
+        assertEquals(challengeAfterSave.pagesSinceStart, dtoBeforeUpdate.pagesSinceStart)
+        assertEquals(challengeAfterSave.pagesPerDay, dtoBeforeUpdate.pagesPerDay)
+        assertEquals(challengeAfterSave.startPagesAheadOfPlan, dtoBeforeUpdate.startPagesAheadOfPlan)
+        assertEquals(challengeAfterSave.dateStarted, dtoBeforeUpdate.dateStarted)
 
         val updatedDTO = challengeController.updateChallenge(dtoAfterUpdate)
 
@@ -38,5 +47,7 @@ class ChallengeControllerIT {
         assertEquals(dtoAfterUpdate.pagesSinceStart, updatedDTO.pagesSinceStart)
         assertEquals(dtoAfterUpdate.pagesEverRead, updatedDTO.pagesEverRead)
         assertEquals(dtoAfterUpdate.pagesAheadOfPlan, updatedDTO.pagesAheadOfPlan)
+
+        File(fileName).deleteRecursively()
     }
 }

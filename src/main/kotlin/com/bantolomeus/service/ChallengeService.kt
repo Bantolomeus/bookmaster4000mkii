@@ -1,22 +1,21 @@
 package com.bantolomeus.service
 
-import com.bantolomeus.dto.ChallengeDTO
-import com.bantolomeus.repository.CHALLENGE_FILE
-import com.bantolomeus.repository.ChallengeRepository
-import com.bantolomeus.date.dateFormat
 import com.bantolomeus.date.DIVISOR_FOR_DAY
+import com.bantolomeus.date.dateFormat
+import com.bantolomeus.dto.ChallengeDTO
+import com.bantolomeus.repository.ChallengeRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
-    fun getData(fileName: String = CHALLENGE_FILE): ChallengeDTO {
-        return challengeRepository.getChallenge(fileName)
+    fun getData(): ChallengeDTO {
+        return challengeRepository.getChallenge()
     }
 
-    fun saveOrUpdateChallenge(pages: Long = 0, fileName: String = CHALLENGE_FILE): ChallengeDTO {
-        val challenge = challengeRepository.getChallenge(fileName = fileName)
+    fun saveOrUpdateChallenge(pages: Long = 0): ChallengeDTO {
+        val challenge = challengeRepository.getChallenge()
         val currentTime = Date().time
         val startTime = dateFormat.parse(challenge.dateStarted).time
         val daysSinceStartNegated = -((currentTime - startTime) / DIVISOR_FOR_DAY)
@@ -27,10 +26,10 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
                 .plus(challenge.pagesSinceStart)
         challenge.pagesEverRead = challenge.pagesEverRead.plus(pages)
         challenge.pagesSinceStart = challenge.pagesSinceStart.plus(pages)
-        return challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge, fileName = fileName)
+        return challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge)
     }
 
-    fun updateChallenge(challengeDTO: ChallengeDTO, challengeFile: String = CHALLENGE_FILE): ChallengeDTO {
-        return challengeRepository.saveOrUpdateChallengeData(challengeDTO = challengeDTO, fileName = challengeFile)
+    fun updateChallenge(challengeDTO: ChallengeDTO): ChallengeDTO {
+        return challengeRepository.saveOrUpdateChallengeData(challengeDTO = challengeDTO)
     }
 }

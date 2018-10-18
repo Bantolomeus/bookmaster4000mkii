@@ -28,10 +28,10 @@ class ChallengeServiceIT {
         val today = Date().time
         val daysDifference = (today - dateFormat.parse(challengeDTO.dateStarted).time) / DIVISOR_FOR_DAY
 
-        challengeRepository.saveOrUpdateChallengeData(challengeDTO, fileName = fileName)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
 
-        challengeService.saveOrUpdateChallenge(fileName = fileName)
-        val updatedChallenge = challengeService.getData(fileName)
+        challengeService.saveOrUpdateChallenge()
+        val updatedChallenge = challengeService.getData()
 
         assertEquals("01/01/2018", updatedChallenge.dateStarted)
         assertEquals(challengeDTO.pagesPerDay, updatedChallenge.pagesPerDay)
