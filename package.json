@@ -33,14 +33,15 @@
     "webpack-dev-server": "~2.6.1"
   },
   "dependencies": {
-    "body-parser": "~1.18.3",
-    "express": "~4.16.3",
+    "@uirouter/angularjs": "~0.4.0",
     "angular": "~1.6.0",
+    "angular-resource": "~1.6.0",
     "angular-route": "~1.6.0",
     "angular-sanitize": "~1.6.0",
     "angular-ui-bootstrap": "~2.4.0",
-    "@uirouter/angularjs": "~0.4.0",
+    "body-parser": "~1.18.3",
     "bootstrap": "~3.3.0",
+    "express": "~4.16.3",
     "jquery": "~2.2.0"
   }
 }

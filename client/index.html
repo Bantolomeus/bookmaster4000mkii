@@ -2,22 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Booster Breaker</title>
+    <title>Bookmaster 4000mkii</title>
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
 </head>
-<body ng-app="breaker">
-<h1>Booster Breaker</h1>
+<body ng-app="bookmaster">
+
+<div class="page-header">
+    <h1>Current Progress</h1>
+</div>
+
 <div ng-controller="home">
-    <label>
-        <input ng-model="squareInput" ng-change="square()" autofocus>
-        {{squareOutput}}
-    </label>
-    <div>
-        {{response}}
+    <div class="panel panel-default">
+        <div class="panel-heading">Pages Ahead of Plan</div>
+        <div class="panel-body">
+            {{progress.pagesAheadOfPlan}}
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Pages per Day</div>
+        <div class="panel-body">
+            {{progress.pagesPerDay}}
+        </div>
     </div>
 </div>
+
 </body>
 </html>
