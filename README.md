@@ -7,15 +7,22 @@
 
 ### Install
 
-`$ mvn package` to compile, test and build
+`$ mvn package` to compile, test and build (including frontend)
 
 `$ mvn test` to execute unit tests separately.
+
+**Develop Frontend**
+
+`$ npm install` to get all UI dependencies
+
+`$ npm start` to have webpack bundle everything. It will provide a live reload web server. `localhost:3000/` to open the UI (it expects a backend though).
 
 **Dependencies**
 
 * Apache Maven 3.5.x
 * Kotlin 1.2.x
 * Java 1.8.x
+* npm 5.6.x
 
 ### Usage
 
