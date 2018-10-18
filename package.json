@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --color --inline=false",
+    "start-reload": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --color --inline=true",
+    "build": "./node_modules/webpack/bin/webpack.js --profile --bail"
   },
-  "author": "",
+  "author": "bantolomeus,husterknupp,frosner",
   "license": "ISC",
+  "repository": "https://github.com/Bantolomeus/bookmaster4000mkii.git",
   "devDependencies": {
     "ajv": "~6.5.1",
     "axios": "~0.16.2",
