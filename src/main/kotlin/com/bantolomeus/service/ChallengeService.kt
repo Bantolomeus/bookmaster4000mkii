@@ -16,9 +16,8 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
     fun saveOrUpdateChallenge(pages: Long = 0): ChallengeDTO {
         val challenge = challengeRepository.getChallenge()
-        val currentTime = Date().time
         val startTime = dateFormat.parse(challenge.dateStarted).time
-        val daysSinceStartNegated = -((currentTime - startTime) / DIVISOR_FOR_DAY)
+        val daysSinceStartNegated = -((Date().time - startTime) / DIVISOR_FOR_DAY)
         challenge.pagesAheadOfPlan = daysSinceStartNegated
                 .times(challenge.pagesPerDay)
                 .plus(challenge.startPagesAheadOfPlan)
