@@ -53,6 +53,6 @@ application.yaml
 mvnw
 mvnw.cmd
 books.json
-bookUpates.json
+bookUpdates.json
 challenge.json
 progress.json

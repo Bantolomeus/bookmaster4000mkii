@@ -10,11 +10,13 @@ import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
 import com.bantolomeus.date.dateFormat
 import com.bantolomeus.date.DIVISOR_FOR_DAY
+import com.bantolomeus.repository.BookUpdatesRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class BookService(private val bookRepository: BookRepository,
+                  private val bookUpdatesRepository: BookUpdatesRepository,
                   private val challengeService: ChallengeService) {
 
     fun createBook(bookDTO: BookDTO){
@@ -41,7 +43,7 @@ class BookService(private val bookRepository: BookRepository,
         if (oldPage < bookUpdate.currentPage && foundBook != emptyList<BooksFileDTO>()
                 && bookUpdate.currentPage <= foundBook[0].pagesTotal) {
             bookRepository.saveBook(books)
-            val booksUpdates = bookRepository.getBooksUpdates()
+            val booksUpdates = bookUpdatesRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
             val foundBookUpdate = booksUpdates.booksUpdate.filter { it.date == currentDate && it.name == bookName }
                     .getOrElse(0) { _ -> BookUpdateOutputDTO()}
@@ -53,13 +55,13 @@ class BookService(private val bookRepository: BookRepository,
                         pagesRead = pagesRead,
                         date = currentDate)
                 )
-                response = bookRepository.saveBookUpdate(booksUpdates)
+                response = bookUpdatesRepository.saveBookUpdate(booksUpdates)
                 challengeService.saveOrUpdateChallenge(pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val oldBookUpdates = booksUpdates.booksUpdate.filter {
                     it.date != foundBookUpdate.date || it.name != bookName
                 }
-                response = bookRepository.saveBookUpdate(BooksUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
+                response = bookUpdatesRepository.saveBookUpdate(BooksUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
                         date = currentDate)).toMutableList())
@@ -73,7 +75,7 @@ class BookService(private val bookRepository: BookRepository,
     fun getBookWithUpdates(bookName: String): BookGetDTO {
         var book = BookDTO()
         bookRepository.getBooks().books.forEach { if (it.name == bookName) book = it }
-        val bookUpdates = bookRepository.getBooksUpdates().booksUpdate
+        val bookUpdates = bookUpdatesRepository.getBooksUpdates().booksUpdate
                 .asSequence()
                 .filter { it.name == bookName }
                 .map { mapOf(it.date to it.pagesRead)}
@@ -86,7 +88,7 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     fun sortBookUpdates(): BooksUpdatesFileDTO {
-        return bookRepository.sortBookUpdates()
+        return bookUpdatesRepository.sortBookUpdates()
     }
 
     private fun saveBook(bookDTO: BookDTO): BookDTO {
@@ -103,9 +105,9 @@ class BookService(private val bookRepository: BookRepository,
 
     private fun saveBookUpdate(bookDTO: BookDTO) {
         if (bookDTO.currentPage > 0) {
-            val booksUpdates = bookRepository.getBooksUpdates()
+            val booksUpdates = bookUpdatesRepository.getBooksUpdates()
             booksUpdates.booksUpdate.add(bookDTO.toBookUpdateDTO())
-            bookRepository.saveBookUpdate(booksUpdates)
+            bookUpdatesRepository.saveBookUpdate(booksUpdates)
             challengeService.saveOrUpdateChallenge(bookDTO.currentPage)
         }
     }

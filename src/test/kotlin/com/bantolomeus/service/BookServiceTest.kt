@@ -3,6 +3,7 @@ package com.bantolomeus.service
 import com.bantolomeus.dto.BookDTO
 import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.repository.BookRepository
+import com.bantolomeus.repository.BookUpdatesRepository
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
@@ -18,6 +19,9 @@ class BookServiceTest {
 
     @Mock
     private lateinit var bookRepository: BookRepository
+
+    @Mock
+    private lateinit var bookUpdatesRepository: BookUpdatesRepository
 
     @Mock
     lateinit var challengeService: ChallengeService
