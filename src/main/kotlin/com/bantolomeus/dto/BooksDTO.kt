@@ -23,7 +23,7 @@ data class BookUpdateOutputDTO(
         val date: String = ""
 )
 
-data class BooksUpdatesFileDTO(
+data class BookUpdatesFileDTO(
         val booksUpdate: MutableList<BookUpdateOutputDTO> = emptyList<BookUpdateOutputDTO>().toMutableList()
 )
 

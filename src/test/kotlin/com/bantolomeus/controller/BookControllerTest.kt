@@ -3,7 +3,6 @@ package com.bantolomeus.controller
 import com.bantolomeus.date.dateFormat
 import com.bantolomeus.dto.*
 import com.bantolomeus.service.BookService
-import com.nhaarman.mockito_kotlin.given
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
@@ -42,7 +41,7 @@ class BookControllerTest {
         val bookUpdate = BookUpdateInputDTO(
                 currentPage = 21
         )
-        val returnValue = BooksUpdatesFileDTO(mutableListOf(BookUpdateOutputDTO(
+        val returnValue = BookUpdatesFileDTO(mutableListOf(BookUpdateOutputDTO(
                 name = bookName,
                 pagesRead = bookUpdate.currentPage,
                 date = date)))

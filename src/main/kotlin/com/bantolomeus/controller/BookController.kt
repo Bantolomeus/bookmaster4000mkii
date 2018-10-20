@@ -17,7 +17,7 @@ class BookController(private val bookService: BookService) {
 
     @PutMapping(path = ["{bookName}"])
     fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateInputDTO, @PathVariable("bookName") bookName: String):
-            BooksUpdatesFileDTO {
+            BookUpdatesFileDTO {
         return bookService.updateBook(bookUpdate, bookName)
     }
 
@@ -32,7 +32,7 @@ class BookController(private val bookService: BookService) {
     }
 
     @GetMapping(path = ["/sortBookUpdates"])
-    fun sortBookUpdates(): BooksUpdatesFileDTO {
+    fun sortBookUpdates(): BookUpdatesFileDTO {
         return bookService.sortBookUpdates()
     }
 }

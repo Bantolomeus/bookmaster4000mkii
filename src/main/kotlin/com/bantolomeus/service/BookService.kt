@@ -5,7 +5,7 @@ import com.bantolomeus.dto.BookGetDTO
 import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.dto.BookUpdateOutputDTO
 import com.bantolomeus.dto.BooksFileDTO
-import com.bantolomeus.dto.BooksUpdatesFileDTO
+import com.bantolomeus.dto.BookUpdatesFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
 import com.bantolomeus.date.dateFormat
@@ -24,8 +24,8 @@ class BookService(private val bookRepository: BookRepository,
         saveBookUpdate(bookDTOChanged)
     }
 
-    fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BooksUpdatesFileDTO {
-        var response = BooksUpdatesFileDTO()
+    fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
+        var response = BookUpdatesFileDTO()
         val books = bookRepository.getBooks()
         var oldPage = 5000L
         val foundBook = books.books.filter { it.name == bookName }
@@ -61,7 +61,7 @@ class BookService(private val bookRepository: BookRepository,
                 val oldBookUpdates = booksUpdates.booksUpdate.filter {
                     it.date != foundBookUpdate.date || it.name != bookName
                 }
-                response = bookUpdatesRepository.saveBookUpdate(BooksUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
+                response = bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
                         date = currentDate)).toMutableList())
@@ -87,7 +87,7 @@ class BookService(private val bookRepository: BookRepository,
         return bookRepository.getBooks().books.asSequence().map { it.name }.sorted().toList()
     }
 
-    fun sortBookUpdates(): BooksUpdatesFileDTO {
+    fun sortBookUpdates(): BookUpdatesFileDTO {
         return bookUpdatesRepository.sortBookUpdates()
     }
 
