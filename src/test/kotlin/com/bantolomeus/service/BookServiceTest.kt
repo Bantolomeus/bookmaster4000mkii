@@ -1,6 +1,7 @@
 package com.bantolomeus.service
 
 import com.bantolomeus.dto.BookDTO
+import com.bantolomeus.dto.BookGetDTO
 import com.bantolomeus.dto.BookUpdatesFileDTO
 import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.repository.BookRepository
@@ -10,7 +11,6 @@ import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.nhaarman.mockito_kotlin.given
-import com.nhaarman.mockito_kotlin.willReturn
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.springframework.test.context.junit4.SpringRunner
@@ -35,7 +35,6 @@ class BookServiceTest {
 
     @Test
     fun getAllBooks() {
-
         val bookDTO1 = BookDTO(name = "testName", author = "testAuthor", pagesTotal = 521)
         val bookDTO2 = BookDTO(name = "testName2", author = "testAuthor", pagesTotal = 51)
         val expectedList = listOf("testName", "testName2")
@@ -49,7 +48,6 @@ class BookServiceTest {
 
     @Test
     fun getAllBooksWithoutBooks() {
-
         val expectedList = listOf<String>()
         val booksFileDTO = BooksFileDTO(mutableListOf())
 
@@ -85,13 +83,7 @@ class BookServiceTest {
         val response = booksService.getBookWithUpdates(bookDTO.name)
 
         verify(bookRepository).getBooks()
-        assertEquals(bookDTO.name, response.book.name)
-        assertEquals(bookDTO.readTime, response.book.readTime)
-        assertEquals(bookDTO.dateStarted, response.book.dateStarted)
-        assertEquals(bookDTO.currentPage, response.book.currentPage)
-        assertEquals(bookDTO.pagesTotal, response.book.pagesTotal)
-        assertEquals(bookDTO.author, response.book.author)
-        assertEquals(emptyList(), response.updates)
+        compareBookDTOWithBookGetDTO(bookDTO, response)
     }
 
     @Test
@@ -105,12 +97,16 @@ class BookServiceTest {
         val response = booksService.getBookWithUpdates(bookDTO.name)
 
         verify(bookRepository).getBooks()
-        assertEquals(bookDTO.name, response.book.name)
-        assertEquals(bookDTO.readTime, response.book.readTime)
-        assertEquals(bookDTO.dateStarted, response.book.dateStarted)
-        assertEquals(bookDTO.currentPage, response.book.currentPage)
-        assertEquals(bookDTO.pagesTotal, response.book.pagesTotal)
-        assertEquals(bookDTO.author, response.book.author)
-        assertEquals(emptyList(), response.updates)
+        compareBookDTOWithBookGetDTO(bookDTO, response)
+    }
+
+    private fun compareBookDTOWithBookGetDTO(expected: BookDTO, actual: BookGetDTO) {
+        assertEquals(expected.name, actual.book.name)
+        assertEquals(expected.readTime, actual.book.readTime)
+        assertEquals(expected.dateStarted, actual.book.dateStarted)
+        assertEquals(expected.currentPage, actual.book.currentPage)
+        assertEquals(expected.pagesTotal, actual.book.pagesTotal)
+        assertEquals(expected.author, actual.book.author)
+        assertEquals(emptyList(), actual.updates)
     }
 }
