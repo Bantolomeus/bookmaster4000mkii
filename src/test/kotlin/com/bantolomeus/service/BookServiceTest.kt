@@ -92,4 +92,24 @@ class BookServiceTest {
         assertEquals(bookDTO.author, response.book.author)
         assertEquals(emptyList(), response.updates)
     }
+
+    @Test
+    fun getEmptyBook() {
+        val bookDTO = BookDTO()
+        val bookFileDto = BooksFileDTO(mutableListOf(bookDTO))
+        val bookUpdates = BookUpdatesFileDTO()
+
+        given(bookRepository.getBooks()).willReturn(bookFileDto)
+        given(bookUpdatesRepository.getBooksUpdates()).willReturn(bookUpdates)
+        val response = booksService.getBookWithUpdates(bookDTO.name)
+
+        verify(bookRepository).getBooks()
+        assertEquals(bookDTO.name, response.book.name)
+        assertEquals(bookDTO.readTime, response.book.readTime)
+        assertEquals(bookDTO.dateStarted, response.book.dateStarted)
+        assertEquals(bookDTO.currentPage, response.book.currentPage)
+        assertEquals(bookDTO.pagesTotal, response.book.pagesTotal)
+        assertEquals(bookDTO.author, response.book.author)
+        assertEquals(emptyList(), response.updates)
+    }
 }
