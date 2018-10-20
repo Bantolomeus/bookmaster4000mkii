@@ -1,14 +1,21 @@
 package com.bantolomeus.controller
 
+import com.bantolomeus.date.dateFormat
 import com.bantolomeus.dto.BookDTO
 import com.bantolomeus.dto.BookUpdateInputDTO
+import com.bantolomeus.dto.BookUpdateOutputDTO
+import com.bantolomeus.dto.BooksUpdatesFileDTO
 import com.bantolomeus.service.BookService
+import com.nhaarman.mockito_kotlin.given
 import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.springframework.test.context.junit4.SpringRunner
+import java.util.*
+import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 class BookControllerTest {
@@ -33,13 +40,23 @@ class BookControllerTest {
 
     @Test
     fun updateBook() {
+        val date = dateFormat.format(Date())
         val bookName = "this is a wonderful book"
         val bookUpdate = BookUpdateInputDTO(
                 currentPage = 21
         )
+        val returnValue = BooksUpdatesFileDTO(mutableListOf(BookUpdateOutputDTO(
+                name = bookName,
+                pagesRead = bookUpdate.currentPage,
+                date = date)))
 
-        bookController.updateBook(bookUpdate, bookName = "this is a wonderful book")
+        whenever(bookService.updateBook(bookUpdate, bookName)).thenReturn(returnValue)
+
+        val response = bookController.updateBook(bookUpdate, bookName = bookName)
         verify(bookService).updateBook(bookUpdate, bookName)
+        assertEquals(bookName, response.booksUpdate[0].name)
+        assertEquals(bookUpdate.currentPage, response.booksUpdate[0].pagesRead)
+        assertEquals(date, response.booksUpdate[0].date)
     }
 
     @Test
