@@ -63,9 +63,10 @@ class BookServiceTest {
     fun createBookWithoutCurrentPage() {
         val bookDTO1 = BookDTO(name = "Wohlfahrtsverlust durch Steuern", author = "Your Mother", pagesTotal = 521)
         val bookDTO2 = BookDTO(name = "Hasenklo ist so fro", author = "Vin Diesel", pagesTotal = 51)
-        val expectedBooks = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
+        val bookDTO3 = BookDTO()
+        val expectedBooks = BooksFileDTO(mutableListOf(bookDTO1, bookDTO3, bookDTO2))
 
-        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1))
+        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO3))
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
         booksService.createBook(bookDTO2)
 
