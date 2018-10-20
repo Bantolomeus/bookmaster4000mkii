@@ -1,6 +1,7 @@
 package com.bantolomeus.service
 
 import com.bantolomeus.dto.BookDTO
+import com.bantolomeus.dto.BookUpdatesFileDTO
 import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.repository.BookUpdatesRepository
@@ -9,6 +10,7 @@ import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.nhaarman.mockito_kotlin.given
+import com.nhaarman.mockito_kotlin.willReturn
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.springframework.test.context.junit4.SpringRunner
@@ -69,5 +71,25 @@ class BookServiceTest {
 
         verify(bookRepository).saveBook(booksFileDTOCaptor.capture())
         assertEquals(expectedBooks, booksFileDTOCaptor.firstValue)
+    }
+
+    @Test
+    fun getBookWithBookName() {
+        val bookDTO = BookDTO(name = "Anger management deluxe")
+        val bookFileDto = BooksFileDTO(mutableListOf(bookDTO))
+        val bookUpdates = BookUpdatesFileDTO()
+
+        given(bookRepository.getBooks()).willReturn(bookFileDto)
+        given(bookUpdatesRepository.getBooksUpdates()).willReturn(bookUpdates)
+        val response = booksService.getBookWithUpdates(bookDTO.name)
+
+        verify(bookRepository).getBooks()
+        assertEquals(bookDTO.name, response.book.name)
+        assertEquals(bookDTO.readTime, response.book.readTime)
+        assertEquals(bookDTO.dateStarted, response.book.dateStarted)
+        assertEquals(bookDTO.currentPage, response.book.currentPage)
+        assertEquals(bookDTO.pagesTotal, response.book.pagesTotal)
+        assertEquals(bookDTO.author, response.book.author)
+        assertEquals(emptyList(), response.updates)
     }
 }
