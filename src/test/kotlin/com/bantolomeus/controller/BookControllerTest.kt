@@ -1,10 +1,7 @@
 package com.bantolomeus.controller
 
 import com.bantolomeus.date.dateFormat
-import com.bantolomeus.dto.BookDTO
-import com.bantolomeus.dto.BookUpdateInputDTO
-import com.bantolomeus.dto.BookUpdateOutputDTO
-import com.bantolomeus.dto.BooksUpdatesFileDTO
+import com.bantolomeus.dto.*
 import com.bantolomeus.service.BookService
 import com.nhaarman.mockito_kotlin.given
 import com.nhaarman.mockito_kotlin.verify
@@ -53,6 +50,7 @@ class BookControllerTest {
         whenever(bookService.updateBook(bookUpdate, bookName)).thenReturn(returnValue)
 
         val response = bookController.updateBook(bookUpdate, bookName = bookName)
+
         verify(bookService).updateBook(bookUpdate, bookName)
         assertEquals(bookName, response.booksUpdate[0].name)
         assertEquals(bookUpdate.currentPage, response.booksUpdate[0].pagesRead)
@@ -62,9 +60,29 @@ class BookControllerTest {
     @Test
     fun getBookWithUpdates() {
         val bookName = "House"
+        val date = dateFormat.format(Date())
+        val bookDto = BookDTO(
+                name = bookName,
+                author = "bla",
+                pagesTotal = 312,
+                currentPage = 12,
+                dateStarted = date,
+                readTime = 0)
+        val bookUpdate = listOf(mapOf(date to 12L))
+        val returnValue = BookGetDTO(bookDto, bookUpdate)
 
-        bookController.getBookWithUpdates(bookName)
+        whenever(bookService.getBookWithUpdates(bookName)).thenReturn(returnValue)
+
+        val response = bookController.getBookWithUpdates(bookName)
+
         verify(bookService).getBookWithUpdates(bookName)
+        assertEquals(bookName, response.book.name)
+        assertEquals(bookDto.author, response.book.author)
+        assertEquals(bookDto.pagesTotal, response.book.pagesTotal)
+        assertEquals(bookDto.currentPage, response.book.currentPage)
+        assertEquals(bookDto.dateStarted, response.book.dateStarted)
+        assertEquals(bookDto.readTime, response.book.readTime)
+        assertEquals(bookUpdate, response.updates)
     }
 
     @Test
