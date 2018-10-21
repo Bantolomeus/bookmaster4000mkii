@@ -1,11 +1,10 @@
-package com.bantolomeus.service
+package com.bantolomeus.controller
 
-import com.bantolomeus.controller.ChallengeController
 import com.bantolomeus.date.DIVISOR_FOR_DAY
 import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.repository.ChallengeRepository
 import com.bantolomeus.date.dateFormat
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.bantolomeus.service.ChallengeService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.test.context.junit4.SpringRunner
