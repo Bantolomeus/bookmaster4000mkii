@@ -28,20 +28,20 @@ class BookService(private val bookRepository: BookRepository,
         var response = BookUpdatesFileDTO()
         val books = bookRepository.getBooks()
         var oldPage = 5000L
-        val foundBook = books.books.filter { it.name == bookName }
+        val foundBook = bookRepository.getBookByName(bookName)
 
-        if (foundBook != emptyList<BooksFileDTO>()) {
+        if (foundBook.name == bookName) {
             foundBook.let {
-                oldPage = it[0].currentPage
-                it[0].currentPage = bookUpdate.currentPage
-                if (it[0].currentPage == it[0].pagesTotal) {
-                    it[0].readTime = (Date().time - dateFormat.parse(it[0].dateStarted).time) / DIVISOR_FOR_DAY
+                oldPage = it.currentPage
+                it.currentPage = bookUpdate.currentPage
+                if (it.currentPage >= it.pagesTotal) {
+                    it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY
                 }
             }
         }
 
-        if (oldPage < bookUpdate.currentPage && foundBook != emptyList<BooksFileDTO>()
-                && bookUpdate.currentPage <= foundBook[0].pagesTotal) {
+        if (oldPage < bookUpdate.currentPage && foundBook.name == bookName
+                && bookUpdate.currentPage <= foundBook.pagesTotal) {
             bookRepository.saveBook(books)
             val booksUpdates = bookUpdatesRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
@@ -73,8 +73,7 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     fun getBookWithUpdates(bookName: String): BookGetDTO {
-        var book = BookDTO()
-        bookRepository.getBooks().books.forEach { if (it.name == bookName) book = it }
+        val book = bookRepository.getBookByName(bookName)
         val bookUpdates = bookUpdatesRepository.getBooksUpdates().booksUpdate
                 .asSequence()
                 .filter { it.name == bookName }
@@ -92,10 +91,8 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     private fun saveBook(bookDTO: BookDTO): BookDTO {
-        val books = bookRepository.getBooks()
-        var toSave = true
-        books.books.forEach { if (it.name == bookDTO.name) toSave = false}
-        if (toSave) {
+        if (bookRepository.getBookByName(bookDTO.name).name != bookDTO.name) {
+            val books = bookRepository.getBooks()
             bookDTO.dateStarted = dateFormat.format(Date())
             books.books.add(bookDTO)
             bookRepository.saveBook(books)
