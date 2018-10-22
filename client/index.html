@@ -8,33 +8,31 @@
         integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
 </head>
+
 <body ng-app="bookmaster">
 
-<div style="margin: 5em; width: 40em">
-  <div class="page-header">
-    <h1>Current Progress</h1>
-  </div>
-
-  <div ng-controller="home">
-    <div class="panel panel-default">
-      <div class="panel-heading">Pages Ahead of Plan</div>
-      <div class="panel-body"
-           ng-style="{
-                    'background-color': progress.pagesAheadOfPlan  < 0 ?
-                        deeperRedForMoreNegative(progress.pagesAheadOfPlan) :
-                        'rgb(223, 240, 216)'}">
-        {{progress.pagesAheadOfPlan}}
-      </div>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button"
+              class="navbar-toggle collapsed"
+              data-toggle="collapse"
+              data-target="#bs-example-navbar-collapse-1"
+              aria-expanded="false">
+      </button>
+      <a class="navbar-brand" href="#">Brand</a>
     </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">Pages per Day</div>
-      <div class="panel-body">
-        {{progress.pagesPerDay}}
-      </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a ui-sref="overallProgress" ui-sref-active="active">Overall</a></li>
+        <li><a ui-sref="todaysProgress" ui-sref-active="active">Today</a></li>
+      </ul>
     </div>
   </div>
-</div>
+</nav>
+
+<ui-view></ui-view>
 
 </body>
 </html>

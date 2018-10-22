@@ -1,14 +1,28 @@
-angular.module('bookmaster', ['ngResource']).controller('home', HomeController);
+import overallProgressComponent from './overallProgress.component';
+import todaysProgressComponent from './todaysProgress.component';
 
-HomeController.$inject = ['$scope', '$resource'];
-function HomeController($scope, $resource) {
-    activate();
-    function activate() {
-        $scope.progress = $resource('/challenge').get(); // naming is supposed to match (issue #66)
-    }
+// todo componentize navigation
 
-    $scope.deeperRedForMoreNegative = function(base) {
-        let greenBlue = 205 / ((base * -1) / 10);
-        return `rgb(255, ${greenBlue}, ${greenBlue})`;
-    };
+angular
+    .module('bookmaster', [
+        'ngResource',
+        'ui.router',
+        overallProgressComponent.default,
+        todaysProgressComponent.default,
+    ])
+    .config(Routes);
+
+Routes.$inject = ['$stateProvider'];
+function Routes($stateProvider) {
+    $stateProvider
+        .state({
+            name: 'overallProgress',
+            url: '/overallProgress',
+            component: 'overallProgress'
+        })
+        .state({
+            name: 'todaysProgress',
+            url: '/todaysProgress',
+            component: 'todaysProgress'
+        });
 }

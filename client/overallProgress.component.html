@@ -1,0 +1,25 @@
+<div style="margin: 5em; width: 40em">
+  <div class="page-header">
+    <h1>Current Progress</h1>
+  </div>
+
+  <div>
+    <div class="panel panel-default">
+      <div class="panel-heading">Pages Ahead of Plan</div>
+      <div class="panel-body"
+           ng-style="{
+                    'background-color': $ctrl.progress.pagesAheadOfPlan < 0 ?
+                        $ctrl.deeperRedForMoreNegative($ctrl.progress.pagesAheadOfPlan) :
+                        'rgb(223, 240, 216)'}">
+        {{$ctrl.progress.pagesAheadOfPlan}}
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Pages per Day</div>
+      <div class="panel-body">
+        {{$ctrl.progress.pagesPerDay}}
+      </div>
+    </div>
+  </div>
+</div>

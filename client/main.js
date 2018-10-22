@@ -2,11 +2,10 @@
 window.$ = window.jQuery = window.jquery = require('../node_modules/jquery/dist/jquery.min.js');
 
 // angular
-require('../node_modules/angular/angular.min.js');
+// require('../node_modules/angular/angular.min.js'); // for easier debugging
 // require('../node_modules/angular/angular.js');
+require('../node_modules/angular-ui-router/release/angular-ui-router.min.js'); // comes shipped with AngularJs
 require('../node_modules/angular-sanitize/angular-sanitize.min.js');
-require('../node_modules/@uirouter/angularjs/release/angular-ui-router.min.js');
-require('../node_modules/angular-route/angular-route.min.js');
 require('../node_modules/angular-resource/angular-resource.min.js');
 
 // the rest
