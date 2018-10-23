@@ -42,11 +42,23 @@ The app is now running on `localhost:8080/`
 
 Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/controller`](src/main/kotlin/com/bantolomeus/controller).
 
-You can use the test files books.json, booksUpdates.json and challenge.json to become familiar with the api calls.
-
 I recommend a tool like Postman to set up the http calls.
 
-Please do not forget to save your books.json, booksUpdates.json and challenge.json files before pulling from the repository or you might lose your files in production.
+**Create Challenge**
+
+```
+curl -X POST \
+  http://localhost:8080/challenge \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "pagesPerDay": 15,
+    "pagesAheadOfPlan": 0,
+    "startPagesAheadOfPlan": 0,
+    "pagesSinceStart": 0,
+    "pagesEverRead": 0,
+    "dateStarted": "21/05/2018"
+}'
+```
 
 ### Maintainers
 
