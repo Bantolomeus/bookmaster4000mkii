@@ -79,7 +79,7 @@ class BookServiceTest {
         val bookUpdates = BookUpdatesFileDTO()
 
         given(bookRepository.getBookByName(any())).willReturn(bookDTO)
-        given(bookUpdatesRepository.getBooksUpdates()).willReturn(bookUpdates)
+        given(bookUpdatesRepository.getBookUpdates()).willReturn(bookUpdates)
         val response = booksService.getBookWithUpdates(bookDTO.name)
 
         verify(bookRepository).getBookByName(bookDTO.name)
@@ -92,7 +92,7 @@ class BookServiceTest {
         val bookUpdates = BookUpdatesFileDTO()
 
         given(bookRepository.getBookByName(any())).willReturn(bookDTO)
-        given(bookUpdatesRepository.getBooksUpdates()).willReturn(bookUpdates)
+        given(bookUpdatesRepository.getBookUpdates()).willReturn(bookUpdates)
         val response = booksService.getBookWithUpdates(bookDTO.name)
 
         verify(bookRepository).getBookByName(bookDTO.name)
@@ -122,7 +122,7 @@ class BookServiceTest {
         given(bookRepository.getBooks()).willReturn(booksFile)
         given(bookRepository.getBookByName(any())).willReturn(bookDTO)
         given(bookUpdatesRepository.saveBookUpdate(bookUpdates)).willReturn(bookUpdates)
-        given(bookUpdatesRepository.getBooksUpdates()).willReturn(BookUpdatesFileDTO())
+        given(bookUpdatesRepository.getBookUpdates()).willReturn(BookUpdatesFileDTO())
 
         booksService.updateBook(bookUpdate, bookDTO.name)
 

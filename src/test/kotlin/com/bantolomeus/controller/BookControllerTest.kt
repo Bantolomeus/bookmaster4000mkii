@@ -51,9 +51,9 @@ class BookControllerTest {
         val response = bookController.updateBook(bookUpdate, bookName = bookName)
 
         verify(bookService).updateBook(bookUpdate, bookName)
-        assertEquals(bookName, response.booksUpdate[0].name)
-        assertEquals(bookUpdate.currentPage, response.booksUpdate[0].pagesRead)
-        assertEquals(date, response.booksUpdate[0].date)
+        assertEquals(bookName, response.bookUpdates[0].name)
+        assertEquals(bookUpdate.currentPage, response.bookUpdates[0].pagesRead)
+        assertEquals(date, response.bookUpdates[0].date)
     }
 
     @Test

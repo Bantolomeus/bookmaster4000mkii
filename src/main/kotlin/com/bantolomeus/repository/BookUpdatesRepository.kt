@@ -15,17 +15,17 @@ class BookUpdatesRepository(private val bookUpdatesFile: String = BOOK_UPDATES_F
         objectMapper.writeValue(File(bookUpdatesFile), bookUpdate)
         return BookUpdatesFileDTO(
                 bookUpdate
-                        .booksUpdate
+                        .bookUpdates
                         .asSequence()
                         .sortedBy { it.date }.toMutableList())
     }
 
-    fun getBooksUpdates(): BookUpdatesFileDTO {
+    fun getBookUpdates(): BookUpdatesFileDTO {
         return try {
             BookUpdatesFileDTO(
                     objectMapper
                             .readValue(File(bookUpdatesFile), BookUpdatesFileDTO::class.java)
-                            .booksUpdate
+                            .bookUpdates
                             .asSequence()
                             .sortedBy { it.date }.toMutableList())
         } catch (e: Exception) {
@@ -36,7 +36,7 @@ class BookUpdatesRepository(private val bookUpdatesFile: String = BOOK_UPDATES_F
     fun sortBookUpdates(): BookUpdatesFileDTO {
         return try {
             val bookUpdates = BookUpdatesFileDTO(objectMapper.readValue(File(bookUpdatesFile), BookUpdatesFileDTO::class.java)
-                    .booksUpdate
+                    .bookUpdates
                     .asSequence()
                     .sortedBy { it.date }.toMutableList())
             objectMapper.writeValue(File(bookUpdatesFile), bookUpdates)

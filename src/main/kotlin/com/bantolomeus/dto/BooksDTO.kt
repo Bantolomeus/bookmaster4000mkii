@@ -24,7 +24,7 @@ data class BookUpdateOutputDTO(
 )
 
 data class BookUpdatesFileDTO(
-        val booksUpdate: MutableList<BookUpdateOutputDTO> = emptyList<BookUpdateOutputDTO>().toMutableList()
+        val bookUpdates: MutableList<BookUpdateOutputDTO> = emptyList<BookUpdateOutputDTO>().toMutableList()
 )
 
 data class BookGetDTO(
