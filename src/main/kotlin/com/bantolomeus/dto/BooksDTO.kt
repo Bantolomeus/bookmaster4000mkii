@@ -29,5 +29,5 @@ data class BookUpdatesFileDTO(
 
 data class BookGetDTO(
         val book: BookDTO = BookDTO(),
-        val updates: List<Map<String, Long>>
+        val updates: List<ProgressUpdateDTO> = listOf(ProgressUpdateDTO())
 )
