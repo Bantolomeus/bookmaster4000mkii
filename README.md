@@ -40,7 +40,7 @@ You should see an output similar to this
 
 The app is now running on `localhost:8080/`
 
-**Create a Challenge**
+### Create a Challenge
 
 POST http://localhost:8080/challenge 
 
