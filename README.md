@@ -47,9 +47,9 @@ Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/
 
 I recommend a tool like Postman to set up the http calls.
 
-#### Setup local runtime files
+### Setup local runtime files
 
-##### Create a Challenge
+#### Create a Challenge
 
 POST http://localhost:8080/challenge 
 
