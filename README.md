@@ -40,7 +40,16 @@ You should see an output similar to this
 
 The app is now running on `localhost:8080/`
 
-### Create a Challenge
+
+### API
+
+Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/controller`](src/main/kotlin/com/bantolomeus/controller).
+
+I recommend a tool like Postman to set up the http calls.
+
+#### Setup local runtime files
+
+##### Create a Challenge
 
 POST http://localhost:8080/challenge 
 
@@ -62,16 +71,6 @@ Payload:
     "dateStarted": "21/05/2018"
 }
 ```
-
-### API
-
-Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/controller`](src/main/kotlin/com/bantolomeus/controller).
-
-You can use the test files books.json, bookUpdates.json and challenge.json to become familiar with the api calls.
-
-I recommend a tool like Postman to set up the http calls.
-
-Please do not forget to save your books.json, bookUpdates.json and challenge.json files before pulling from the repository or you might lose your files in production.
 
 ### Maintainers
 
