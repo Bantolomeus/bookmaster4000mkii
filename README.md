@@ -3,7 +3,7 @@
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 ![](https://user-images.githubusercontent.com/1265382/40448070-b9726dbc-5ed4-11e8-8fcf-fe2139fac929.png)
 
-> Improve your reading habits. Api to document your books read and your daily reading progress. Kotlin ❤ Spring ❤ json 
+> Improve your reading habits. Api to document your books read and your daily reading progress. Kotlin :cookie: Spring :cookie: json 
 
 ### Install
 
@@ -37,6 +37,29 @@ You should see an output similar to this
 ```
 
 The app is now running on `localhost:8080/`
+
+**Create a Challenge**
+
+POST http://localhost:8080/challenge 
+
+Header: 
+```
+Key: Content-Type 
+Value: application/json
+```
+
+Payload: 
+
+```
+{
+    "pagesPerDay": 15,
+    "pagesAheadOfPlan": 0,
+    "startPagesAheadOfPlan": 0,
+    "pagesSinceStart": 0,
+    "pagesEverRead": 0,
+    "dateStarted": "21/05/2018"
+}
+```
 
 ### API
 
