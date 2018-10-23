@@ -3,7 +3,8 @@
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 ![](https://user-images.githubusercontent.com/1265382/40448070-b9726dbc-5ed4-11e8-8fcf-fe2139fac929.png)
 
-> Improve your reading habits. Api to document your books read and your daily reading progress. Kotlin :cookie: Spring :cookie: json 
+> Improve your reading habits. Api to document your books read and your daily reading progress. 
+> Featuring: Kotlin :cookie: Spring :cookie: json 
 
 ### Install
 
