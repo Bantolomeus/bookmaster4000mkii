@@ -1,14 +1,10 @@
 package com.bantolomeus.service
 
-import com.bantolomeus.dto.BookDTO
-import com.bantolomeus.dto.BookGetDTO
-import com.bantolomeus.dto.BookUpdateInputDTO
-import com.bantolomeus.dto.BookUpdateOutputDTO
-import com.bantolomeus.dto.BookUpdatesFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
 import com.bantolomeus.date.dateFormat
 import com.bantolomeus.date.DIVISOR_FOR_DAY
+import com.bantolomeus.dto.*
 import com.bantolomeus.repository.BookUpdatesRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -75,10 +71,15 @@ class BookService(private val bookRepository: BookRepository,
 
     fun getBookWithUpdates(bookName: String): BookGetDTO {
         val book = bookRepository.getBookByName(bookName)
+//        val bookUpdates = bookUpdatesRepository.getBooksUpdates().booksUpdate
+//                .asSequence()
+//                .filter { it.name == bookName }
+//                .map { mapOf(it.date to it.pagesRead)}
+//                .toList()
         val bookUpdates = bookUpdatesRepository.getBooksUpdates().booksUpdate
                 .asSequence()
                 .filter { it.name == bookName }
-                .map { mapOf(it.date to it.pagesRead)}
+                .map { ProgressUpdateDTO(it.date, it.pagesRead)}
                 .toList()
         return BookGetDTO(book, bookUpdates)
     }

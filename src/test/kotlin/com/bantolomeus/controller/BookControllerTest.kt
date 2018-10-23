@@ -67,7 +67,7 @@ class BookControllerTest {
                 currentPage = 12,
                 dateStarted = date,
                 readTime = 0)
-        val bookUpdate = listOf(mapOf(date to 12L))
+        val bookUpdate = listOf(ProgressUpdateDTO(date, 12L))
         val returnValue = BookGetDTO(bookDto, bookUpdate)
 
         whenever(bookService.getBookWithUpdates(bookName)).thenReturn(returnValue)
