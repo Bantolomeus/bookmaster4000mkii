@@ -4,7 +4,6 @@ import com.bantolomeus.dto.BookDTO
 import com.bantolomeus.dto.BookGetDTO
 import com.bantolomeus.dto.BookUpdateInputDTO
 import com.bantolomeus.dto.BookUpdateOutputDTO
-import com.bantolomeus.dto.BooksFileDTO
 import com.bantolomeus.dto.BookUpdatesFileDTO
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.translator.toBookUpdateDTO
@@ -20,8 +19,10 @@ class BookService(private val bookRepository: BookRepository,
                   private val challengeService: ChallengeService) {
 
     fun createBook(bookDTO: BookDTO){
-        val bookDTOChanged = saveBook(bookDTO)
-        saveBookUpdate(bookDTOChanged)
+        val savedBookDTO = bookRepository.saveBookIfItNotExists(bookDTO)
+        if (savedBookDTO.currentPage != 0L) {
+            saveBookUpdate(savedBookDTO)
+        }
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
@@ -42,7 +43,7 @@ class BookService(private val bookRepository: BookRepository,
 
         if (oldPage < bookUpdate.currentPage && foundBook.name == bookName
                 && bookUpdate.currentPage <= foundBook.pagesTotal) {
-            bookRepository.saveBook(books)
+            bookRepository.saveBooks(books)
             val booksUpdates = bookUpdatesRepository.getBooksUpdates()
             val currentDate = dateFormat.format(Date())
             val foundBookUpdate = booksUpdates.booksUpdate.filter { it.date == currentDate && it.name == bookName }
@@ -88,16 +89,6 @@ class BookService(private val bookRepository: BookRepository,
 
     fun sortBookUpdates(): BookUpdatesFileDTO {
         return bookUpdatesRepository.sortBookUpdates()
-    }
-
-    private fun saveBook(bookDTO: BookDTO): BookDTO {
-        if (bookRepository.getBookByName(bookDTO.name).name != bookDTO.name) {
-            val books = bookRepository.getBooks()
-            bookDTO.dateStarted = dateFormat.format(Date())
-            books.books.add(bookDTO)
-            bookRepository.saveBook(books)
-        }
-        return bookDTO
     }
 
     private fun saveBookUpdate(bookDTO: BookDTO) {

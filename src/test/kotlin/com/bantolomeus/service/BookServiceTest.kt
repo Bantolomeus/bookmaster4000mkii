@@ -4,12 +4,9 @@ import com.bantolomeus.date.dateFormat
 import com.bantolomeus.dto.*
 import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.repository.BookUpdatesRepository
-import com.nhaarman.mockito_kotlin.argumentCaptor
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.nhaarman.mockito_kotlin.given
-import com.nhaarman.mockito_kotlin.willReturn
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.springframework.test.context.junit4.SpringRunner
@@ -30,6 +27,8 @@ class BookServiceTest {
 
     @InjectMocks
     private lateinit var booksService: BookService
+
+    private val bookDTOCaptor = argumentCaptor<BookDTO>()
 
     private val booksFileDTOCaptor = argumentCaptor<BooksFileDTO>()
 
@@ -64,41 +63,39 @@ class BookServiceTest {
         val bookDTO1 = BookDTO(name = "Wohlfahrtsverlust durch Steuern", author = "Your Mother", pagesTotal = 521)
         val bookDTO2 = BookDTO(name = "Hasenklo ist so fro", author = "Vin Diesel", pagesTotal = 51)
         val bookDTO3 = BookDTO()
-        val expectedBooks = BooksFileDTO(mutableListOf(bookDTO1, bookDTO3, bookDTO2))
 
         val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO3))
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
+        given(bookRepository.saveBookIfItNotExists(bookDTO2)).willReturn(bookDTO2)
         booksService.createBook(bookDTO2)
 
-        verify(bookRepository).saveBook(booksFileDTOCaptor.capture())
-        assertEquals(expectedBooks, booksFileDTOCaptor.firstValue)
+        verify(bookRepository).saveBookIfItNotExists(bookDTOCaptor.capture())
+        assertEquals(bookDTO2, bookDTOCaptor.firstValue)
     }
 
     @Test
     fun getBookWithBookName() {
         val bookDTO = BookDTO(name = "Anger management deluxe")
-        val bookFileDto = BooksFileDTO(mutableListOf(bookDTO))
         val bookUpdates = BookUpdatesFileDTO()
 
-        given(bookRepository.getBooks()).willReturn(bookFileDto)
+        given(bookRepository.getBookByName(any())).willReturn(bookDTO)
         given(bookUpdatesRepository.getBooksUpdates()).willReturn(bookUpdates)
         val response = booksService.getBookWithUpdates(bookDTO.name)
 
-        verify(bookRepository).getBooks()
+        verify(bookRepository).getBookByName(bookDTO.name)
         compareBookDTOWithBookGetDTO(bookDTO, response)
     }
 
     @Test
     fun getEmptyBook() {
         val bookDTO = BookDTO()
-        val bookFileDto = BooksFileDTO(mutableListOf(bookDTO))
         val bookUpdates = BookUpdatesFileDTO()
 
-        given(bookRepository.getBooks()).willReturn(bookFileDto)
+        given(bookRepository.getBookByName(any())).willReturn(bookDTO)
         given(bookUpdatesRepository.getBooksUpdates()).willReturn(bookUpdates)
         val response = booksService.getBookWithUpdates(bookDTO.name)
 
-        verify(bookRepository).getBooks()
+        verify(bookRepository).getBookByName(bookDTO.name)
         compareBookDTOWithBookGetDTO(bookDTO, response)
     }
 
@@ -123,12 +120,13 @@ class BookServiceTest {
         )
 
         given(bookRepository.getBooks()).willReturn(booksFile)
+        given(bookRepository.getBookByName(any())).willReturn(bookDTO)
         given(bookUpdatesRepository.saveBookUpdate(bookUpdates)).willReturn(bookUpdates)
         given(bookUpdatesRepository.getBooksUpdates()).willReturn(BookUpdatesFileDTO())
 
         booksService.updateBook(bookUpdate, bookDTO.name)
 
-        verify(bookRepository).saveBook(booksFileDTOCaptor.capture())
+        verify(bookRepository).saveBooks(booksFileDTOCaptor.capture())
         verify(bookUpdatesRepository).saveBookUpdate(bookUpdateFileDTOCaptor.capture())
         assertEquals(bookUpdates, bookUpdateFileDTOCaptor.firstValue)
         assertEquals(bookDTOUpdated, booksFileDTOCaptor.firstValue.books[0])
