@@ -1,25 +1,16 @@
-<div style="margin: 5em; width: 40em">
-  <div class="page-header">
-    <h1>Current Progress</h1>
+<div class="card text-center" style="margin: 4em">
+  <div class="card-header">
+    Your reading progress compared to the challenge
   </div>
-
-  <div>
-    <div class="panel panel-default">
-      <div class="panel-heading">Pages Ahead of Plan</div>
-      <div class="panel-body"
-           ng-style="{
-                    'background-color': $ctrl.progress.pagesAheadOfPlan < 0 ?
-                        $ctrl.deeperRedForMoreNegative($ctrl.progress.pagesAheadOfPlan) :
-                        'rgb(223, 240, 216)'}">
-        {{$ctrl.progress.pagesAheadOfPlan}}
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">Pages per Day</div>
-      <div class="panel-body">
-        {{$ctrl.progress.pagesPerDay}}
-      </div>
-    </div>
+  <div class="card-body"
+       ng-style="{
+          'background-color': $ctrl.progress.pagesAheadOfPlan < 0 ?
+            $ctrl.deeperRedForMoreNegative($ctrl.progress.pagesAheadOfPlan) :
+            'rgb(223, 240, 216)'}">
+    <h5 class="card-title">{{$ctrl.progress.pagesAheadOfPlan}}</h5>
+    <p class="card-text">Pages Ahead of Plan</p>
+  </div>
+  <div class="card-footer text-muted">
+    You should read {{$ctrl.progress.pagesPerDay}} Pages per Day
   </div>
 </div>
