@@ -1,7 +1,7 @@
 module.exports.default = angular.module('overallProgress', []).component('overallProgress', {
     bindings: {},
     controller: OverallProgress,
-    template: require('./overallProgress.component.html')
+    template: require('./overall-progress.component.html')
 }).name;
 
 OverallProgress.$inject = ['$resource'];

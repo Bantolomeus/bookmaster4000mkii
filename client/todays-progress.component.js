@@ -1,7 +1,7 @@
 module.exports.default = angular.module('todaysProgress', []).component('todaysProgress', {
     bindings: {},
     controller: TodaysProgress,
-    template: require('./todaysProgress.component.html')
+    template: require('./todays-progress.component.html')
 }).name;
 
 TodaysProgress.$inject = [];
