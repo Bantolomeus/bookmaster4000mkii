@@ -29,9 +29,9 @@ class BookUpdatesRepository(private val bookUpdatesFile: String = BOOK_UPDATES_F
             val bookUpdates = BookUpdatesFileDTO(objectMapper.readValue(File(bookUpdatesFile), BookUpdatesFileDTO::class.java)
                     .bookUpdates
                     .asSequence()
-                    .sortedBy { it.date }.toMutableList())
+                    .sortedByDescending { it.date }.toMutableList())
             objectMapper.writeValue(File(bookUpdatesFile), bookUpdates)
-            bookUpdates
+            BookUpdatesFileDTO(objectMapper.readValue(File(bookUpdatesFile), BookUpdatesFileDTO::class.java).bookUpdates)
         } catch (exception: Exception) {
             BookUpdatesFileDTO()
         }
