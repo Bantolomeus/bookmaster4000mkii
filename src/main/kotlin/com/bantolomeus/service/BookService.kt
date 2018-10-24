@@ -1,12 +1,11 @@
 package com.bantolomeus.service
 
-import com.bantolomeus.repository.BookRepository
-import com.bantolomeus.translator.toBookUpdateDTO
-import com.bantolomeus.date.dateFormat
 import com.bantolomeus.date.DIVISOR_FOR_DAY
+import com.bantolomeus.date.dateFormat
 import com.bantolomeus.dto.*
+import com.bantolomeus.repository.BookRepository
 import com.bantolomeus.repository.BookUpdatesRepository
-import com.bantolomeus.translator.toProgressUpdateDTO
+import com.bantolomeus.translator.toBookUpdateDTO
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -25,7 +24,7 @@ class BookService(private val bookRepository: BookRepository,
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
         var response = BookUpdatesFileDTO()
-        val books = bookRepository.getBooks()
+        var books = bookRepository.getBooks().books.filter { it.name != bookName }
         var oldPage = 5000L
         val foundBook = bookRepository.getBookByName(bookName)
 
@@ -37,11 +36,12 @@ class BookService(private val bookRepository: BookRepository,
                     it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY
                 }
             }
+            books = mutableListOf(foundBook) + books.toMutableList()
         }
 
         if (oldPage < bookUpdate.currentPage && foundBook.name == bookName
                 && bookUpdate.currentPage <= foundBook.pagesTotal) {
-            bookRepository.saveBooks(books)
+            bookRepository.saveBooks(BooksFileDTO(books.toMutableList()))
             val bookUpdates = bookUpdatesRepository.getBookUpdates()
             val currentDate = dateFormat.format(Date())
             val foundBookUpdate = bookUpdates.bookUpdates.filter { it.date == currentDate && it.name == bookName }
@@ -49,7 +49,7 @@ class BookService(private val bookRepository: BookRepository,
 
             val pagesRead = bookUpdate.currentPage.minus(oldPage)
             if (pagesRead > 0 && foundBookUpdate.date == "") {
-                bookUpdates.bookUpdates.add(BookUpdateOutputDTO(
+                bookUpdates.bookUpdates.add(0, BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = pagesRead,
                         date = currentDate)
@@ -63,7 +63,7 @@ class BookService(private val bookRepository: BookRepository,
                 response = bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
-                        date = currentDate)).toMutableList())
+                        date = currentDate)).asSequence().sortedByDescending { it.date }.toMutableList())
                 )
                 challengeService.saveOrUpdateChallenge(pagesRead)
             }
@@ -97,7 +97,7 @@ class BookService(private val bookRepository: BookRepository,
     private fun saveBookUpdate(bookDTO: BookDTO) {
         if (bookDTO.currentPage > 0) {
             val bookUpdates = bookUpdatesRepository.getBookUpdates()
-            bookUpdates.bookUpdates.add(bookDTO.toBookUpdateDTO())
+            bookUpdates.bookUpdates.add(0, bookDTO.toBookUpdateDTO())
             bookUpdatesRepository.saveBookUpdate(bookUpdates)
             challengeService.saveOrUpdateChallenge(bookDTO.currentPage)
         }
