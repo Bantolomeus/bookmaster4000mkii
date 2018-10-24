@@ -69,7 +69,7 @@ module.exports = {
             use: {
                 loader: 'babel-loader',
                 options: {
-                    presets: ['babel-preset-es2015'],
+                    presets: ['env'],
                     cacheDirectory: true // see docs how to specify which directory for transpiled src
                 }
             }
