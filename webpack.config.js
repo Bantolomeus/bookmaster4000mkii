@@ -77,7 +77,7 @@ module.exports = {
     },
     devtool: 'source-map',
     devServer: {
-        port: 3000,
+        port: 4002,
         proxy: {
             '/': 'http://localhost:8080'
         }
