@@ -10,6 +10,7 @@ module.exports = {
         publicPath: '/',
         filename: 'bundle.js'
     },
+    mode: 'none', // to enable default modules like uglifyJs (production)
     module: {
         rules: [{
             test: /\.html$/,
