@@ -11,7 +11,7 @@ import javax.validation.Valid
 class BookController(private val bookService: BookService) {
 
     @PostMapping
-    fun createBook(@Valid @RequestBody book: BookDTO): BookGetDTO {
+    fun createBook(@Valid @RequestBody book: BookDTO): BookDTO {
         return bookService.createBook(book)
     }
 

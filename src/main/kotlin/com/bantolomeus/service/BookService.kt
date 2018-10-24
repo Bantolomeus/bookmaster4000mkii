@@ -15,12 +15,12 @@ class BookService(private val bookRepository: BookRepository,
                   private val bookUpdatesRepository: BookUpdatesRepository,
                   private val challengeService: ChallengeService) {
 
-    fun createBook(bookDTO: BookDTO): BookGetDTO {
+    fun createBook(bookDTO: BookDTO): BookDTO {
         val savedBookDTO = bookRepository.saveBookIfItNotExists(bookDTO)
-        return if (savedBookDTO.currentPage != 0L) {
+        if (savedBookDTO.currentPage != 0L) {
             saveBookUpdate(savedBookDTO)
-            BookGetDTO(bookDTO, listOf(bookDTO.toProgressUpdateDTO()))
-        } else BookGetDTO(bookDTO)
+        }
+        return bookDTO
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
