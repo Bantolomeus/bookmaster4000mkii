@@ -6,6 +6,7 @@ import com.bantolomeus.date.dateFormat
 import com.bantolomeus.date.DIVISOR_FOR_DAY
 import com.bantolomeus.dto.*
 import com.bantolomeus.repository.BookUpdatesRepository
+import com.bantolomeus.translator.toProgressUpdateDTO
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -14,11 +15,12 @@ class BookService(private val bookRepository: BookRepository,
                   private val bookUpdatesRepository: BookUpdatesRepository,
                   private val challengeService: ChallengeService) {
 
-    fun createBook(bookDTO: BookDTO){
+    fun createBook(bookDTO: BookDTO): BookGetDTO {
         val savedBookDTO = bookRepository.saveBookIfItNotExists(bookDTO)
-        if (savedBookDTO.currentPage != 0L) {
+        return if (savedBookDTO.currentPage != 0L) {
             saveBookUpdate(savedBookDTO)
-        }
+            BookGetDTO(bookDTO, listOf(bookDTO.toProgressUpdateDTO()))
+        } else BookGetDTO(bookDTO)
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
