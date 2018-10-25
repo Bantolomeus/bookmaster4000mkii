@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --color --inline=false",
-    "start-reload": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --color --inline=true",
-    "build": "./node_modules/webpack/bin/webpack.js --profile --bail"
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --color --inline=false --mode development",
+    "start-reload": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --color --inline=true --mode development",
+    "build": "./node_modules/webpack/bin/webpack.js --bail --mode production"
   },
   "author": "bantolomeus,husterknupp,frosner",
   "license": "ISC",
