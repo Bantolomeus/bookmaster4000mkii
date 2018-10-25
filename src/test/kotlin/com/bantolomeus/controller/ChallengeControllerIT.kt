@@ -14,6 +14,7 @@ import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 class ChallengeControllerIT {
+
     @Test
     fun updateChallenge() {
         val fileName = "testChallenge.json"
