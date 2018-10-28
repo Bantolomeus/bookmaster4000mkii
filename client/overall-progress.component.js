@@ -1,3 +1,5 @@
+import "./overall-progress.component.less";
+
 module.exports.default = angular.module('overallProgress', []).component('overallProgress', {
     bindings: {},
     controller: OverallProgress,
