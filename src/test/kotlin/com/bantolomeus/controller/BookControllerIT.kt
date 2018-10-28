@@ -50,10 +50,6 @@ class BookControllerIT {
         assertNotEquals(challengeInit.pagesAheadOfPlan, challengeUpdated.pagesAheadOfPlan)
         assertEquals(challengeUpdated.pagesEverRead, (challengeInit.pagesEverRead + bookResponse.currentPage))
         assertTrue { bookUpdatesUpdated.bookUpdates.contains(bookUpdate) }
-
-//        File(fileNameBook).deleteRecursively()
-//        File(fileNameBookUpdates).deleteRecursively()
-//        File(fileNameChallenge).deleteRecursively()
     }
 
     @Test
@@ -93,9 +89,6 @@ class BookControllerIT {
 
         assertEquals(challengeUpdated2.pagesEverRead, (challengeInit.pagesEverRead + bookUpdateDTO.currentPage))
 
-//        File(fileNameBook).deleteRecursively()
-//        File(fileNameBookUpdates).deleteRecursively()
-//        File(fileNameChallenge).deleteRecursively()
     }
 
 //    @Test

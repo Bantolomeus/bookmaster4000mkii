@@ -5,6 +5,8 @@ import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.repository.ChallengeRepository
 import com.bantolomeus.date.dateFormat
 import com.bantolomeus.service.ChallengeService
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.test.context.junit4.SpringRunner
@@ -15,9 +17,10 @@ import kotlin.test.assertEquals
 @RunWith(SpringRunner::class)
 class ChallengeControllerIT {
 
+    private lateinit var fileName: String
+
     @Test
     fun updateChallenge() {
-        val fileName = "testChallenge.json"
         val challengeRepository = ChallengeRepository(fileName)
         val challengeService = ChallengeService(challengeRepository)
         val challengeController = ChallengeController(challengeService)
@@ -53,8 +56,6 @@ class ChallengeControllerIT {
 
     @Test
     fun getChallenge() {
-
-        val fileName = "testChallenge.json"
         val challengeRepository = ChallengeRepository(fileName)
         val challengeService = ChallengeService(challengeRepository)
         val challengeController = ChallengeController(challengeService)
@@ -76,7 +77,15 @@ class ChallengeControllerIT {
         assertEquals(challengeDTO.pagesSinceStart, updatedDTO.pagesSinceStart)
         assertEquals(challengeDTO.pagesEverRead, updatedDTO.pagesEverRead)
         assertEquals(-challengeDTO.pagesPerDay.times(daysDifference), updatedDTO.pagesAheadOfPlan)
+    }
 
+    @Before
+    fun createFile() {
+        fileName = "testChallenge.json"
+    }
+
+    @After
+    fun removeFiles() {
         File(fileName).deleteRecursively()
     }
 }
