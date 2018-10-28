@@ -1,1 +1,10 @@
-today's BOOBS MAN
+<div style="display: flex; padding: 1.5em;">
+  <div ng-repeat="book in $ctrl.books"
+       class="card" style="width: 18rem; margin: 0.5em;">
+    <div class="card-body" ng-style="{background: $ctrl.nameToHexColor(book)}">
+      <h5 class="card-title">{{book}}</h5>
+      <a class="btn btn-primary">Add today's progress</a>
+    </div>
+  </div>
+</div>
+
