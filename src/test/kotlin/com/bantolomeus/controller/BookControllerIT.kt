@@ -7,6 +7,7 @@ import com.bantolomeus.repository.BookUpdatesRepository
 import com.bantolomeus.repository.ChallengeRepository
 import com.bantolomeus.service.BookService
 import com.bantolomeus.service.ChallengeService
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,13 +51,13 @@ class BookControllerIT {
         assertEquals(challengeUpdated.pagesEverRead, (challengeInit.pagesEverRead + bookResponse.currentPage))
         assertTrue { bookUpdatesUpdated.bookUpdates.contains(bookUpdate) }
 
-        File(fileNameBook).deleteRecursively()
-        File(fileNameBookUpdates).deleteRecursively()
-        File(fileNameChallenge).deleteRecursively()
+//        File(fileNameBook).deleteRecursively()
+//        File(fileNameBookUpdates).deleteRecursively()
+//        File(fileNameChallenge).deleteRecursively()
     }
 
     @Test
-    fun bookUpdatesIsSortedByDateDESC() {
+    fun createBookWithUpdateAndBookUpdatesAreSortedByDateDESC() {
         val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
         val bookUpdateDTO = BookUpdateInputDTO(27)
         val challengeDTO = ChallengeDTO(pagesPerDay = 15, pagesAheadOfPlan = 0,
@@ -68,8 +69,7 @@ class BookControllerIT {
                 BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
                 BookUpdateOutputDTO("Ants", 4, "13/06/2018"),
                 BookUpdateOutputDTO("House in the woods", 32, "04/10/2017"),
-                BookUpdateOutputDTO("Riesezahl", 41, "01/01/2001")))
-
+                BookUpdateOutputDTO("Zap", 41, "01/01/2001")))
 
         val challengeInit = challengeRepository.saveOrUpdateChallengeData(challengeDTO)
         bookUpdateRepository.saveBookUpdate(bookUpdates)
@@ -87,10 +87,52 @@ class BookControllerIT {
         assertEquals(bookUpdatesUpdated.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
         assertEquals(bookUpdatesUpdated.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
 
-        File(fileNameBook).deleteRecursively()
-        File(fileNameBookUpdates).deleteRecursively()
-        File(fileNameChallenge).deleteRecursively()
+        val updateResponse = bookController.updateBook(bookUpdateDTO, bookDTO.name)
+
+        val challengeUpdated2 = challengeRepository.getChallenge()
+
+        assertEquals(challengeUpdated2.pagesEverRead, (challengeInit.pagesEverRead + bookUpdateDTO.currentPage))
+
+//        File(fileNameBook).deleteRecursively()
+//        File(fileNameBookUpdates).deleteRecursively()
+//        File(fileNameChallenge).deleteRecursively()
     }
+
+//    @Test
+//    fun updateBookAndBookUpdatesAreSortedByDateDESC() {
+//        val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
+//        val bookUpdateDTO = BookUpdateInputDTO(27)
+//        val challengeDTO = ChallengeDTO(pagesPerDay = 15, pagesAheadOfPlan = 0,
+//                startPagesAheadOfPlan = 0, pagesSinceStart = 0, pagesEverRead = 1000,
+//                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+//        val bookUpdate = BookUpdateOutputDTO(name = "testBook", pagesRead = 12, date = today)
+//        val bookUpdates = BookUpdatesFileDTO(mutableListOf(
+//                BookUpdateOutputDTO("Bugs Bunny", 152, "13/06/2018"),
+//                BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
+//                BookUpdateOutputDTO("Ants", 4, "13/06/2018"),
+//                BookUpdateOutputDTO("House in the woods", 32, "04/10/2017"),
+//                BookUpdateOutputDTO("Zap", 41, "01/01/2001")))
+//
+//        val challengeInit = challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+//        bookUpdateRepository.saveBookUpdate(bookUpdates)
+//        val bookResponse = bookController.updateBook(bookDTO)
+//        val challengeUpdated = challengeRepository.getChallenge()
+//        val bookUpdatesUpdated = bookUpdateRepository.getBookUpdates()
+//
+//        assertNotEquals(challengeInit.pagesAheadOfPlan, challengeUpdated.pagesAheadOfPlan)
+//        assertEquals(challengeUpdated.pagesEverRead, (challengeInit.pagesEverRead + bookResponse.currentPage))
+//        assertTrue { bookUpdatesUpdated.bookUpdates.contains(bookUpdate) }
+//        assertEquals(bookUpdatesUpdated.bookUpdates[0].name, "testBook")
+//        assertEquals(bookUpdatesUpdated.bookUpdates[1].name, bookUpdates.bookUpdates[0].name)
+//        assertEquals(bookUpdatesUpdated.bookUpdates[2].name, bookUpdates.bookUpdates[1].name)
+//        assertEquals(bookUpdatesUpdated.bookUpdates[3].name, bookUpdates.bookUpdates[2].name)
+//        assertEquals(bookUpdatesUpdated.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
+//        assertEquals(bookUpdatesUpdated.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
+//
+//        File(fileNameBook).deleteRecursively()
+//        File(fileNameBookUpdates).deleteRecursively()
+//        File(fileNameChallenge).deleteRecursively()
+//    }
 
     @Before
     fun setUpClasses() {
@@ -105,5 +147,12 @@ class BookControllerIT {
         bookUpdateRepository = BookUpdatesRepository(fileNameBookUpdates)
         bookService = BookService(bookRepository, bookUpdateRepository, challengeService)
         bookController = BookController(bookService)
+    }
+
+    @After
+    fun removeFiles() {
+        File(fileNameBook).deleteRecursively()
+        File(fileNameBookUpdates).deleteRecursively()
+        File(fileNameChallenge).deleteRecursively()
     }
 }
