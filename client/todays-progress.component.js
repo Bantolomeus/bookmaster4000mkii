@@ -4,16 +4,29 @@ module.exports.default = angular.module('todaysProgress', []).component('todaysP
     template: require('./todays-progress.component.html')
 }).name;
 
-TodaysProgress.$inject = ['$resource'];
-function TodaysProgress($resource) {
+TodaysProgress.$inject = ['$resource', '$timeout', '$window'];
+function TodaysProgress($resource, $timeout, $window) {
     let ctrl = this;
 
     ctrl.$onInit = () => {
         ctrl.books = $resource('/books').query();
     };
 
-    ctrl.do = () => {
-        console.log('boobs');
+    ctrl.toggleInputActiveFor = (book, shouldBeActive, elementId) => {
+        if (shouldBeActive) {
+            ctrl.inputsActiveOn = book;
+        } else {
+            ctrl.inputsActiveOn = null;
+        }
+
+        if (elementId) {
+            $timeout(function() { // timeout for Angular scope.apply trigger
+                let element = $window.document.getElementById(elementId);
+                if (element) {
+                    element.focus();
+                }
+            });
+        }
     };
 
     ctrl.nameToHexColor = name => {
