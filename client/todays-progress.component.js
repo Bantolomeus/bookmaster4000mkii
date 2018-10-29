@@ -12,6 +12,10 @@ function TodaysProgress($resource) {
         ctrl.books = $resource('/books').query();
     };
 
+    ctrl.do = () => {
+        console.log('boobs');
+    };
+
     ctrl.nameToHexColor = name => {
         let hash = 0;
         for (let i = 0; i < name.length; i++) {
