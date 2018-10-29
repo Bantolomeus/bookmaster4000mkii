@@ -1,31 +1,44 @@
 <!-- todo less-ify -->
 
 <div style="display: flex; padding: 1.5em;">
-  <div ng-repeat="book in $ctrl.books"
-       ng-mouseover="$ctrl.activatedInputs[book] = true"
-       ng-mouseleave="$ctrl.activatedInputs[book] = false"
-       class="card" style="width: 18rem; margin: 0.5em;">
+  <div
+    ng-repeat="book in $ctrl.books"
+    ng-mouseover="$ctrl.activatedInputs[book] = true"
+    ng-mouseleave="$ctrl.activatedInputs[book] = false"
+    class="card"
+    style="width: 18rem; margin: 0.5em;"
+  >
     <div
       ng-style="{background: $ctrl.nameToHexColor(book)}"
       style="position: relative"
-      class="card-body">
-      <h5 class="card-title">{{book}}</h5>
+      class="card-body"
+    >
+      <h5 class="card-title">{{ book }}</h5>
       <small>Add today's progress</small>
-      <div ng-if="$ctrl.activatedInputs[book]"
+      <div
+        ng-if="$ctrl.activatedInputs[book]"
         style="display: flex; justify-content: center; align-items: center;
-           position: absolute; top: 0; left: 0; background: rgba(255,255,255,0.70); width: 100%; height: 100%">
+           position: absolute; top: 0; left: 0; background: rgba(255,255,255,0.70); width: 100%; height: 100%"
+      >
         <div class="input-group" style="width: 80%">
-          <input type="text"
-                 class="form-control"
-                 placeholder="Pages read today"
-                 aria-label="Pages read today"
-                 aria-describedby="button-addon2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Pages read today"
+            aria-label="Pages read today"
+            aria-describedby="button-addon2"
+          />
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="button-addon2"
+            >
+              Button
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
