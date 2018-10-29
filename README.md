@@ -40,12 +40,13 @@ You should see an output similar to this
 
 The app is now running on `localhost:8080/`
 
-
 ### API
 
 Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/controller`](src/main/kotlin/com/bantolomeus/controller).
 
 I recommend a tool like Postman to set up the http calls.
+
+[`Detailed Api call description`](Api.md)
 
 ### Maintainers
 
