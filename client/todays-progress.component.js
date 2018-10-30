@@ -8,7 +8,7 @@ TodaysProgress.$inject = ['$resource', '$timeout', '$window'];
 function TodaysProgress($resource, $timeout, $window) {
     let ctrl = this;
     let books = $resource('/books/:bookName', null, {
-        'addBookProgress': {method: 'PUT', isArray: false}
+        addBookProgress: {method: 'PUT', isArray: false}
     });
 
     ctrl.$onInit = () => {
@@ -50,9 +50,10 @@ function TodaysProgress($resource, $timeout, $window) {
 
     ctrl.updateBookProgress = (book, currentPage) => {
         ctrl.progressUpdating = true;
-        books.addBookProgress(
-            {bookName: book},
-            {currentPage: currentPage},
-            () => ctrl.progressUpdating = false)
+        books.addBookProgress({bookName: book}, {currentPage: currentPage}, () => {
+            ctrl.progressUpdating = false;
+            ctrl.showRequestConfirmation = true;
+            $timeout(() => (ctrl.showRequestConfirmation = false), 8000);
+        });
     };
 }
