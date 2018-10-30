@@ -7,9 +7,13 @@ module.exports.default = angular.module('todaysProgress', []).component('todaysP
 TodaysProgress.$inject = ['$resource', '$timeout', '$window'];
 function TodaysProgress($resource, $timeout, $window) {
     let ctrl = this;
+    let books = $resource('/books/:bookName', null, {
+        'addBookProgress': {method: 'PUT', isArray: false}
+    });
 
     ctrl.$onInit = () => {
-        ctrl.books = $resource('/books').query();
+        ctrl.books = books.query();
+        ctrl.progressUpdating = false;
     };
 
     ctrl.toggleInputActiveFor = (book, shouldBeActive, elementId) => {
@@ -20,7 +24,8 @@ function TodaysProgress($resource, $timeout, $window) {
         }
 
         if (elementId) {
-            $timeout(function() { // timeout for Angular scope.apply trigger
+            $timeout(function() {
+                // timeout for Angular scope.apply trigger
                 let element = $window.document.getElementById(elementId);
                 if (element) {
                     element.focus();
@@ -36,10 +41,18 @@ function TodaysProgress($resource, $timeout, $window) {
         }
         let color = '#';
         for (let i = 0; i < 3; i++) {
-            let value = (hash >> (i * 8)) & 0xFF;
-            color += (`00${value.toString(16)}`).substr(-2);
+            let value = (hash >> (i * 8)) & 0xff;
+            color += `00${value.toString(16)}`.substr(-2);
         }
         let transparency10Percent = `33`; // cudos to @lopspower https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
         return `${color}${transparency10Percent}`;
-    }
+    };
+
+    ctrl.updateBookProgress = (book, currentPage) => {
+        ctrl.progressUpdating = true;
+        books.addBookProgress(
+            {bookName: book},
+            {currentPage: currentPage},
+            () => ctrl.progressUpdating = false)
+    };
 }
