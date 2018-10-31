@@ -4,11 +4,11 @@ import navBarComponent from './nav-bar.component';
 import routes from './routes.js';
 
 angular
-    .module('bookmaster', [
-        'ngResource',
-        'ui.router',
-        overallProgressComponent.default,
-        todaysProgressComponent.default,
-        navBarComponent.default
-    ])
-    .config(routes.default);
+  .module('bookmaster', [
+    'ngResource',
+    'ui.router',
+    overallProgressComponent.default,
+    todaysProgressComponent.default,
+    navBarComponent.default
+  ])
+  .config(routes.default);
