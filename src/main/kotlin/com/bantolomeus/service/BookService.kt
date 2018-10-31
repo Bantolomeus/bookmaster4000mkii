@@ -73,17 +73,17 @@ class BookService(private val bookRepository: BookRepository,
 
     fun getBookWithUpdates(bookName: String): BookGetDTO {
         val book = bookRepository.getBookByName(bookName)
-//        val bookUpdates = bookUpdatesRepository.getBookUpdates().bookUpdates
-//                .asSequence()
-//                .filter { it.name == bookName }
-//                .map { mapOf(it.date to it.pagesRead)}
-//                .toList()
         val bookUpdates = bookUpdatesRepository.getBookUpdates().bookUpdates
                 .asSequence()
                 .filter { it.name == bookName }
                 .map { ProgressUpdateDTO(it.date, it.pagesRead)}
                 .toList()
         return BookGetDTO(book, bookUpdates)
+    }
+
+    fun pagesLeft(bookName: String): Long {
+        val book = bookRepository.getBookByName(bookName)
+        return book.pagesTotal.minus(book.currentPage)
     }
 
     fun getAllBookNames(): List<String> {
