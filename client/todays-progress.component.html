@@ -2,7 +2,7 @@
 
 <div style="display: flex; padding: 1.5em;">
   <div
-    ng-repeat="book in $ctrl.books track by $index"
+    ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks track by $index"
     ng-mouseover="$ctrl.toggleInputActiveFor(book, true, 'book_' + $index)"
     ng-mouseleave="$ctrl.toggleInputActiveFor(book, false)"
     class="card"
@@ -50,6 +50,7 @@
             ng-model="currentPage"
             ng-keydown="$event.which === 13 && $ctrl.updateBookProgress(book.book.name, currentPage)"
             type="number"
+            min="1"
             class="form-control"
             placeholder="Current page .."
             id="book_{{$index}}"

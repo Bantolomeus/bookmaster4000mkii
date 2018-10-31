@@ -18,13 +18,14 @@ function TodaysProgress($resource, $timeout, $window) {
     ctrl.progressUpdating = false;
   };
 
-    function queryBooks() {
-        Books.query().$promise.then(books => {
-            ctrl.books = books.map(book => {
-                return Books.get({bookName: book});
-            });
+  function queryBooks() {
+    Books.query().$promise.then(books => {
+      ctrl.books = books
+        .map(book => {
+          return Books.get({bookName: book});
         });
-    }
+    });
+  }
 
   ctrl.toggleInputActiveFor = (book, shouldBeActive, elementId) => {
     if (shouldBeActive) {
@@ -59,6 +60,8 @@ function TodaysProgress($resource, $timeout, $window) {
   };
 
   ctrl.updateBookProgress = (book, currentPage) => {
+    if (!angular.isDefined(currentPage)) return;
+
     ctrl.progressUpdating = true;
     Books.addBookProgress({bookName: book}, {currentPage: currentPage}, () => {
       ctrl.progressUpdating = false;
@@ -73,5 +76,11 @@ function TodaysProgress($resource, $timeout, $window) {
       (book.book.currentPage / book.book.pagesTotal) * 100,
       book.book.pagesTotal
     );
+  };
+
+  ctrl.onlyUnfinishedBooks = book => {
+    if (!angular.isDefined(book.book)) return false;
+
+    return book.book.currentPage < book.book.pagesTotal;
   };
 }
