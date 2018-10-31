@@ -9,14 +9,22 @@ module.exports.default = angular
 TodaysProgress.$inject = ['$resource', '$timeout', '$window'];
 function TodaysProgress($resource, $timeout, $window) {
   let ctrl = this;
-  let books = $resource('/books/:bookName', null, {
+  let Books = $resource('/books/:bookName', null, {
     addBookProgress: {method: 'PUT', isArray: false}
   });
 
   ctrl.$onInit = () => {
-    ctrl.books = books.query();
+    queryBooks();
     ctrl.progressUpdating = false;
   };
+
+    function queryBooks() {
+        Books.query().$promise.then(books => {
+            ctrl.books = books.map(book => {
+                return Books.get({bookName: book});
+            });
+        });
+    }
 
   ctrl.toggleInputActiveFor = (book, shouldBeActive, elementId) => {
     if (shouldBeActive) {
@@ -52,10 +60,18 @@ function TodaysProgress($resource, $timeout, $window) {
 
   ctrl.updateBookProgress = (book, currentPage) => {
     ctrl.progressUpdating = true;
-    books.addBookProgress({bookName: book}, {currentPage: currentPage}, () => {
+    Books.addBookProgress({bookName: book}, {currentPage: currentPage}, () => {
       ctrl.progressUpdating = false;
       ctrl.showRequestConfirmation = true;
       $timeout(() => (ctrl.showRequestConfirmation = false), 8000);
+      queryBooks();
     });
+  };
+
+  ctrl.progressInPercent = book => {
+    return Math.min(
+      (book.book.currentPage / book.book.pagesTotal) * 100,
+      book.book.pagesTotal
+    );
   };
 }

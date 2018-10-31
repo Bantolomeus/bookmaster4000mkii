@@ -9,12 +9,32 @@
     style="width: 18rem; margin: 0.5em;"
   >
     <div
-      ng-style="{background: $ctrl.nameToHexColor(book)}"
+      ng-if="book.book.name"
+      ng-style="{background: $ctrl.nameToHexColor(book.book.name)}"
       style="position: relative"
       class="card-body"
     >
-      <h5 class="card-title">{{ book }}</h5>
-      <small>Add today's progress</small>
+      <h5 class="card-title">{{ book.book.name }}</h5>
+
+      <div style="display: flex">
+        <div>
+          <small
+            >{{ book.book.currentPage }} of {{ book.book.pagesTotal }} pages
+            read</small
+          >
+        </div>
+        <div
+          class="progress"
+          style="flex: 1 1 auto; align-self: center; margin-left: 0.5em; height: 0.5em"
+        >
+          <div
+            class="progress-bar"
+            style="background-color: #a8aaad; "
+            ng-style="{width: $ctrl.progressInPercent(book) + '%'}"
+          ></div>
+        </div>
+      </div>
+
       <div
         ng-if="$ctrl.inputsActiveOn === book"
         style="display: flex; justify-content: center; align-items: center;
@@ -28,17 +48,17 @@
         >
           <input
             ng-model="currentPage"
-            ng-keydown="$event.which === 13 && $ctrl.updateBookProgress(book, currentPage)"
+            ng-keydown="$event.which === 13 && $ctrl.updateBookProgress(book.book.name, currentPage)"
             type="number"
             class="form-control"
-            placeholder="You're on page"
+            placeholder="Current page .."
             id="book_{{$index}}"
-            aria-label="You're on page"
+            aria-label="Current page .."
             aria-describedby="button-addon2"
           />
           <div class="input-group-append">
             <button
-              ng-click="$ctrl.updateBookProgress(book, currentPage)"
+              ng-click="$ctrl.updateBookProgress(book.book.name, currentPage)"
               class="btn btn-outline-secondary"
               type="button"
               id="button-addon2"
