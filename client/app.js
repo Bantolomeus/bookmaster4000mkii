@@ -1,7 +1,7 @@
 import overallProgressComponent from './overall-progress.component';
 import todaysProgressComponent from './todays-progress.component';
 import navBarComponent from './nav-bar.component';
-import routes from './routes.js';
+import routesConfig from './routes.config';
 
 angular
   .module('bookmaster', [
@@ -11,4 +11,4 @@ angular
     todaysProgressComponent.default,
     navBarComponent.default
   ])
-  .config(routes.default);
+  .config(routesConfig.default);
