@@ -17,11 +17,11 @@ import kotlin.test.assertEquals
 @RunWith(SpringRunner::class)
 class ChallengeControllerIT {
 
-    private lateinit var fileName: String
+    private lateinit var challengeFile: String
 
     @Test
     fun updateChallenge() {
-        val challengeRepository = ChallengeRepository(fileName)
+        val challengeRepository = ChallengeRepository(challengeFile)
         val challengeService = ChallengeService(challengeRepository)
         val challengeController = ChallengeController(challengeService)
 
@@ -51,12 +51,12 @@ class ChallengeControllerIT {
         assertEquals(dtoAfterUpdate.pagesEverRead, updatedDTO.pagesEverRead)
         assertEquals(dtoAfterUpdate.pagesAheadOfPlan, updatedDTO.pagesAheadOfPlan)
 
-        File(fileName).deleteRecursively()
+        File(challengeFile).deleteRecursively()
     }
 
     @Test
     fun getChallenge() {
-        val challengeRepository = ChallengeRepository(fileName)
+        val challengeRepository = ChallengeRepository(challengeFile)
         val challengeService = ChallengeService(challengeRepository)
         val challengeController = ChallengeController(challengeService)
 
@@ -81,11 +81,11 @@ class ChallengeControllerIT {
 
     @Before
     fun createFile() {
-        fileName = "testChallenge.json"
+        challengeFile = "testChallenge.json"
     }
 
     @After
     fun removeFiles() {
-        File(fileName).deleteRecursively()
+        File(challengeFile).deleteRecursively()
     }
 }
