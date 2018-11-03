@@ -15,7 +15,7 @@ class BookController(private val bookService: BookService) {
         return bookService.createBook(book)
     }
 
-    @PutMapping(path = ["{bookName}"])
+    @PutMapping(consumes = ["application/json;charset=UTF-8"], path = ["{bookName}"])
     fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateInputDTO, @PathVariable("bookName") bookName: String):
             BookUpdatesFileDTO {
         return bookService.updateBook(bookUpdate, bookName)
