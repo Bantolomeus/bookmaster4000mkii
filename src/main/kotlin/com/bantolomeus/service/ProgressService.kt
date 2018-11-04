@@ -20,7 +20,8 @@ class ProgressService(private val progressRepository: ProgressRepository,
 
     fun calculateReadingState(): Long {
         val daysSinceStartNegated = -((Date().time - challengeRepository.getStartTime()) / DIVISOR_FOR_DAY)
-        return daysSinceStartNegated.times(challengeRepository.getChallenge().pagesPerDay)
-                                    .plus(progressRepository.getProgress().pagesSinceStart)
+        val pagesPerDay = challengeRepository.getChallenge().pagesPerDay
+        val pagesSinceStart = progressRepository.getProgress().pagesSinceStart
+        return daysSinceStartNegated.times(pagesPerDay).plus(pagesSinceStart)
     }
 }

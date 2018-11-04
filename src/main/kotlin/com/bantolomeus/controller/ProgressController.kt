@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/progress", produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
+@RequestMapping("/progress")
 class ProgressController(private val progressService: ProgressService) {
 
     @GetMapping()
