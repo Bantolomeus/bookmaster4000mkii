@@ -19,41 +19,29 @@ class ChallengeControllerIT {
 
     private lateinit var challengeFile: String
 
-//    @Test
-//    fun updateChallenge() {
-//        val challengeRepository = ChallengeRepository(challengeFile)
-//        val challengeService = ChallengeService(challengeRepository)
-//        val challengeController = ChallengeController(challengeService)
-//
-//        val dtoBeforeUpdate = ChallengeDTO(pagesPerDay = 15, pagesAheadOfPlan = 0,
-//                startPagesAheadOfPlan = 0, pagesSinceStart = 0, pagesEverRead = 0,
-//                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-//
-//        val dtoAfterUpdate = ChallengeDTO(pagesPerDay = 30, pagesAheadOfPlan = 3,
-//                startPagesAheadOfPlan = 524, pagesSinceStart = 442424, pagesEverRead = 4444222,
-//                dateStarted = dateFormat.format(GregorianCalendar(2011, 6, 30).time))
-//
-//        challengeRepository.saveOrUpdateChallengeData(dtoBeforeUpdate)
-//        val challengeAfterSave = challengeRepository.getChallenge()
-//        assertEquals(challengeAfterSave.pagesAheadOfPlan, dtoBeforeUpdate.pagesAheadOfPlan)
-//        assertEquals(challengeAfterSave.pagesEverRead, dtoBeforeUpdate.pagesEverRead)
-//        assertEquals(challengeAfterSave.pagesSinceStart, dtoBeforeUpdate.pagesSinceStart)
-//        assertEquals(challengeAfterSave.pagesPerDay, dtoBeforeUpdate.pagesPerDay)
-//        assertEquals(challengeAfterSave.startPagesAheadOfPlan, dtoBeforeUpdate.startPagesAheadOfPlan)
-//        assertEquals(challengeAfterSave.dateStarted, dtoBeforeUpdate.dateStarted)
-//
-//        val updatedDTO = challengeController.updateChallenge(dtoAfterUpdate)
-//
-//        assertEquals("30/07/2011", updatedDTO.dateStarted)
-//        assertEquals(dtoAfterUpdate.pagesPerDay, updatedDTO.pagesPerDay)
-//        assertEquals(dtoAfterUpdate.startPagesAheadOfPlan, updatedDTO.startPagesAheadOfPlan)
-//        assertEquals(dtoAfterUpdate.pagesSinceStart, updatedDTO.pagesSinceStart)
-//        assertEquals(dtoAfterUpdate.pagesEverRead, updatedDTO.pagesEverRead)
-//        assertEquals(dtoAfterUpdate.pagesAheadOfPlan, updatedDTO.pagesAheadOfPlan)
-//
-//        File(challengeFile).deleteRecursively()
-//    }
-//
+    @Test
+    fun updateChallenge() {
+        val challengeRepository = ChallengeRepository(challengeFile)
+        val challengeService = ChallengeService(challengeRepository)
+        val challengeController = ChallengeController(challengeService)
+
+        val dtoBeforeUpdate = ChallengeDTO(pagesPerDay = 15,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+
+        val dtoAfterUpdate = ChallengeDTO(pagesPerDay = 30,
+                dateStarted = dateFormat.format(GregorianCalendar(2011, 6, 30).time))
+
+        challengeRepository.saveOrUpdateChallengeData(dtoBeforeUpdate)
+        val challengeAfterSave = challengeRepository.getChallenge()
+        assertEquals(challengeAfterSave.pagesPerDay, dtoBeforeUpdate.pagesPerDay)
+        assertEquals(challengeAfterSave.dateStarted, dtoBeforeUpdate.dateStarted)
+
+        val updatedDTO = challengeController.updateChallenge(dtoAfterUpdate)
+
+        assertEquals("30/07/2011", updatedDTO.dateStarted)
+        assertEquals(dtoAfterUpdate.pagesPerDay, updatedDTO.pagesPerDay)
+    }
+
 //    @Test
 //    fun getChallenge() {
 //        val challengeRepository = ChallengeRepository(challengeFile)
