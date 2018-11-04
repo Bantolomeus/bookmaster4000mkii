@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 class ProgressController(private val progressService: ProgressService) {
 
     @GetMapping()
-    fun getChallengeData(): Long {
+    fun getReadingStatus(): Long {
         return progressService.calculateReadingState()
     }
 }
