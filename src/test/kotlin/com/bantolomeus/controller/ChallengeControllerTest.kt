@@ -17,9 +17,9 @@ class ChallengeControllerTest {
     @InjectMocks
     private lateinit var challengeController: ChallengeController
 
-    @Test
-    fun getChallengeData() {
-        challengeController.getChallengeData()
-        verify(challengeService).saveChallenge()
-    }
+//    @Test
+//    fun getChallengeData() {
+//        challengeController.getChallengeData()
+//        verify(challengeService).saveChallenge()
+//    }
 }
