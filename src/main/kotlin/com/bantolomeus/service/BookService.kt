@@ -59,12 +59,13 @@ class BookService(private val bookRepository: BookRepository,
             } else if (foundBookUpdate.date != "") {
                 val oldBookUpdates = bookUpdates.bookUpdates.filter {
                     it.date != foundBookUpdate.date || it.name != bookName
-                }
-                response = bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO((oldBookUpdates + BookUpdateOutputDTO(
+                }.toMutableList()
+                oldBookUpdates.add(0, BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
-                        date = currentDate)).asSequence().sortedByDescending { it.date }.toMutableList())
+                        date = currentDate)
                 )
+                response = bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO(oldBookUpdates))
                 progressService.saveProgress(pagesRead)
             }
         }
