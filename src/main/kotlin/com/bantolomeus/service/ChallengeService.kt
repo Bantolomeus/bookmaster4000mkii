@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 @Service
 class ChallengeService(private val challengeRepository: ChallengeRepository) {
 
-    fun getData(): ChallengeDTO {
+    fun getChallenge(): ChallengeDTO {
         return challengeRepository.getChallenge()
     }
 

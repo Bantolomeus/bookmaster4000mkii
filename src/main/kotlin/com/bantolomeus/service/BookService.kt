@@ -16,7 +16,7 @@ class BookService(private val bookRepository: BookRepository,
 
     fun createBook(bookDTO: BookDTO): BookDTO {
         val savedBookDTO = bookRepository.saveBookIfItNotExists(bookDTO)
-        if (savedBookDTO.currentPage != 0L) {
+        if (savedBookDTO.currentPage > 0L) {
             saveBookUpdate(savedBookDTO)
         }
         return bookDTO
