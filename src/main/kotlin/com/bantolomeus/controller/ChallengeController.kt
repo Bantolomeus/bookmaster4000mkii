@@ -13,11 +13,11 @@ class ChallengeController(private val challengeService: ChallengeService) {
 
     @GetMapping()
     fun getChallengeData(): ChallengeDTO {
-        return challengeService.saveOrUpdateChallenge()
+        return challengeService.saveChallenge()
     }
 
     @PostMapping()
     fun updateChallenge(@Valid @RequestBody challenge: ChallengeDTO): ChallengeDTO {
-        return challengeService.updateChallenge(challenge)
+        return challengeService.saveChallenge(challenge)
     }
 }
