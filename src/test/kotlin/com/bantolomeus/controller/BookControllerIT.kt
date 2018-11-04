@@ -105,40 +105,45 @@ class BookControllerIT {
         assertEquals(updateResponse.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
     }
 
-//    @Test
-//    fun updateBookAndBookUpdatesAreSortedByDateDESC() {
-//        val bookDTO = BookDTO(name = "Zap", author = "Jim Carry", pagesTotal = 314, currentPage = 41, dateStarted = today)
-//        val bookDTOAfterUpdate = BookDTO(name = "Zap", author = "Jim Carry", pagesTotal = 314, currentPage = 61, dateStarted = today)
-//        val bookUpdateDTO = BookUpdateInputDTO(61)
-//        val challengeDTO = ChallengeDTO(pagesPerDay = 15, pagesAheadOfPlan = 0,
-//                startPagesAheadOfPlan = 0, pagesSinceStart = 0, pagesEverRead = 1000,
-//                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-//        val bookUpdates = BookUpdatesFileDTO(mutableListOf(
-//                BookUpdateOutputDTO("Bugs Bunny", 152, today),
-//                BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
-//                BookUpdateOutputDTO("Ants", 4, "13/06/2018"),
-//                BookUpdateOutputDTO("House in the woods", 32, "04/10/2017"),
-//                BookUpdateOutputDTO("Zap", 41, "01/01/2001")))
-//
-//        val challengeInit = challengeRepository.saveOrUpdateChallengeData(challengeDTO)
-//        bookUpdateRepository.saveBookUpdate(bookUpdates)
-//        bookRepository.saveBookIfItNotExists(bookDTO)
-//        val bookResponse = bookController.updateBook(bookUpdateDTO, "Zap")
-//        val challengeUpdated = challengeRepository.getChallenge()
-//        val booksFile = bookRepository.getBooks()
-//
-//        assertNotEquals(challengeInit.pagesAheadOfPlan, challengeUpdated.pagesAheadOfPlan)
-//        assertEquals(challengeUpdated.pagesEverRead, (challengeInit.pagesEverRead + 20))
-//        assertEquals(booksFile.books[0], bookDTOAfterUpdate)
-//        assertEquals(bookResponse.bookUpdates[0].name, "Zap")
-//        assertEquals(bookResponse.bookUpdates[0].date, today)
-//        assertEquals(bookResponse.bookUpdates[0].pagesRead, 20)
-//        assertEquals(bookResponse.bookUpdates[1].name, bookUpdates.bookUpdates[0].name)
-//        assertEquals(bookResponse.bookUpdates[2].name, bookUpdates.bookUpdates[1].name)
-//        assertEquals(bookResponse.bookUpdates[3].name, bookUpdates.bookUpdates[2].name)
-//        assertEquals(bookResponse.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
-//        assertEquals(bookResponse.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
-//    }
+    @Test
+    fun updateBookAndBookUpdatesAreSortedByDateDESC() {
+        val bookDTO = BookDTO(name = "Zap", author = "Jim Carry", pagesTotal = 314, currentPage = 41, dateStarted = today)
+        val bookDTOAfterUpdate = BookDTO(name = "Zap", author = "Jim Carry", pagesTotal = 314, currentPage = 61, dateStarted = today)
+        val bookUpdateDTO = BookUpdateInputDTO(61)
+        val challengeDTO = ChallengeDTO(pagesPerDay = 15,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+        val progressDTO = ProgressFileDTO(pagesSinceStart = 0, pagesEverRead = 1000)
+        val bookUpdates = BookUpdatesFileDTO(mutableListOf(
+                BookUpdateOutputDTO("Bugs Bunny", 152, today),
+                BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
+                BookUpdateOutputDTO("Ants", 4, "13/06/2018"),
+                BookUpdateOutputDTO("House in the woods", 32, "04/10/2017"),
+                BookUpdateOutputDTO("Zap", 41, "01/01/2001")))
+
+        val progressFileBefore = progressRepository.saveProgress(progressDTO)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val readingStatusBefore = progressService.calculateReadingState()
+        bookUpdateRepository.saveBookUpdate(bookUpdates)
+        bookRepository.saveBookIfItNotExists(bookDTO)
+        val bookUpdateResponse = bookController.updateBook(bookUpdateDTO, "Zap")
+        val booksFile = bookRepository.getBooks()
+        val readingStatusAfter = progressService.calculateReadingState()
+        val progressFileAfter = progressRepository.getProgress()
+
+        assertNotEquals(readingStatusBefore, readingStatusAfter)
+        assertEquals(readingStatusAfter, (readingStatusBefore + bookUpdateResponse.bookUpdates[0].pagesRead))
+        assertEquals(progressFileAfter.pagesEverRead, (progressFileBefore.pagesEverRead + 20))
+        assertEquals(booksFile.books[0], bookDTOAfterUpdate)
+        assertEquals(bookUpdateResponse.bookUpdates[0].name, "Zap")
+        assertEquals(bookUpdateResponse.bookUpdates[0].date, today)
+        assertEquals(bookUpdateResponse.bookUpdates[0].pagesRead, 20)
+        assertEquals(bookUpdateResponse.bookUpdates[1].name, bookUpdates.bookUpdates[0].name)
+        assertEquals(bookUpdateResponse.bookUpdates[2].name, bookUpdates.bookUpdates[1].name)
+        assertEquals(bookUpdateResponse.bookUpdates[3].name, bookUpdates.bookUpdates[2].name)
+        assertEquals(bookUpdateResponse.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
+        assertEquals(bookUpdateResponse.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
+    }
 
     @Before
     fun setUpClasses() {
