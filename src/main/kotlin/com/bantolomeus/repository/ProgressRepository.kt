@@ -15,4 +15,12 @@ class ProgressRepository(private val progressFile: String = PROGRESS_FILE) {
         objectMapper.writeValue(File(progressFile), progress)
         return progress
     }
+
+    fun getProgress(): ProgressFileDTO {
+        return try {
+            objectMapper.readValue(File(progressFile), ProgressFileDTO::class.java)
+        } catch (e: Exception) {
+            ProgressFileDTO()
+        }
+    }
 }

@@ -14,6 +14,7 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
         return challengeRepository.getChallenge()
     }
 
+    // TODO: remove this method after pagesAheadOfPlan is moved elsewhere
     fun saveOrUpdateChallenge(pages: Long = 0): ChallengeDTO {
         val challenge = challengeRepository.getChallenge()
         val startTime = dateFormat.parse(challenge.dateStarted).time
@@ -23,11 +24,10 @@ class ChallengeService(private val challengeRepository: ChallengeRepository) {
                 .plus(challenge.startPagesAheadOfPlan)
                 .plus(pages)
                 .plus(challenge.pagesSinceStart)
-        challenge.pagesEverRead = challenge.pagesEverRead.plus(pages)
-        challenge.pagesSinceStart = challenge.pagesSinceStart.plus(pages)
         return challengeRepository.saveOrUpdateChallengeData(challengeDTO = challenge)
     }
 
+    // TODO: rename this to saveOrUpdateChallenge
     fun updateChallenge(challengeDTO: ChallengeDTO): ChallengeDTO {
         return challengeRepository.saveOrUpdateChallengeData(challengeDTO = challengeDTO)
     }
