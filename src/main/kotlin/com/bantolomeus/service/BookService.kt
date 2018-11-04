@@ -12,7 +12,6 @@ import java.util.*
 @Service
 class BookService(private val bookRepository: BookRepository,
                   private val bookUpdatesRepository: BookUpdatesRepository,
-                  private val challengeService: ChallengeService,
                   private val progressService: ProgressService) {
 
     fun createBook(bookDTO: BookDTO): BookDTO {
