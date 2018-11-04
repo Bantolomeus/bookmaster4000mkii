@@ -1,6 +1,7 @@
 package com.bantolomeus.controller
 
 import com.bantolomeus.service.ChallengeService
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,9 +18,9 @@ class ChallengeControllerTest {
     @InjectMocks
     private lateinit var challengeController: ChallengeController
 
-//    @Test
-//    fun getChallengeData() {
-//        challengeController.getChallengeData()
-//        verify(challengeService).saveChallenge()
-//    }
+    @Test
+    fun getChallengeData() {
+        challengeController.getChallengeData()
+        verify(challengeService).getChallenge()
+    }
 }
