@@ -28,7 +28,7 @@ class ChallengeServiceTest {
                 dateStarted = dateFormat.format(GregorianCalendar(2018, 1, 1).time))
 
         given(challengeRepository.getChallenge()).willReturn(challengeDTO)
-        val challengeData = challengeService.getData()
+        val challengeData = challengeService.getChallenge()
 
         assertEquals(challengeDTO, challengeData)
     }
