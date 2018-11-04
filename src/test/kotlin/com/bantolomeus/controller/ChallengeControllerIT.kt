@@ -1,6 +1,5 @@
 package com.bantolomeus.controller
 
-import com.bantolomeus.date.DIVISOR_FOR_DAY
 import com.bantolomeus.dto.ChallengeDTO
 import com.bantolomeus.repository.ChallengeRepository
 import com.bantolomeus.date.dateFormat
@@ -42,30 +41,22 @@ class ChallengeControllerIT {
         assertEquals(dtoAfterUpdate.pagesPerDay, updatedDTO.pagesPerDay)
     }
 
-//    @Test
-//    fun getChallenge() {
-//        val challengeRepository = ChallengeRepository(challengeFile)
-//        val challengeService = ChallengeService(challengeRepository)
-//        val challengeController = ChallengeController(challengeService)
-//
-//        val challengeDTO = ChallengeDTO(pagesPerDay = 15, pagesAheadOfPlan = 0,
-//                startPagesAheadOfPlan = 0, pagesSinceStart = 0, pagesEverRead = 0,
-//                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-//
-//        val today = Date().time
-//        val daysDifference = (today - dateFormat.parse(challengeDTO.dateStarted).time) / DIVISOR_FOR_DAY
-//
-//        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
-//
-//        val updatedDTO = challengeController.getChallengeData()
-//
-//        assertEquals("22/05/2018", updatedDTO.dateStarted)
-//        assertEquals(challengeDTO.pagesPerDay, updatedDTO.pagesPerDay)
-//        assertEquals(challengeDTO.startPagesAheadOfPlan, updatedDTO.startPagesAheadOfPlan)
-//        assertEquals(challengeDTO.pagesSinceStart, updatedDTO.pagesSinceStart)
-//        assertEquals(challengeDTO.pagesEverRead, updatedDTO.pagesEverRead)
-//        assertEquals(-challengeDTO.pagesPerDay.times(daysDifference), updatedDTO.pagesAheadOfPlan)
-//    }
+    @Test
+    fun getChallenge() {
+        val challengeRepository = ChallengeRepository(challengeFile)
+        val challengeService = ChallengeService(challengeRepository)
+        val challengeController = ChallengeController(challengeService)
+
+        val challengeDTO = ChallengeDTO(pagesPerDay = 15,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val savedChallenge = challengeController.getChallengeData()
+
+        assertEquals("22/05/2018", savedChallenge.dateStarted)
+        assertEquals(challengeDTO.pagesPerDay, savedChallenge.pagesPerDay)
+    }
 
     @Before
     fun createFile() {
