@@ -25,6 +25,9 @@ class BookServiceTest {
     @Mock
     lateinit var challengeService: ChallengeService
 
+    @Mock
+    lateinit var progressService: ProgressService
+
     @InjectMocks
     private lateinit var booksService: BookService
 
