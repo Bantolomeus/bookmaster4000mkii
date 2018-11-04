@@ -1,7 +1,6 @@
 package com.bantolomeus.controller
 
 import com.bantolomeus.service.ChallengeService
-import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
 import org.junit.runner.RunWith
