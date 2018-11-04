@@ -1,5 +1,6 @@
 package com.bantolomeus.repository
 
+import com.bantolomeus.date.dateFormat
 import com.bantolomeus.dto.ChallengeDTO
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Repository
@@ -21,6 +22,14 @@ class ChallengeRepository(private val fileName: String = CHALLENGE_FILE) {
             objectMapper.readValue(File(fileName), ChallengeDTO::class.java)
         } catch (e: Exception) {
             ChallengeDTO()
+        }
+    }
+
+    fun getStartTime(): Long {
+        return try {
+            dateFormat.parse(objectMapper.readValue(File(fileName), ChallengeDTO::class.java).dateStarted).time
+        } catch (e: Exception) {
+            0
         }
     }
 }

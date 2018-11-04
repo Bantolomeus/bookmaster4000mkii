@@ -12,7 +12,8 @@ import java.util.*
 @Service
 class BookService(private val bookRepository: BookRepository,
                   private val bookUpdatesRepository: BookUpdatesRepository,
-                  private val challengeService: ChallengeService) {
+                  private val challengeService: ChallengeService,
+                  private val progressService: ProgressService) {
 
     fun createBook(bookDTO: BookDTO): BookDTO {
         val savedBookDTO = bookRepository.saveBookIfItNotExists(bookDTO)
@@ -55,7 +56,7 @@ class BookService(private val bookRepository: BookRepository,
                         date = currentDate)
                 )
                 response = bookUpdatesRepository.saveBookUpdate(bookUpdates)
-                challengeService.saveOrUpdateChallenge(pagesRead)
+                progressService.saveProgress(pagesRead)
             } else if (foundBookUpdate.date != "") {
                 val oldBookUpdates = bookUpdates.bookUpdates.filter {
                     it.date != foundBookUpdate.date || it.name != bookName
@@ -65,7 +66,7 @@ class BookService(private val bookRepository: BookRepository,
                         pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
                         date = currentDate)).asSequence().sortedByDescending { it.date }.toMutableList())
                 )
-                challengeService.saveOrUpdateChallenge(pagesRead)
+                progressService.saveProgress(pagesRead)
             }
         }
         return response
@@ -99,7 +100,7 @@ class BookService(private val bookRepository: BookRepository,
             val bookUpdates = bookUpdatesRepository.getBookUpdates()
             bookUpdates.bookUpdates.add(0, bookDTO.toBookUpdateDTO())
             bookUpdatesRepository.saveBookUpdate(bookUpdates)
-            challengeService.saveOrUpdateChallenge(bookDTO.currentPage)
+            progressService.saveProgress(bookDTO.currentPage)
         }
     }
 
