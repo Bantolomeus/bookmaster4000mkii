@@ -1,4 +1,5 @@
 import progressInputComponent from './progress-input.component';
+import './todays-progress.component.less';
 
 module.exports.default = angular
   .module('todaysProgress', [progressInputComponent.default])

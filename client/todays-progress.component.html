@@ -1,18 +1,14 @@
-<!-- todo less-ify -->
-
 <div style="display: flex; padding: 1.5em;">
   <div
     ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks track by $index"
     ng-mouseover="$ctrl.toggleInputActiveFor(book, true)"
     ng-mouseleave="$ctrl.toggleInputActiveFor(book, false)"
-    class="card"
-    style="width: 18rem; margin: 0.5em;"
+    class="card card--progress"
   >
     <div
       ng-if="book.book.name"
       ng-style="{background: $ctrl.nameToHexColor(book.book.name)}"
-      style="position: relative"
-      class="card-body"
+      class="card-body card-body--container"
     >
       <h5 class="card-title">{{ book.book.name }}</h5>
 
@@ -23,13 +19,9 @@
             read</small
           >
         </div>
-        <div
-          class="progress"
-          style="flex: 1 1 auto; align-self: center; margin-left: 0.5em; height: 0.5em"
-        >
+        <div class="progress progress-bar--container">
           <div
-            class="progress-bar"
-            style="background-color: #a8aaad; "
+            class="progress-bar color--side-information"
             ng-style="{width: $ctrl.progressInPercent(book) + '%'}"
           ></div>
         </div>
@@ -37,8 +29,7 @@
 
       <div
         ng-if="$ctrl.inputsActiveOn === book"
-        style="display: flex; justify-content: center; align-items: center;
-           position: absolute; top: 0; left: 0; background: rgba(255,255,255,0.80); width: 100%; height: 100%"
+        class="overlay--container--content-centered color--overlay overlay--container--fill-whole-parent"
       >
         <progress-input
           ng-if="!$ctrl.progressUpdating && !$ctrl.showRequestConfirmation"
@@ -50,7 +41,7 @@
 
         <div ng-if="$ctrl.showRequestConfirmation">
           <strong>Current page successfully updated.</strong> <br />
-          <a ui-sref="overall" style="text-decoration: underline; color: black;"
+          <a ui-sref="overall" class="href--semi-styled"
             >See Overall progress</a
           >
         </div>
