@@ -5,6 +5,4 @@ module.exports.default = angular.module('navBar', []).component('navBar', {
 }).name;
 
 NavBar.$inject = [];
-function NavBar() {
-  console.log('navbar');
-}
+function NavBar() {}

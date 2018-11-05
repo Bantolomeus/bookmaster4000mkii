@@ -1,13 +1,15 @@
+import progressInputComponent from './progress-input.component';
+
 module.exports.default = angular
-  .module('todaysProgress', [])
+  .module('todaysProgress', [progressInputComponent.default])
   .component('todaysProgress', {
     bindings: {},
     controller: TodaysProgress,
     template: require('./todays-progress.component.html')
   }).name;
 
-TodaysProgress.$inject = ['$resource', '$timeout', '$window'];
-function TodaysProgress($resource, $timeout, $window) {
+TodaysProgress.$inject = ['$resource', '$timeout'];
+function TodaysProgress($resource, $timeout) {
   let ctrl = this;
   let Books = $resource('/books/:bookName', null, {
     addBookProgress: {method: 'PUT', isArray: false}
@@ -20,28 +22,17 @@ function TodaysProgress($resource, $timeout, $window) {
 
   function queryBooks() {
     Books.query().$promise.then(books => {
-      ctrl.books = books
-        .map(book => {
-          return Books.get({bookName: book});
-        });
+      ctrl.books = books.map(book => {
+        return Books.get({bookName: book});
+      });
     });
   }
 
-  ctrl.toggleInputActiveFor = (book, shouldBeActive, elementId) => {
+  ctrl.toggleInputActiveFor = (book, shouldBeActive) => {
     if (shouldBeActive) {
       ctrl.inputsActiveOn = book;
     } else {
       ctrl.inputsActiveOn = null;
-    }
-
-    if (elementId) {
-      $timeout(function() {
-        // timeout for Angular scope.apply trigger
-        let element = $window.document.getElementById(elementId);
-        if (element) {
-          element.focus();
-        }
-      });
     }
   };
 
@@ -59,16 +50,20 @@ function TodaysProgress($resource, $timeout, $window) {
     return `${color}${transparency10Percent}`;
   };
 
-  ctrl.updateBookProgress = (book, currentPage) => {
+  ctrl.updateBookProgress = (bookName, currentPage) => {
     if (!angular.isDefined(currentPage)) return;
 
     ctrl.progressUpdating = true;
-    Books.addBookProgress({bookName: book}, {currentPage: currentPage}, () => {
-      ctrl.progressUpdating = false;
-      ctrl.showRequestConfirmation = true;
-      $timeout(() => (ctrl.showRequestConfirmation = false), 8000);
-      queryBooks();
-    });
+    Books.addBookProgress(
+      {bookName: bookName},
+      {currentPage: currentPage},
+      () => {
+        ctrl.progressUpdating = false;
+        ctrl.showRequestConfirmation = true;
+        $timeout(() => (ctrl.showRequestConfirmation = false), 8000);
+        queryBooks();
+      }
+    );
   };
 
   ctrl.progressInPercent = book => {
