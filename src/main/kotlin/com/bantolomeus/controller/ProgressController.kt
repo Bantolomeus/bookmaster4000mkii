@@ -1,8 +1,7 @@
 package com.bantolomeus.controller
 
 import com.bantolomeus.service.ProgressService
-import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/progress")
 class ProgressController(private val progressService: ProgressService) {
 
-    @GetMapping()
+    @PostMapping(path = ["/calculate"])
     fun getReadingStatus(): Long {
         return progressService.calculateReadingState()
     }
