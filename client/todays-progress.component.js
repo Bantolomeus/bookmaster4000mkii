@@ -19,6 +19,7 @@ function TodaysProgress($resource, $timeout) {
   ctrl.$onInit = () => {
     queryBooks();
     ctrl.progressUpdating = false;
+    ctrl.bookWithRequestConfirmation = null;
   };
 
   function queryBooks() {
@@ -60,8 +61,8 @@ function TodaysProgress($resource, $timeout) {
       {currentPage: currentPage},
       () => {
         ctrl.progressUpdating = false;
-        ctrl.showRequestConfirmation = true;
-        $timeout(() => (ctrl.showRequestConfirmation = false), 8000);
+        ctrl.bookWithRequestConfirmation = bookName;
+        $timeout(() => (ctrl.bookWithRequestConfirmation = null), 8000);
         queryBooks();
       }
     );

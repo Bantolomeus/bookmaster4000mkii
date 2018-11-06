@@ -32,14 +32,14 @@
         class="overlay--container--content-centered color--overlay overlay--container--fill-whole-parent"
       >
         <progress-input
-          ng-if="!$ctrl.progressUpdating && !$ctrl.showRequestConfirmation"
+          ng-if="!$ctrl.progressUpdating && $ctrl.bookWithRequestConfirmation === null"
           book="book.book"
           on-progress-input="$ctrl.updateBookProgress(bookName, currentPage)"
         ></progress-input>
 
         <div ng-if="$ctrl.progressUpdating">updating ..</div>
 
-        <div ng-if="$ctrl.showRequestConfirmation">
+        <div ng-if="$ctrl.bookWithRequestConfirmation === book.book.name">
           <strong>Current page successfully updated.</strong> <br />
           <a ui-sref="overall" class="href--semi-styled"
             >See Overall progress</a
