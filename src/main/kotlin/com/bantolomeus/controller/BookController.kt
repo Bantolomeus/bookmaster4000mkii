@@ -11,11 +11,11 @@ import javax.validation.Valid
 class BookController(private val bookService: BookService) {
 
     @PostMapping
-    fun createBook(@Valid @RequestBody book: BookDTO) {
-        bookService.createBook(book)
+    fun createBook(@Valid @RequestBody book: BookDTO): BookDTO {
+        return bookService.createBook(book)
     }
 
-    @PutMapping(path = ["{bookName}"])
+    @PutMapping(consumes = ["application/json;charset=UTF-8"], path = ["{bookName}"])
     fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateInputDTO, @PathVariable("bookName") bookName: String):
             BookUpdatesFileDTO {
         return bookService.updateBook(bookUpdate, bookName)
@@ -29,6 +29,11 @@ class BookController(private val bookService: BookService) {
     @GetMapping()
     fun getAllBookNames(): List<String> {
         return bookService.getAllBookNames()
+    }
+
+    @GetMapping(path = ["{bookName}/pagesLeft"])
+    fun pagesLeft(@PathVariable("bookName") bookName: String): Long {
+        return bookService.pagesLeft(bookName)
     }
 
     @GetMapping(path = ["/sortBookUpdates"])
