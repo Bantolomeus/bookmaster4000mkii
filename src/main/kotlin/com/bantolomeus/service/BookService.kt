@@ -9,6 +9,7 @@ import com.bantolomeus.translator.toBookUpdateDTO
 import org.springframework.stereotype.Service
 import java.util.*
 
+@Suppress("ConvertCallChainIntoSequence")
 @Service
 class BookService(private val bookRepository: BookRepository,
                   private val bookUpdatesRepository: BookUpdatesRepository,
@@ -75,10 +76,8 @@ class BookService(private val bookRepository: BookRepository,
     fun getBookWithUpdates(bookName: String): BookGetDTO {
         val book = bookRepository.getBookByName(bookName)
         val bookUpdates = bookUpdatesRepository.getBookUpdates().bookUpdates
-                .asSequence()
                 .filter { it.name == bookName }
                 .map { ProgressUpdateDTO(it.date, it.pagesRead)}
-                .toList()
         return BookGetDTO(book, bookUpdates)
     }
 
@@ -88,7 +87,7 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     fun getAllBookNames(): List<String> {
-        return bookRepository.getBooks().books.asSequence().map { it.name }.sorted().toList()
+        return bookRepository.getBooks().books.map { it.name }.sorted()
     }
 
     fun sortBookUpdates(): BookUpdatesFileDTO {
