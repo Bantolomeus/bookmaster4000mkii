@@ -3,14 +3,14 @@
   <div
     class="card-body"
     ng-style="{
-          'background-color': $ctrl.progress.pagesAheadOfPlan < 0 ?
-            $ctrl.deeperRedForMoreNegative($ctrl.progress.pagesAheadOfPlan) :
+          'background-color': $ctrl.progress.value < 0 ?
+            $ctrl.deeperRedForMoreNegative($ctrl.progress.value) :
             'rgb(223, 240, 216)'}"
   >
-    <h5 class="card-title">{{ $ctrl.progress.pagesAheadOfPlan }}</h5>
+    <h5 class="card-title">{{ $ctrl.progress.value }}</h5>
     <p class="card-text">Pages Ahead of Plan</p>
   </div>
   <div class="card-footer text-muted">
-    You should read {{ $ctrl.progress.pagesPerDay }} Pages per Day
+    You should read {{ $ctrl.challenge.pagesPerDay }} Pages per Day
   </div>
 </div>
