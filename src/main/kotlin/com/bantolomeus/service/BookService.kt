@@ -57,7 +57,7 @@ class BookService(private val bookRepository: BookRepository,
                 )
                 response = bookUpdatesRepository.saveBookUpdate(bookUpdates)
                 progressService.saveProgress(pagesRead)
-            } else if (foundBookUpdate.date != "") {
+            } else if (foundBookUpdate.date.isNotEmpty()) {
                 val oldBookUpdates = bookUpdates.bookUpdates.filter {
                     it.date != foundBookUpdate.date || it.name != bookName
                 }.toMutableList()
