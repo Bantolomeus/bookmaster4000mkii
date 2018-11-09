@@ -6,7 +6,6 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "pagesPerDay": 15,
-    "pagesAheadOfPlan": 0,
     "startPagesAheadOfPlan": 0,
     "pagesSinceStart": 0,
     "pagesEverRead": 0,
