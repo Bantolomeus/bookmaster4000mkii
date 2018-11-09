@@ -26,7 +26,7 @@ class BookService(private val bookRepository: BookRepository,
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
         var response = BookUpdatesFileDTO()
         var books = bookRepository.getBooks().books.filter { it.name != bookName }
-        var oldPage = 5000L
+        var oldPage = Long.MAX_VALUE
         val foundBook = bookRepository.getBookByName(bookName)
 
         if (foundBook.name == bookName) {
