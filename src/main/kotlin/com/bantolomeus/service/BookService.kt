@@ -81,11 +81,6 @@ class BookService(private val bookRepository: BookRepository,
         return BookGetDTO(book, bookUpdates)
     }
 
-    fun pagesLeft(bookName: String): Long {
-        val book = bookRepository.getBookByName(bookName)
-        return book.pagesTotal.minus(book.currentPage)
-    }
-
     fun getAllBookNames(): List<String> {
         return bookRepository.getBooks().books.map { it.name }.sorted()
     }
