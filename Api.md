@@ -6,7 +6,6 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "pagesPerDay": 15,
-    "pagesEverRead": 0,
     "dateStarted": "21/05/2018"
 }'
 ```
