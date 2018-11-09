@@ -17,7 +17,7 @@
 
 `$ npm install` to get all UI dependencies
 
-`$ npm start` to have webpack bundle everything. It will provide a live reload web server. `localhost:3000/` to open the UI (it expects a backend though).
+`$ npm start` to have webpack bundle everything. It will provide a live reload web server. `localhost:4002/` to open the UI (it expects a backend though).
 
 **Dependencies**
 
