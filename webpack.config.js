@@ -7,20 +7,11 @@ module.exports = {
     // Where should the compiled file go?
     output: {
         path: path.join(__dirname + '/src/main/resources/public'),
-        publicPath: '/'
+        publicPath: '/',
+        filename: 'bundle.js'
     },
     module: {
         rules: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            use: {
-                loader: 'babel-loader',
-                options: {
-                    presets: ['env'],
-                    cacheDirectory: true // see docs how to specify which directory for transpiled src
-                }
-            }
-        }, {
             test: /\.html$/,
             loader: 'html-loader'
         }, { // will enable bootstrap.css to be bundled
@@ -39,7 +30,7 @@ module.exports = {
             }, {
                 loader: 'less-loader' // compiles Less to CSS
             }]
-        }, { // required for graphics/fonts in css frameworks
+        }, {
             test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
             use: [{
                 loader: 'url-loader',
@@ -48,7 +39,7 @@ module.exports = {
                     mimetype: 'application/font-woff'
                 }
             }]
-        }, { // required for graphics/fonts in css frameworks
+        }, {
             test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
             use: [{
                 loader: 'url-loader',
@@ -57,12 +48,12 @@ module.exports = {
                     mimetype: 'application/octet-stream'
                 }
             }]
-        }, { // required for graphics/fonts in css frameworks
+        }, {
             test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
             use: [{
                 loader: 'file-loader'
             }]
-        }, { // required for graphics/fonts in css frameworks
+        }, {
             test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
             use: [{
                 loader: 'url-loader',
@@ -71,11 +62,21 @@ module.exports = {
                     mimetype: 'image/svg+xml'
                 }
             }]
+        }, {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                    presets: ['babel-preset-es2015'],
+                    cacheDirectory: true // see docs how to specify which directory for transpiled src
+                }
+            }
         }]
     },
     devtool: 'source-map',
     devServer: {
-        port: 4002,
+        port: 3000,
         proxy: {
             '/': 'http://localhost:8080'
         }

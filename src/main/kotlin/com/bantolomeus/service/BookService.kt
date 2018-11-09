@@ -9,7 +9,6 @@ import com.bantolomeus.translator.toBookUpdateDTO
 import org.springframework.stereotype.Service
 import java.util.*
 
-@Suppress("ConvertCallChainIntoSequence")
 @Service
 class BookService(private val bookRepository: BookRepository,
                   private val bookUpdatesRepository: BookUpdatesRepository,
@@ -26,7 +25,7 @@ class BookService(private val bookRepository: BookRepository,
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
         var response = BookUpdatesFileDTO()
         var books = bookRepository.getBooks().books.filter { it.name != bookName }
-        var oldPage = Long.MAX_VALUE
+        var oldPage = 5000L
         val foundBook = bookRepository.getBookByName(bookName)
 
         if (foundBook.name == bookName) {
@@ -49,7 +48,7 @@ class BookService(private val bookRepository: BookRepository,
                     .getOrElse(0) { _ -> BookUpdateOutputDTO()}
 
             val pagesRead = bookUpdate.currentPage.minus(oldPage)
-            if (pagesRead > 0 && foundBookUpdate.date.isEmpty()) {
+            if (pagesRead > 0 && foundBookUpdate.date == "") {
                 bookUpdates.bookUpdates.add(0, BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = pagesRead,
@@ -57,7 +56,7 @@ class BookService(private val bookRepository: BookRepository,
                 )
                 response = bookUpdatesRepository.saveBookUpdate(bookUpdates)
                 progressService.saveProgress(pagesRead)
-            } else if (foundBookUpdate.date.isNotEmpty()) {
+            } else if (foundBookUpdate.date != "") {
                 val oldBookUpdates = bookUpdates.bookUpdates.filter {
                     it.date != foundBookUpdate.date || it.name != bookName
                 }.toMutableList()
@@ -76,13 +75,20 @@ class BookService(private val bookRepository: BookRepository,
     fun getBookWithUpdates(bookName: String): BookGetDTO {
         val book = bookRepository.getBookByName(bookName)
         val bookUpdates = bookUpdatesRepository.getBookUpdates().bookUpdates
+                .asSequence()
                 .filter { it.name == bookName }
                 .map { ProgressUpdateDTO(it.date, it.pagesRead)}
+                .toList()
         return BookGetDTO(book, bookUpdates)
     }
 
+    fun pagesLeft(bookName: String): Long {
+        val book = bookRepository.getBookByName(bookName)
+        return book.pagesTotal.minus(book.currentPage)
+    }
+
     fun getAllBookNames(): List<String> {
-        return bookRepository.getBooks().books.map { it.name }.sorted()
+        return bookRepository.getBooks().books.asSequence().map { it.name }.sorted().toList()
     }
 
     fun sortBookUpdates(): BookUpdatesFileDTO {

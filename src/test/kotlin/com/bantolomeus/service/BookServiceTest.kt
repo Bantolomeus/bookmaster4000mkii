@@ -135,6 +135,16 @@ class BookServiceTest {
         assertEquals(bookDTOUpdated, booksFileDTOCaptor.firstValue.books[0])
     }
 
+    @Test
+    fun pagesLeft() {
+        val bookDTO = BookDTO(name = "The stormy sea", pagesTotal = 890, currentPage = 100)
+
+        given(bookRepository.getBookByName(any())).willReturn(bookDTO)
+        val response = booksService.pagesLeft(bookDTO.name)
+
+        assertEquals(790, response)
+    }
+
     private fun compareBookDTOWithBookGetDTO(expected: BookDTO, actual: BookGetDTO) {
         assertEquals(expected.name, actual.book.name)
         assertEquals(expected.readTime, actual.book.readTime)
