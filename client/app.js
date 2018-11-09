@@ -1,14 +1,14 @@
-import overallProgressComponent from './overall-progress.component';
-import todaysProgressComponent from './todays-progress.component';
-import navBarComponent from './nav-bar.component';
-import routesConfig from './routes.config';
+angular.module('bookmaster', ['ngResource']).controller('home', HomeController);
 
-angular
-  .module('bookmaster', [
-    'ngResource',
-    'ui.router',
-    overallProgressComponent.default,
-    todaysProgressComponent.default,
-    navBarComponent.default
-  ])
-  .config(routesConfig.default);
+HomeController.$inject = ['$scope', '$resource'];
+function HomeController($scope, $resource) {
+    activate();
+    function activate() {
+        $scope.progress = $resource('/challenge').get(); // naming is supposed to match (issue #66)
+    }
+
+    $scope.deeperRedForMoreNegative = function(base) {
+        let greenBlue = 205 / ((base * -1) / 10);
+        return `rgb(255, ${greenBlue}, ${greenBlue})`;
+    };
+}
