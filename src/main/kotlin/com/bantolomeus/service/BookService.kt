@@ -49,7 +49,7 @@ class BookService(private val bookRepository: BookRepository,
                     .getOrElse(0) { _ -> BookUpdateOutputDTO()}
 
             val pagesRead = bookUpdate.currentPage.minus(oldPage)
-            if (pagesRead > 0 && foundBookUpdate.date == "") {
+            if (pagesRead > 0 && foundBookUpdate.date.isEmpty()) {
                 bookUpdates.bookUpdates.add(0, BookUpdateOutputDTO(
                         name = bookName,
                         pagesRead = pagesRead,
