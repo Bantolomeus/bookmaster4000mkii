@@ -31,11 +31,6 @@ class BookController(private val bookService: BookService) {
         return bookService.getAllBookNames()
     }
 
-    @GetMapping(path = ["{bookName}/pagesLeft"])
-    fun pagesLeft(@PathVariable("bookName") bookName: String): Long {
-        return bookService.pagesLeft(bookName)
-    }
-
     @GetMapping(path = ["/sortBookUpdates"])
     fun sortBookUpdates(): BookUpdatesFileDTO {
         return bookService.sortBookUpdates()

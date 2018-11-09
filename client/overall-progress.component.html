@@ -1,0 +1,16 @@
+<div class="card text-center overall-progress-container">
+  <div class="card-header">Your reading progress compared to the challenge</div>
+  <div
+    class="card-body"
+    ng-style="{
+          'background-color': $ctrl.progress.value < 0 ?
+            $ctrl.deeperRedForMoreNegative($ctrl.progress.value) :
+            'rgb(223, 240, 216)'}"
+  >
+    <h5 class="card-title">{{ $ctrl.progress.value }}</h5>
+    <p class="card-text">Pages Ahead of Plan</p>
+  </div>
+  <div class="card-footer text-muted">
+    You should read {{ $ctrl.challenge.pagesPerDay }} Pages per Day
+  </div>
+</div>

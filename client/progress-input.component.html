@@ -1,0 +1,23 @@
+<div class="input-group" style="width: 100%">
+  <input
+    ng-model="currentPage"
+    ng-keydown="$event.which === 13 && $ctrl.onProgressInput({bookName: $ctrl.book.name, currentPage: currentPage})"
+    type="number"
+    min="1"
+    class="form-control"
+    placeholder="Current page .."
+    id="progress-input"
+    aria-label="Current page .."
+    aria-describedby="button-addon2"
+  />
+  <div class="input-group-append">
+    <button
+      ng-click="$ctrl.onProgressInput({bookName: $ctrl.book.name, currentPage: currentPage})"
+      class="btn btn-outline-secondary"
+      type="button"
+      id="button-addon2"
+    >
+      Submit
+    </button>
+  </div>
+</div>

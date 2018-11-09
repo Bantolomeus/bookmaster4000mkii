@@ -1,4 +1,4 @@
-# Bookmaster 4000mk II _(bookmaster4000mkii)_
+# Bookmaster 4000 MARK II _(bookmaster4000mkii)_
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 ![](https://user-images.githubusercontent.com/1265382/40448070-b9726dbc-5ed4-11e8-8fcf-fe2139fac929.png)
@@ -17,7 +17,7 @@
 
 `$ npm install` to get all UI dependencies
 
-`$ npm start` to have webpack bundle everything. It will provide a live reload web server. `localhost:3000/` to open the UI (it expects a backend though).
+`$ npm start` to have webpack bundle everything. It will provide a live reload web server. `localhost:4002/` to open the UI (it expects a backend though).
 
 **Dependencies**
 
