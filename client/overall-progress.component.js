@@ -11,9 +11,9 @@ module.exports.default = angular
 OverallProgress.$inject = ['$resource'];
 function OverallProgress($resource) {
   let ctrl = this;
-  let Progress = $resource('progress', null, {
-    get: {
-      method: 'GET',
+  let Progress = $resource('progress/calculate', null, {
+    calculate: {
+      method: 'POST',
       isArray: false,
       transformResponse: progress => {
         return {value: progress};
@@ -24,7 +24,7 @@ function OverallProgress($resource) {
 
   ctrl.$onInit = () => {
     ctrl.resource = null;
-    ctrl.progress = Progress.get();
+    ctrl.progress = Progress.calculate();
     ctrl.challenge = Challenge.get();
   };
 
