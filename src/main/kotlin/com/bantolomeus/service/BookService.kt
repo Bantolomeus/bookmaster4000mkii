@@ -9,7 +9,6 @@ import com.bantolomeus.translator.toBookUpdateDTO
 import org.springframework.stereotype.Service
 import java.util.*
 
-@Suppress("ConvertCallChainIntoSequence")
 @Service
 class BookService(private val bookRepository: BookRepository,
                   private val bookUpdatesRepository: BookUpdatesRepository,
@@ -97,5 +96,4 @@ class BookService(private val bookRepository: BookRepository,
             progressService.saveProgress(bookDTO.currentPage)
         }
     }
-
 }
