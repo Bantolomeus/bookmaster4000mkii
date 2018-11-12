@@ -40,10 +40,7 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
     fun getBookByName(bookName: String): BookDTO {
         return try {
             objectMapper.readValue(File(bookFile), BooksFileDTO::class.java)
-                    .books
-                    .asSequence()
-                    .filter { it.name == bookName }
-                    .first()
+                    .books.first { it.name == bookName }
         } catch (e: Exception) {
             BookDTO()
         }
