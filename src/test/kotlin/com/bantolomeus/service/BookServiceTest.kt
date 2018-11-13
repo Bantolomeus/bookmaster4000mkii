@@ -45,7 +45,7 @@ class BookServiceTest {
         val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
 
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
-        val allBooks = booksService.getAllBookNames()
+        val allBooks = booksService.getAllBooks()
 
         assertEquals(expectedList, allBooks)
     }
@@ -56,7 +56,7 @@ class BookServiceTest {
         val booksFileDTO = BooksFileDTO(mutableListOf())
 
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
-        val allBooks = booksService.getAllBookNames()
+        val allBooks = booksService.getAllBooks()
 
         assertEquals(expectedList, allBooks)
     }
