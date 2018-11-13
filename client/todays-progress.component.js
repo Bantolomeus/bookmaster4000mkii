@@ -23,11 +23,7 @@ function TodaysProgress($resource, $timeout) {
   };
 
   function queryBooks() {
-    Books.query().$promise.then(books => {
-      ctrl.books = books.map(book => {
-        return Books.get({bookName: book});
-      });
-    });
+    ctrl.books = Books.query();
   }
 
   ctrl.toggleInputActiveFor = (book, shouldBeActive) => {
