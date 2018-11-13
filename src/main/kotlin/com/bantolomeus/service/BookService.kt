@@ -22,6 +22,8 @@ class BookService(private val bookRepository: BookRepository,
         return bookDTO
     }
 
+    // TODO: incorporate date of book update
+    // TODO: write test
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
         var response = BookUpdatesFileDTO()
         var books = bookRepository.getBooks().books.filter { it.name != bookName }

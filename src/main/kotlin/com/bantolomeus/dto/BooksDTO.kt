@@ -14,7 +14,8 @@ data class BooksFileDTO(
 )
 
 data class BookUpdateInputDTO(
-        val currentPage: Long = 0
+        val currentPage: Long = 0,
+        val date: String = ""
 )
 
 data class BookUpdateOutputDTO(
