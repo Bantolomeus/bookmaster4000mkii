@@ -41,24 +41,22 @@ class BookServiceTest {
     fun getAllBooks() {
         val bookDTO1 = BookDTO(name = "testName", author = "testAuthor", pagesTotal = 521)
         val bookDTO2 = BookDTO(name = "testName2", author = "testAuthor", pagesTotal = 51)
-        val expectedList = listOf("testName", "testName2")
-        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
+        val expectedBooks = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
 
-        given(bookRepository.getBooks()).willReturn(booksFileDTO)
+        given(bookRepository.getBooks()).willReturn(expectedBooks)
         val allBooks = booksService.getAllBooks()
 
-        assertEquals(expectedList, allBooks)
+        assertEquals(expectedBooks, allBooks)
     }
 
     @Test
     fun getAllBooksWithoutBooks() {
-        val expectedList = listOf<String>()
-        val booksFileDTO = BooksFileDTO(mutableListOf())
+        val expectedBooks = BooksFileDTO(mutableListOf())
 
-        given(bookRepository.getBooks()).willReturn(booksFileDTO)
+        given(bookRepository.getBooks()).willReturn(expectedBooks)
         val allBooks = booksService.getAllBooks()
 
-        assertEquals(expectedList, allBooks)
+        assertEquals(expectedBooks, allBooks)
     }
 
     @Test
