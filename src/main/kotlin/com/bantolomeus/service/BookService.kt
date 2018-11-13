@@ -80,8 +80,8 @@ class BookService(private val bookRepository: BookRepository,
         return BookGetDTO(book, bookUpdates)
     }
 
-    fun getAllBookNames(): List<String> {
-        return bookRepository.getBooks().books.map { it.name }.sorted()
+    fun getAllBooks(): BooksFileDTO {
+        return bookRepository.getBooks()
     }
 
     fun sortBookUpdates(): BookUpdatesFileDTO {

@@ -86,7 +86,7 @@ class BookControllerTest {
 
     @Test
     fun getAllBookNames() {
-        bookController.getAllBookNames()
-        verify(bookService).getAllBookNames()
+        bookController.getAllBooks()
+        verify(bookService).getAllBooks()
     }
 }
