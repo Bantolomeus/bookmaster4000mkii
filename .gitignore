@@ -57,3 +57,4 @@ books.json
 bookUpdates.json
 challenge.json
 progress.json
+.DS_Store
