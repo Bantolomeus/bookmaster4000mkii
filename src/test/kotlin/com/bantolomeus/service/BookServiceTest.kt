@@ -41,7 +41,7 @@ class BookServiceTest {
     fun getAllBooks() {
         val bookDTO1 = BookDTO(name = "testName", author = "testAuthor", pagesTotal = 521)
         val bookDTO2 = BookDTO(name = "testName2", author = "testAuthor", pagesTotal = 51)
-        val expectedBooks = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
+        val expectedBooks = mutableListOf(bookDTO1, bookDTO2)
 
         given(bookRepository.getBooks()).willReturn(expectedBooks)
         val allBooks = booksService.getAllBooks()
@@ -51,7 +51,7 @@ class BookServiceTest {
 
     @Test
     fun getAllBooksWithoutBooks() {
-        val expectedBooks = BooksFileDTO(mutableListOf())
+        val expectedBooks = mutableListOf(BookDTO())
 
         given(bookRepository.getBooks()).willReturn(expectedBooks)
         val allBooks = booksService.getAllBooks()
@@ -65,7 +65,7 @@ class BookServiceTest {
         val bookDTO2 = BookDTO(name = "Hasenklo ist so fro", author = "Vin Diesel", pagesTotal = 51)
         val bookDTO3 = BookDTO()
 
-        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO3))
+        val booksFileDTO = mutableListOf(bookDTO1, bookDTO3)
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
         given(bookRepository.saveBookIfItNotExists(bookDTO2)).willReturn(bookDTO2)
         booksService.createBook(bookDTO2)
@@ -109,7 +109,7 @@ class BookServiceTest {
                 pagesTotal = 521,
                 currentPage = 12)
         val bookUpdate = BookUpdateInputDTO(12)
-        val booksFile = BooksFileDTO(mutableListOf(bookDTO))
+        val booksFile = mutableListOf(bookDTO)
         val bookUpdates = BookUpdatesFileDTO(
                 mutableListOf(
                         BookUpdateOutputDTO(

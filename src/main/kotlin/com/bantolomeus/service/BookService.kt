@@ -26,7 +26,7 @@ class BookService(private val bookRepository: BookRepository,
     // TODO: write test
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
         var response = BookUpdatesFileDTO()
-        var books = bookRepository.getBooks().books.filter { it.name != bookName }
+        var books = bookRepository.getBooks().filter { it.name != bookName }
         var oldPage = Long.MAX_VALUE
         val foundBook = bookRepository.getBookByName(bookName)
 
@@ -82,7 +82,7 @@ class BookService(private val bookRepository: BookRepository,
         return BookGetDTO(book, bookUpdates)
     }
 
-    fun getAllBooks(): BooksFileDTO {
+    fun getAllBooks(): MutableList<BookDTO> {
         return bookRepository.getBooks()
     }
 
