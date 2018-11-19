@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
@@ -38,15 +39,35 @@ class BookControllerIT {
     private lateinit var progressRepository: ProgressRepository
     private lateinit var progressService: ProgressService
 
+    @Before
+    fun setUpClasses() {
+        today = dateFormat.format(Date())
+        fileNameChallenge = "testChallenge.json"
+        challengeRepository = ChallengeRepository(fileNameChallenge)
+
+        fileNameProgress = "testProgress.json"
+        progressRepository = ProgressRepository(fileNameProgress)
+        progressService = ProgressService(progressRepository, challengeRepository)
+
+        fileNameBook = "testBooks.json"
+        bookRepository = BookRepository(fileNameBook)
+        fileNameBookUpdates = "testBookUpdates.json"
+        bookUpdateRepository = BookUpdatesRepository(fileNameBookUpdates)
+        bookService = BookService(bookRepository, bookUpdateRepository, progressService)
+        bookController = BookController(bookService)
+    }
+
     @Test
     fun createBookWithCurrentPage() {
         val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
         val challengeDTO = ChallengeDTO(pagesPerDay = 15,
                 dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-        val progressDTO = ProgressFileDTO(pagesSinceStart = 0, pagesEverRead = 1000)
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
         val bookUpdate = BookUpdateOutputDTO(name = "testBook", pagesRead = 12, date = today)
 
         progressRepository.saveProgress(progressDTO)
+
+        assertTrue { challengeRepository.getChallenge().dateStarted.isEmpty() }
         challengeRepository.saveOrUpdateChallengeData(challengeDTO)
 
         val readingStatusBefore = progressService.calculateReadingState()
@@ -65,7 +86,7 @@ class BookControllerIT {
         val bookUpdateDTO = BookUpdateInputDTO(27)
         val challengeDTO = ChallengeDTO(pagesPerDay = 15,
                 dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-        val progressDTO = ProgressFileDTO(pagesSinceStart = 0, pagesEverRead = 1000)
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
         val bookUpdates = BookUpdatesFileDTO(mutableListOf(
                 BookUpdateOutputDTO("Bugs Bunny", 152, "13/06/2018"),
                 BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
@@ -112,7 +133,7 @@ class BookControllerIT {
         val bookUpdateDTO = BookUpdateInputDTO(61)
         val challengeDTO = ChallengeDTO(pagesPerDay = 15,
                 dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-        val progressDTO = ProgressFileDTO(pagesSinceStart = 0, pagesEverRead = 1000)
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
         val bookUpdates = BookUpdatesFileDTO(mutableListOf(
                 BookUpdateOutputDTO("Bugs Bunny", 152, today),
                 BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
@@ -143,24 +164,6 @@ class BookControllerIT {
         assertEquals(bookUpdateResponse.bookUpdates[3].name, bookUpdates.bookUpdates[2].name)
         assertEquals(bookUpdateResponse.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
         assertEquals(bookUpdateResponse.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
-    }
-
-    @Before
-    fun setUpClasses() {
-        today = dateFormat.format(Date())
-        fileNameChallenge = "testChallenge.json"
-        challengeRepository = ChallengeRepository(fileNameChallenge)
-
-        fileNameProgress = "testProgress.json"
-        progressRepository = ProgressRepository(fileNameProgress)
-        progressService = ProgressService(progressRepository, challengeRepository)
-
-        fileNameBook = "testBooks.json"
-        bookRepository = BookRepository(fileNameBook)
-        fileNameBookUpdates = "testBookUpdates.json"
-        bookUpdateRepository = BookUpdatesRepository(fileNameBookUpdates)
-        bookService = BookService(bookRepository, bookUpdateRepository, progressService)
-        bookController = BookController(bookService)
     }
 
     @After

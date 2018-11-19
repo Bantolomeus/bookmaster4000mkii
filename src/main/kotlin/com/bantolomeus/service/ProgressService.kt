@@ -14,14 +14,14 @@ class ProgressService(private val progressRepository: ProgressRepository,
     fun saveProgress(pages: Long): ProgressFileDTO {
         val progress = progressRepository.getProgress()
         progress.pagesEverRead = progress.pagesEverRead.plus(pages)
-        progress.pagesSinceStart = progress.pagesSinceStart.plus(pages)
+        progress.pagesReadInCurrentChallenge = progress.pagesReadInCurrentChallenge.plus(pages)
         return progressRepository.saveProgress(progress)
     }
 
     fun calculateReadingState(): Long {
-        val daysSinceStartNegated = -((Date().time - challengeRepository.getStartTime()) / DIVISOR_FOR_DAY)
+        val daysSinceStart = ((Date().time - challengeRepository.getStartTime()) / DIVISOR_FOR_DAY)
         val pagesPerDay = challengeRepository.getChallenge().pagesPerDay
-        val pagesSinceStart = progressRepository.getProgress().pagesSinceStart
-        return daysSinceStartNegated.times(pagesPerDay).plus(pagesSinceStart)
+        val pagesSinceStart = progressRepository.getProgress().pagesReadInCurrentChallenge
+        return (-daysSinceStart).times(pagesPerDay).plus(pagesSinceStart)
     }
 }
