@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
 import java.util.*
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
@@ -155,7 +154,7 @@ class BookControllerIT {
         assertNotEquals(readingStatusBefore, readingStatusAfter)
         assertEquals(readingStatusAfter, (readingStatusBefore + bookUpdateResponse.bookUpdates[0].pagesRead))
         assertEquals(progressFileAfter.pagesEverRead, (progressFileBefore.pagesEverRead + 20))
-        assertEquals(booksFile.books[0], bookDTOAfterUpdate)
+        assertEquals(booksFile[0], bookDTOAfterUpdate)
         assertEquals(bookUpdateResponse.bookUpdates[0].name, "Zap")
         assertEquals(bookUpdateResponse.bookUpdates[0].date, today)
         assertEquals(bookUpdateResponse.bookUpdates[0].pagesRead, 20)

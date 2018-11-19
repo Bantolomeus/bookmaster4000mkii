@@ -23,17 +23,18 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
         return if (getBookByName(bookDTO.name).name != bookDTO.name) {
             val books = getBooks()
             bookDTO.dateStarted = dateFormat.format(Date())
-            books.books.add(bookDTO)
+            books.add(bookDTO)
             objectMapper.writeValue(File(bookFile), books)
             return bookDTO
         } else BookDTO()
     }
 
-    fun getBooks(): BooksFileDTO {
+    fun getBooks(): MutableList<BookDTO> {
         return try {
-            objectMapper.readValue(File(bookFile), BooksFileDTO::class.java)
-        } catch (e: Exception) {
-            BooksFileDTO()
+            objectMapper.readValue(File(bookFile), BooksFileDTO::class.java).books
+        } catch (exception: Exception) {
+            println("ERROR: The books file does not exists. /n Stacktrace: $exception")
+            emptyList<BookDTO>().toMutableList()
         }
     }
 
@@ -42,6 +43,7 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
             objectMapper.readValue(File(bookFile), BooksFileDTO::class.java)
                     .books.first { it.name == bookName }
         } catch (e: Exception) {
+            println("ERROR: The books file does not exists")
             BookDTO()
         }
     }

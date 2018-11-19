@@ -27,7 +27,7 @@ class BookController(private val bookService: BookService) {
     }
 
     @GetMapping()
-    fun getAllBooks(): BooksFileDTO {
+    fun getAllBooks(): List<BookDTO> {
         return bookService.getAllBooks()
     }
 
