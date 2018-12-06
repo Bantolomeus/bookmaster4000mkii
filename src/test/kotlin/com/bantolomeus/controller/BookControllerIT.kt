@@ -82,23 +82,25 @@ class BookControllerIT {
     // TODO: order data with functions
     @Test
     fun createAndUpdateBookWithUpdateAndBookUpdatesAreSortedByDateDESC() {
-        val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
-        val bookUpdateDTO = BookUpdateInputDTO(currentPage = 27)
+
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+        progressRepository.saveProgress(progressDTO)
+
         val challengeDTO = ChallengeDTO(pagesPerDay = 15,
                 dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val readingStatusInit = progressService.calculateReadingState()
+
         val bookUpdates = BookUpdatesFileDTO(mutableListOf(
                 BookUpdateOutputDTO("Bugs Bunny", 152, "13/06/2018"),
                 BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
                 BookUpdateOutputDTO("Ants", 4, "13/06/2018"),
                 BookUpdateOutputDTO("House in the woods", 32, "04/10/2017"),
                 BookUpdateOutputDTO("Zap", 41, "01/01/2001")))
-
-        progressRepository.saveProgress(progressDTO)
-        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
-
-        val readingStatusInit = progressService.calculateReadingState()
         bookUpdateRepository.saveBookUpdate(bookUpdates)
+
+        val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
         val bookResponse = bookController.createBook(bookDTO)
         val readingStatusAfterBookCreation = progressService.calculateReadingState()
         val bookUpdatesUpdated = bookUpdateRepository.getBookUpdates()
@@ -113,6 +115,7 @@ class BookControllerIT {
         assertEquals(bookUpdatesUpdated.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
         assertEquals(bookUpdatesUpdated.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
 
+        val bookUpdateDTO = BookUpdateInputDTO(currentPage = 27)
         val updateResponse = bookController.updateBook(bookUpdateDTO, bookDTO.name)
         val readingStatusAfterBookUpdate = progressService.calculateReadingState()
 
