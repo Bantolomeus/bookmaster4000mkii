@@ -30,7 +30,7 @@ class BookService(private val bookRepository: BookRepository,
         var oldPage = Long.MAX_VALUE
         val foundBook = bookRepository.getBookByName(bookName)
 
-        if (foundBook.name == bookName) {
+        if (foundBook?.name == bookName) {
             foundBook.let {
                 oldPage = it.currentPage
                 it.currentPage = bookUpdate.currentPage
@@ -41,9 +41,9 @@ class BookService(private val bookRepository: BookRepository,
             books = mutableListOf(foundBook) + books.toMutableList()
         }
 
-        if (oldPage < bookUpdate.currentPage && foundBook.name == bookName
+        if (oldPage < bookUpdate.currentPage && foundBook?.name == bookName
                 && bookUpdate.currentPage <= foundBook.pagesTotal) {
-            bookRepository.saveBooks(BooksFileDTO(books.toMutableList()))
+            bookRepository.saveBooks(books)
             val bookUpdates = bookUpdatesRepository.getBookUpdates()
             val currentDate = dateFormat.format(Date())
             val foundBookUpdate = bookUpdates.bookUpdates.filter { it.date == currentDate && it.name == bookName }
@@ -79,7 +79,7 @@ class BookService(private val bookRepository: BookRepository,
         val bookUpdates = bookUpdatesRepository.getBookUpdates().bookUpdates
                 .filter { it.name == bookName }
                 .map { ProgressUpdateDTO(it.date, it.pagesRead)}
-        return BookGetDTO(book, bookUpdates)
+        return BookGetDTO(book!!, bookUpdates)
     }
 
     fun getAllBooks(): MutableList<BookDTO> {
