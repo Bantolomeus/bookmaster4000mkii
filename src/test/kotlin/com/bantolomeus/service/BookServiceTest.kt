@@ -33,7 +33,7 @@ class BookServiceTest {
 
     private val bookDTOCaptor = argumentCaptor<BookDTO>()
 
-    private val booksFileDTOCaptor = argumentCaptor<BooksFileDTO>()
+    private val booksFileDTOCaptor = argumentCaptor<List<BookDTO>>()
 
     private val bookUpdateFileDTOCaptor = argumentCaptor<BookUpdatesFileDTO>()
 
@@ -130,7 +130,7 @@ class BookServiceTest {
         verify(bookRepository).saveBooks(booksFileDTOCaptor.capture())
         verify(bookUpdatesRepository).saveBookUpdate(bookUpdateFileDTOCaptor.capture())
         assertEquals(bookUpdates, bookUpdateFileDTOCaptor.firstValue)
-        assertEquals(bookDTOUpdated, booksFileDTOCaptor.firstValue.books[0])
+        assertEquals(bookDTOUpdated, booksFileDTOCaptor.firstValue[0])
     }
 
     private fun compareBookDTOWithBookGetDTO(expected: BookDTO, actual: BookGetDTO) {

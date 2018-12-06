@@ -8,7 +8,6 @@ import com.bantolomeus.repository.ChallengeRepository
 import com.bantolomeus.repository.ProgressRepository
 import com.bantolomeus.service.BookService
 import com.bantolomeus.service.ProgressService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -176,7 +175,7 @@ class BookControllerIT {
                 BookDTO(name = "House in the woods", author = "es", pagesTotal = 32),
                 BookDTO(name = "Zap", author = "du", pagesTotal = 41))
 
-        bookRepository.saveBooks(BooksFileDTO(books))
+        bookRepository.saveBooks(books)
 
         val response = bookController.getAllBooks()
 

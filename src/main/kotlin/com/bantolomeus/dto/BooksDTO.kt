@@ -9,10 +9,6 @@ data class BookDTO(
         var readTime: Long = 0
 )
 
-data class BooksFileDTO(
-        val books: MutableList<BookDTO> = emptyList<BookDTO>().toMutableList()
-)
-
 data class BookUpdateInputDTO(
         val currentPage: Long = 0,
         val date: String = ""
