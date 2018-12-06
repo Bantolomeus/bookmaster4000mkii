@@ -8,6 +8,7 @@ import com.bantolomeus.repository.ChallengeRepository
 import com.bantolomeus.repository.ProgressRepository
 import com.bantolomeus.service.BookService
 import com.bantolomeus.service.ProgressService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -79,10 +80,11 @@ class BookControllerIT {
         assertTrue { bookUpdatesUpdated.bookUpdates.contains(bookUpdate) }
     }
 
+    // TODO: order data with functions
     @Test
     fun createAndUpdateBookWithUpdateAndBookUpdatesAreSortedByDateDESC() {
         val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
-        val bookUpdateDTO = BookUpdateInputDTO(27)
+        val bookUpdateDTO = BookUpdateInputDTO(currentPage = 27)
         val challengeDTO = ChallengeDTO(pagesPerDay = 15,
                 dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
         val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
@@ -115,8 +117,8 @@ class BookControllerIT {
         val updateResponse = bookController.updateBook(bookUpdateDTO, bookDTO.name)
         val readingStatusAfterBookUpdate = progressService.calculateReadingState()
 
-        assertEquals(readingStatusAfterBookUpdate, (readingStatusInit + bookUpdateDTO.currentPage))
-        assertEquals(updateResponse.bookUpdates[0].name, bookDTO.name)
+        assertEquals((readingStatusInit + bookUpdateDTO.currentPage), readingStatusAfterBookUpdate)
+        assertEquals(bookDTO.name, updateResponse.bookUpdates[0].name)
         assertEquals(updateResponse.bookUpdates[0].pagesRead, bookUpdateDTO.currentPage)
         assertEquals(updateResponse.bookUpdates[1].name, bookUpdates.bookUpdates[0].name)
         assertEquals(updateResponse.bookUpdates[2].name, bookUpdates.bookUpdates[1].name)
@@ -163,6 +165,22 @@ class BookControllerIT {
         assertEquals(bookUpdateResponse.bookUpdates[3].name, bookUpdates.bookUpdates[2].name)
         assertEquals(bookUpdateResponse.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
         assertEquals(bookUpdateResponse.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
+    }
+
+    @Test
+    fun getAllBooks() {
+        val books = mutableListOf(
+                BookDTO(name = "Bugs Bunny", author = "ich", pagesTotal = 152),
+                BookDTO(name = "Fire", author = "er", pagesTotal =  2),
+                BookDTO(name = "Ants", author = "sie", pagesTotal =  4),
+                BookDTO(name = "House in the woods", author = "es", pagesTotal = 32),
+                BookDTO(name = "Zap", author = "du", pagesTotal = 41))
+
+        bookRepository.saveBooks(BooksFileDTO(books))
+
+        val response = bookController.getAllBooks()
+
+        assertEquals(books, response)
     }
 
     @After
