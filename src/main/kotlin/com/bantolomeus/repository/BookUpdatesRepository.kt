@@ -16,11 +16,11 @@ class BookUpdatesRepository(private val bookUpdatesFile: String = BOOK_UPDATES_F
         return bookUpdate
     }
 
-    fun getBookUpdates(): BookUpdatesFileDTO {
+    fun getBookUpdates(): BookUpdatesFileDTO? {
         return try {
             objectMapper.readValue(File(bookUpdatesFile), BookUpdatesFileDTO::class.java)
         } catch (e: Exception) {
-            BookUpdatesFileDTO()
+            null
         }
     }
 
