@@ -22,10 +22,8 @@ class BookService(private val bookRepository: BookRepository,
         return bookDTO
     }
 
-    // TODO: incorporate date of book update
-    // TODO: write test
+    // TODO: incorporate date of book update and write test
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
-        var response = BookUpdatesFileDTO()
         var books = bookRepository.getBooks().filter { it.name != bookName }
         var oldPage = Long.MAX_VALUE
         val foundBook = bookRepository.getBookByName(bookName)
@@ -46,27 +44,17 @@ class BookService(private val bookRepository: BookRepository,
             bookRepository.saveBooks(books)
             val bookUpdates = bookUpdatesRepository.getBookUpdates()
             val currentDate = dateFormat.format(Date())
-            val foundBookUpdate = bookUpdates?.bookUpdates?.filter { it.date == currentDate && it.name == bookName }
+            val bookUpdateFromToday = bookUpdates?.bookUpdates?.filter { it.date == currentDate && it.name == bookName }
                     ?.getOrElse(0) { _ -> BookUpdateOutputDTO()}
-
             val pagesRead = bookUpdate.currentPage.minus(oldPage)
-            if (pagesRead > 0 && foundBookUpdate == null) {
-                response = saveNewUpdate(bookName, pagesRead, currentDate)
-                // TODO: Why not check pagesRead here in else if?
-            } else if (foundBookUpdate != null) {
-                val oldBookUpdates = bookUpdates.bookUpdates.filter {
-                    it.date != foundBookUpdate.date || it.name != bookName
-                }.toMutableList()
-                oldBookUpdates.add(0, BookUpdateOutputDTO(
-                        name = bookName,
-                        pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
-                        date = currentDate)
-                )
-                response = bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO(oldBookUpdates))
-                progressService.saveProgress(pagesRead)
+
+            if (pagesRead > 0 && bookUpdateFromToday == null) {
+                return saveBookUpdate(bookName, pagesRead, currentDate)
+            } else if (pagesRead > 0 && bookUpdateFromToday != null) {
+                return editUpdateFromToday(bookUpdates, bookName, pagesRead, currentDate, bookUpdateFromToday, bookUpdate, oldPage)
             }
         }
-        return response
+        return BookUpdatesFileDTO()
     }
 
     fun getBookWithUpdates(bookName: String): BookGetDTO {
@@ -92,7 +80,7 @@ class BookService(private val bookRepository: BookRepository,
         progressService.saveProgress(bookDTO.currentPage)
     }
 
-    private fun saveNewUpdate(bookName: String, pagesRead: Long, currentDate: String): BookUpdatesFileDTO {
+    private fun saveBookUpdate(bookName: String, pagesRead: Long, currentDate: String): BookUpdatesFileDTO {
         val bookUpdate = BookUpdatesFileDTO(mutableListOf(BookUpdateOutputDTO(
                 name = bookName,
                 pagesRead = pagesRead,
@@ -100,5 +88,20 @@ class BookService(private val bookRepository: BookRepository,
         ))
         progressService.saveProgress(pagesRead)
         return bookUpdatesRepository.saveBookUpdate(bookUpdate)
+    }
+
+    private fun editUpdateFromToday(bookUpdates: BookUpdatesFileDTO?, bookName: String, pagesRead: Long,
+                                    currentDate: String, bookUpdateFromToday: BookUpdateOutputDTO,
+                                    bookUpdate: BookUpdateInputDTO, oldPage: Long): BookUpdatesFileDTO {
+        val oldBookUpdates = bookUpdates?.bookUpdates?.filter {
+            it.date != bookUpdateFromToday.date || it.name != bookName
+        }?.toMutableList()
+        oldBookUpdates?.add(0, BookUpdateOutputDTO(
+                name = bookName,
+                pagesRead = bookUpdate.currentPage.minus(oldPage).plus(bookUpdateFromToday.pagesRead),
+                date = currentDate)
+        )
+        progressService.saveProgress(pagesRead)
+        return bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO(oldBookUpdates ?: mutableListOf()))
     }
 }
