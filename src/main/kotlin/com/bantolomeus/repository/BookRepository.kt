@@ -34,6 +34,7 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
         return book
     }
 
+    // TODO: return null
     fun getBooks(): MutableList<BookDTO> {
         return try {
             objectMapper.readValue<List<BookDTO>>(File(bookFile)).toMutableList()

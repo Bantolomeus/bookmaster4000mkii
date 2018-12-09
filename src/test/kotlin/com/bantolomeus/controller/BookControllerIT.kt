@@ -76,10 +76,9 @@ class BookControllerIT {
 
         assertNotEquals(readingStatusBefore, readingStatusAfter)
         assertEquals(readingStatusAfter, (readingStatusBefore + bookResponse.currentPage))
-        assertTrue { bookUpdatesUpdated.bookUpdates.contains(bookUpdate) }
+        assertTrue { bookUpdatesUpdated!!.bookUpdates.contains(bookUpdate) }
     }
 
-    // TODO: order data with functions
     @Test
     fun createAndUpdateBookWithUpdateAndBookUpdatesAreSortedByDateDESC() {
 
@@ -107,7 +106,7 @@ class BookControllerIT {
 
         assertNotEquals(readingStatusInit, readingStatusAfterBookCreation)
         assertEquals(readingStatusAfterBookCreation, (readingStatusInit + bookResponse.currentPage))
-        assertEquals(bookUpdatesUpdated.bookUpdates[0].name, bookDTO.name)
+        assertEquals(bookUpdatesUpdated!!.bookUpdates[0].name, bookDTO.name)
         assertEquals(bookUpdatesUpdated.bookUpdates[0].pagesRead, bookDTO.currentPage)
         assertEquals(bookUpdatesUpdated.bookUpdates[1].name, bookUpdates.bookUpdates[0].name)
         assertEquals(bookUpdatesUpdated.bookUpdates[2].name, bookUpdates.bookUpdates[1].name)
