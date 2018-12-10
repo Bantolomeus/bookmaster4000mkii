@@ -22,7 +22,6 @@ class BookService(private val bookRepository: BookRepository,
         return bookDTO
     }
 
-    // TODO: incorporate date of book update and write test
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
         var otherBooks = bookRepository.getBooks().filter { it.name != bookName }
         var oldPage = Long.MAX_VALUE

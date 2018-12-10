@@ -184,6 +184,36 @@ class BookControllerIT {
         assertEquals(books, response)
     }
 
+    @Test
+    fun updateBookWithUserDate() {
+        val aDayInThePast = "01/11/2000"
+        val anotherDayInThePast = "12/11/2003"
+        val bookDTO = BookDTO(name = "Root of all Problems", author = "Alex Snoq", pagesTotal = 414, currentPage = 52, dateStarted = aDayInThePast)
+        val bookDTOAfterUpdate = BookDTO(name = "Root of all Problems", author = "Alex Snoq", pagesTotal = 414, currentPage = 102, dateStarted = today)
+        val bookUpdateDTO = BookUpdateInputDTO(102, anotherDayInThePast)
+        val challengeDTO = ChallengeDTO(pagesPerDay = 15,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+
+        val progressFileBefore = progressRepository.saveProgress(progressDTO)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val readingStatusBefore = progressService.calculateReadingState()
+        bookRepository.saveBookIfItNotExists(bookDTO)
+        val bookUpdateResponse = bookController.updateBook(bookUpdateDTO, bookDTO.name)
+        val booksFile = bookRepository.getBooks()
+        val readingStatusAfter = progressService.calculateReadingState()
+        val progressFileAfter = progressRepository.getProgress()
+
+        assertNotEquals(readingStatusBefore, readingStatusAfter)
+        assertEquals(readingStatusAfter, (readingStatusBefore + bookUpdateResponse.bookUpdates[0].pagesRead))
+        assertEquals((progressFileBefore.pagesEverRead + 50), progressFileAfter.pagesEverRead)
+        assertEquals(booksFile[0], bookDTOAfterUpdate)
+        assertEquals(bookUpdateResponse.bookUpdates[0].name, bookDTO.name)
+        assertEquals(bookUpdateResponse.bookUpdates[0].date, anotherDayInThePast)
+        assertEquals(bookUpdateResponse.bookUpdates[0].pagesRead, 50)
+    }
+
     @After
     fun removeFiles() {
         File(fileNameBook).deleteRecursively()

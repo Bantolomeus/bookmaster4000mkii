@@ -10,8 +10,6 @@ import java.util.*
 
 const val BOOK_FILE = "books.json"
 
-// TODO: Save books also as array. Can no longer use objectMapper, maybe stream instead.
-// TODO: Create file if it does not exist? Would be great. Extra ticket?!
 @Repository
 class BookRepository(private val bookFile: String = BOOK_FILE) {
     private val objectMapper = jacksonObjectMapper()
@@ -34,7 +32,6 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
         return book
     }
 
-    // TODO: return null
     fun getBooks(): MutableList<BookDTO> {
         return try {
             objectMapper.readValue<List<BookDTO>>(File(bookFile)).toMutableList()
