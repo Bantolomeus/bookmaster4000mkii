@@ -1,6 +1,6 @@
 <div style="display: flex; padding: 1.5em;">
   <div
-    ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks track by $index"
+    ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks | orderBy:'name'"
     ng-mouseover="$ctrl.toggleInputActiveFor(book, true)"
     ng-mouseleave="$ctrl.toggleInputActiveFor(book, false)"
     class="card card--progress"
