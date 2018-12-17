@@ -11,6 +11,12 @@ const val BOOK_UPDATES_FILE = "bookUpdates.json"
 class BookUpdatesRepository(private val bookUpdatesFile: String = BOOK_UPDATES_FILE) {
     private val objectMapper = ObjectMapper()
 
+    init {
+        if (!File(bookUpdatesFile).exists()) {
+            objectMapper.writeValue(File(bookUpdatesFile), BookUpdatesFileDTO())
+        }
+    }
+
     fun saveBookUpdate(bookUpdate: BookUpdatesFileDTO): BookUpdatesFileDTO {
         objectMapper.writeValue(File(bookUpdatesFile), bookUpdate)
         return bookUpdate

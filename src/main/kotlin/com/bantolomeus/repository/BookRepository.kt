@@ -19,20 +19,19 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
         return books
     }
 
-    fun saveBookIfItNotExists(bookDTO: BookDTO): BookDTO {
-        val book = getBookByName(bookDTO.name)
-        if (book == null) {
+    fun saveBookIfItNotExists(newVersion: BookDTO): BookDTO {
+        val existingVersion = getBookByName(newVersion.name)
+        if (existingVersion == null) {
             val books = getBooks()
-            bookDTO.dateStarted = dateFormat.format(Date())
-            books.add(bookDTO)
-            objectMapper.writeValue(File(bookFile), books)
-            return bookDTO
+            newVersion.dateStarted = dateFormat.format(Date())
+            objectMapper.writeValue(File(bookFile), books + newVersion)
+            return newVersion
         }
 
-        return book
+        return existingVersion
     }
 
-    fun getBooks(): MutableList<BookDTO> {
+    fun getBooks(): List<BookDTO> {
         return try {
             objectMapper.readValue<List<BookDTO>>(File(bookFile)).toMutableList()
         } catch (exception: Exception) {

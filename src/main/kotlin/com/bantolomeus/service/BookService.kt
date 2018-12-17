@@ -23,37 +23,33 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
-        var otherBooks = bookRepository.getBooks().filter { it.name != bookName }
-        var oldPage = Long.MAX_VALUE
-        val foundBook = bookRepository.getBookByName(bookName)
+        val foundBook = bookRepository.getBookByName(bookName) ?: return BookUpdatesFileDTO()
 
-        if (foundBook?.name == bookName) {
-            foundBook.let {
-                oldPage = it.currentPage
-                it.currentPage = bookUpdate.currentPage
-                if (it.currentPage == it.pagesTotal) {
-                    it.readTime = ((Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY) + 1
-                }
-            }
-            otherBooks = mutableListOf(foundBook) + otherBooks
+        if (foundBook.currentPage == foundBook.pagesTotal) {
+            foundBook.readTime = ((Date().time - dateFormat.parse(foundBook.dateStarted).time) / DIVISOR_FOR_DAY) + 1
+        }
+        val oldPage = foundBook.currentPage
+        foundBook.currentPage = bookUpdate.currentPage
+        val pagesRead = bookUpdate.currentPage.minus(oldPage)
+        if (pagesRead <= 0 || oldPage >= bookUpdate.currentPage || bookUpdate.currentPage > foundBook.pagesTotal) {
+            return BookUpdatesFileDTO()
         }
 
-        if (oldPage < bookUpdate.currentPage && foundBook != null
-                && bookUpdate.currentPage <= foundBook.pagesTotal) {
-            bookRepository.saveBooks(otherBooks)
-            val bookUpdates = bookUpdatesRepository.getBookUpdates()
-            val currentDate = dateFormat.format(Date())
-            val bookUpdateFromToday = bookUpdates?.bookUpdates?.filter { it.date == currentDate && it.name == bookName }
-                    ?.getOrElse(0) { _ -> BookUpdateOutputDTO()}
-            val pagesRead = bookUpdate.currentPage.minus(oldPage)
+        // todo this should happen in the repository I think.
+        //      repository.saveBook(foundBook) should encapsulate the filter stuff
+        val otherBooks = bookRepository.getBooks().filter { it.name != bookName }
+        bookRepository.saveBooks(otherBooks + foundBook)
 
-            if (pagesRead > 0 && bookUpdateFromToday == null) {
-                return saveBookUpdate(bookUpdate, bookName, pagesRead, currentDate)
-            } else if (pagesRead > 0 && bookUpdateFromToday != null) {
-                return editUpdateFromToday(bookUpdates, bookName, pagesRead, currentDate, bookUpdateFromToday, bookUpdate, oldPage)
-            }
-        }
-        return BookUpdatesFileDTO()
+        // todo '.firstOrNull { it.date == currentDate && it.name == bookName }' is also something that should happen in the repo.
+        //      repository.getTodaysUpdatesForBook(foundBook)
+        // todo move exception into repo
+        //      in this case I don't see any value in running the bookmaster w/o a working BookUpdatesRepository
+        val bookUpdates = bookUpdatesRepository.getBookUpdates()
+                ?: throw IllegalStateException("BookUpdatesRepository not available but it should be")
+        val currentDate = dateFormat.format(Date())
+        bookUpdates.bookUpdates.firstOrNull { it.date == currentDate && it.name == bookName }?.let {
+            return editUpdateFromToday(bookUpdates, bookName, pagesRead, currentDate, it, bookUpdate, oldPage)
+        } ?: return editUpdateFromToday(bookUpdates, bookName, pagesRead, bookUpdate.date ?: currentDate, BookUpdateOutputDTO(), bookUpdate, oldPage)
     }
 
     fun getBookWithUpdates(bookName: String): BookGetDTO {
@@ -64,7 +60,7 @@ class BookService(private val bookRepository: BookRepository,
         return BookGetDTO(book ?: BookDTO(), bookUpdates ?: emptyList())
     }
 
-    fun getAllBooks(): MutableList<BookDTO> {
+    fun getAllBooks(): List<BookDTO> {
         return bookRepository.getBooks()
     }
 
