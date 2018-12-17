@@ -1,2 +1,10 @@
 language: java
 
+addons:
+  sonarcloud:
+    organization: "bantolomeus-github" # the key of the org you chose at step #3
+    token:
+      secure: b50b70a1a82fd7d09df6e49d30a4fc88094d4177 # encrypted value of your token
+script:
+# other script steps might be done before running the actual analysis
+- sonar-scanner
