@@ -19,6 +19,10 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
         return books
     }
 
+    fun noName() {
+
+    }
+    
     fun saveBookIfItNotExists(bookDTO: BookDTO): BookDTO {
         return if (getBookByName(bookDTO.name).name != bookDTO.name) {
             val books = getBooks()
