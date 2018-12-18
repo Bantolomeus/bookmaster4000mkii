@@ -35,10 +35,7 @@ class BookService(private val bookRepository: BookRepository,
             return BookUpdatesFileDTO()
         }
 
-        // todo this should happen in the repository I think.
-        //      repository.saveBook(foundBook) should encapsulate the filter stuff
-        val otherBooks = bookRepository.getBooks().filter { it.name != bookName }
-        bookRepository.saveBooks(otherBooks + foundBook)
+        bookRepository.saveBooks(bookRepository.getAllBooksExcept(bookName) + foundBook)
 
         // todo '.firstOrNull { it.date == currentDate && it.name == bookName }' is also something that should happen in the repo.
         //      repository.getTodaysUpdatesForBook(foundBook)
