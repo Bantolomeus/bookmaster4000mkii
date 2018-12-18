@@ -1,6 +1,7 @@
 # Bookmaster 4000 MARK II _(bookmaster4000mkii)_
 
-[![Build Status](https://travis-ci.org/Bantolomeus/bookmaster4000mkii.svg?branch=master)](https://travis-ci.org/Bantolomeus/bookmaster4000mkii)
+[![Build Status](https://travis-ci.org/Bantolomeus/bookmaster4000mkii.svg?branch=master)](https://travis-ci.org/Bantolomeus/bookmaster4000mkii) 
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.bantolomeus%3Abookmaster4000mkii&metric=alert_status)](https://sonarcloud.io/dashboard/index/com.bantolomeus:bookmaster4000mkii)
 
 > Improve your reading habits. Api to document your books read and your daily reading progress. 
 >
