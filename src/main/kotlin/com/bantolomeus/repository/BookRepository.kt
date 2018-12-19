@@ -19,24 +19,24 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
         return books
     }
 
-    fun saveBookIfItNotExists(newVersion: BookDTO): BookDTO {
-        val existingVersion = getBookByName(newVersion.name)
-        if (existingVersion == null) {
+    fun saveBookIfItNotExists(newBook: BookDTO): BookDTO {
+        val existingBook = getBookByName(newBook.name)
+        if (existingBook == null) {
             val books = getBooks()
-            newVersion.dateStarted = dateFormat.format(Date())
-            objectMapper.writeValue(File(bookFile), books + newVersion)
-            return newVersion
+            newBook.dateStarted = dateFormat.format(Date())
+            objectMapper.writeValue(File(bookFile), books + newBook)
+            return newBook
         }
 
-        return existingVersion
+        return existingBook
     }
 
     fun getBooks(): List<BookDTO> {
         return try {
-            objectMapper.readValue<List<BookDTO>>(File(bookFile)).toMutableList()
+            objectMapper.readValue(File(bookFile))
         } catch (exception: Exception) {
             println("ERROR[getBooks]: The books file does not exists. \n Stacktrace: \n $exception")
-            emptyList<BookDTO>().toMutableList()
+            emptyList()
         }
     }
 

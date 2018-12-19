@@ -23,19 +23,21 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
-        val foundBook = bookRepository.getBookByName(bookName) ?: return BookUpdatesFileDTO()
+        val book = bookRepository.getBookByName(bookName) ?: return BookUpdatesFileDTO()
 
-        if (foundBook.currentPage == foundBook.pagesTotal) {
-            foundBook.readTime = ((Date().time - dateFormat.parse(foundBook.dateStarted).time) / DIVISOR_FOR_DAY) + 1
+        if (book.currentPage == book.pagesTotal) {
+            book.readTime = ((Date().time - dateFormat.parse(book.dateStarted).time) / DIVISOR_FOR_DAY) + 1
         }
-        val oldPage = foundBook.currentPage
-        foundBook.currentPage = bookUpdate.currentPage
+        val oldPage = book.currentPage
+        book.currentPage = bookUpdate.currentPage
         val pagesRead = bookUpdate.currentPage.minus(oldPage)
-        if (pagesRead <= 0 || oldPage >= bookUpdate.currentPage || bookUpdate.currentPage > foundBook.pagesTotal) {
+        if (pagesRead <= 0 || bookUpdate.currentPage > book.pagesTotal) {
             return BookUpdatesFileDTO()
         }
 
-        bookRepository.saveBooks(bookRepository.getAllBooksExcept(bookName) + foundBook)
+        // todo make it only one `bookRepository` call
+        //      bookRepository.saveBook(book)
+        bookRepository.saveBooks(bookRepository.getAllBooksExcept(bookName) + book)
 
         // todo '.firstOrNull { it.date == currentDate && it.name == bookName }' is also something that should happen in the repo.
         //      repository.getTodaysUpdatesForBook(foundBook)
@@ -70,16 +72,6 @@ class BookService(private val bookRepository: BookRepository,
         bookUpdates?.bookUpdates?.add(0, bookDTO.toBookUpdateDTO())
         bookUpdatesRepository.saveBookUpdate(bookUpdates ?: BookUpdatesFileDTO(mutableListOf(bookDTO.toBookUpdateDTO())))
         progressService.saveProgress(bookDTO.currentPage)
-    }
-
-    private fun saveBookUpdate(bookUpdate: BookUpdateInputDTO, bookName: String, pagesRead: Long, currentDate: String): BookUpdatesFileDTO {
-        val bookUpdateToSave = BookUpdatesFileDTO(mutableListOf(BookUpdateOutputDTO(
-                name = bookName,
-                pagesRead = pagesRead,
-                date = bookUpdate.date ?: currentDate)
-        ))
-        progressService.saveProgress(pagesRead)
-        return bookUpdatesRepository.saveBookUpdate(bookUpdateToSave)
     }
 
     private fun editUpdateFromToday(bookUpdates: BookUpdatesFileDTO?, bookName: String, pagesRead: Long,

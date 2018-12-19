@@ -12,11 +12,6 @@ import kotlin.test.assertTrue
 @RunWith(SpringRunner::class)
 class BookUpdatesRepositoryTest {
 
-    @After
-    fun removeFiles() {
-        File("testBookUpdatesRepo.json").deleteRecursively()
-    }
-
     @Test
     fun testRepoFileGetsCreatedIfMissing() {
         assertFalse(File("testBookUpdatesRepo.json").exists(), "repo file should not exist, but it does")
@@ -29,6 +24,11 @@ class BookUpdatesRepositoryTest {
         File("testBookUpdatesRepo.json").writeText("batman ❤ robin")
         BookUpdatesRepository("testBookUpdatesRepo.json")
         assertEquals(File("testBookUpdatesRepo.json").readText(), "batman ❤ robin")
+    }
+
+    @After
+    fun removeRepoFile() {
+        File("testBookUpdatesRepo.json").deleteRecursively()
     }
 
 }
