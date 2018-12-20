@@ -35,9 +35,7 @@ class BookService(private val bookRepository: BookRepository,
             return BookUpdatesFileDTO()
         }
 
-        // todo make it only one `bookRepository` call
-        //      bookRepository.saveBook(book)
-        bookRepository.saveBooks(bookRepository.getAllBooksExcept(bookName) + book)
+        bookRepository.updateBook(book)
 
         // todo '.firstOrNull { it.date == currentDate && it.name == bookName }' is also something that should happen in the repo.
         //      repository.getTodaysUpdatesForBook(foundBook)

@@ -19,13 +19,18 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
         return books
     }
 
-    fun saveBookIfItNotExists(newBook: BookDTO): BookDTO {
-        val existingBook = getBookByName(newBook.name)
+    fun updateBook(book: BookDTO): List<BookDTO> {
+        val booksExceptBook = getAllBooksExcept(book.name)
+        return saveBooks(booksExceptBook + book)
+    }
+
+    fun saveBookIfItNotExists(book: BookDTO): BookDTO {
+        val existingBook = getBookByName(book.name)
         if (existingBook == null) {
             val books = getBooks()
-            newBook.dateStarted = dateFormat.format(Date())
-            objectMapper.writeValue(File(bookFile), books + newBook)
-            return newBook
+            book.dateStarted = dateFormat.format(Date())
+            objectMapper.writeValue(File(bookFile), books + book)
+            return book
         }
 
         return existingBook
