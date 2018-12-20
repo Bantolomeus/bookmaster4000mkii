@@ -102,18 +102,18 @@ class BookServiceTest {
 
     @Test
     fun updateBook() {
-        val bookDTO = BookDTO(name = "Wohlfahrtsverlust durch Steuern", author = "Your Mother", pagesTotal = 521)
+        val book = BookDTO(name = "Wohlfahrtsverlust durch Steuern", author = "Your Mother", pagesTotal = 521)
         val bookDTOUpdated = BookDTO(
                 name = "Wohlfahrtsverlust durch Steuern",
                 author = "Your Mother",
                 pagesTotal = 521,
                 currentPage = 12)
         val bookUpdate = BookUpdateInputDTO(12)
-        val booksFile = mutableListOf(bookDTO)
+        val booksFile = mutableListOf(book)
         val bookUpdates = BookUpdatesFileDTO(
                 mutableListOf(
                         BookUpdateOutputDTO(
-                            bookDTO.name,
+                            book.name,
                             bookUpdate.currentPage,
                             dateFormat.format(Date())
                         )
@@ -121,16 +121,15 @@ class BookServiceTest {
         )
 
         given(bookRepository.getBooks()).willReturn(booksFile)
-        given(bookRepository.getBookByName(any())).willReturn(bookDTO)
+        given(bookRepository.getBookByName(any())).willReturn(book)
         given(bookUpdatesRepository.saveBookUpdate(bookUpdates)).willReturn(bookUpdates)
         given(bookUpdatesRepository.getBookUpdates()).willReturn(BookUpdatesFileDTO())
 
-        booksService.updateBook(bookUpdate, bookDTO.name)
+        booksService.updateBook(bookUpdate, book.name)
 
-        verify(bookRepository).saveBooks(booksFileDTOCaptor.capture())
+        verify(bookRepository).updateBook(book)
         verify(bookUpdatesRepository).saveBookUpdate(bookUpdateFileDTOCaptor.capture())
         assertEquals(bookUpdates, bookUpdateFileDTOCaptor.firstValue)
-        assertEquals(bookDTOUpdated, booksFileDTOCaptor.firstValue[0])
     }
 
     private fun compareBookDTOWithBookGetDTO(expected: BookDTO, actual: BookGetDTO) {
