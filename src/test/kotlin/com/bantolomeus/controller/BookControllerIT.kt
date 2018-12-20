@@ -214,6 +214,36 @@ class BookControllerIT {
         assertEquals(bookUpdateResponse.bookUpdates[0].pagesRead, 50)
     }
 
+    @Test
+    fun finishBookThroughUpdateWithCorrectReadTime() {
+        val book = BookDTO(name = "The sea is blue", author = "Moby Dick", pagesTotal = 1842)
+        val bookUpdated = BookDTO(
+                name = "The sea is blue",
+                author = "Moby Dick",
+                pagesTotal = 1842,
+                currentPage = 1842,
+                dateStarted = today,
+                // TODO: after #97 set readTime to 1
+                readTime = 0)
+        val bookUpdate = BookUpdateInputDTO(1842)
+
+        val challengeDTO = ChallengeDTO(pagesPerDay = 15,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+
+        progressRepository.saveProgress(progressDTO)
+
+        assertTrue { challengeRepository.getChallenge().dateStarted.isEmpty() }
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val bookResponse = bookController.createBook(book)
+        bookController.updateBook(bookUpdate, book.name)
+        val bookAfterUpdate = bookController.getBookWithUpdates(book.name)
+
+        assertEquals(0, bookResponse.currentPage)
+        assertEquals(bookUpdated, bookAfterUpdate.book)
+    }
+
     @After
     fun removeFiles() {
         File(fileNameBook).deleteRecursively()
