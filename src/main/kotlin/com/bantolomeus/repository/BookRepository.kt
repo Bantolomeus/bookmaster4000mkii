@@ -57,7 +57,7 @@ class BookRepository(private val bookFile: String = BOOK_FILE) {
 
     fun getAllBooksExcept(bookName: String): List<BookDTO> {
         return try {
-            objectMapper.readValue<List<BookDTO>>(File(bookFile)).toMutableList().filter { it.name != bookName }
+            objectMapper.readValue<List<BookDTO>>(File(bookFile)).filter { it.name != bookName }
         } catch (exception: Exception) {
             println("ERROR[getBooks]: The books file does not exists. \n Stacktrace: \n $exception")
             emptyList()
