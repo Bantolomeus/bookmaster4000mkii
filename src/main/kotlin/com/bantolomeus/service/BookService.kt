@@ -17,7 +17,7 @@ class BookService(private val bookRepository: BookRepository,
     fun createBook(bookDTO: BookDTO): BookDTO {
         val savedBookDTO = bookRepository.saveBookIfItNotExists(bookDTO)
         if (savedBookDTO.currentPage > 0) {
-            saveBookUpdate(savedBookDTO)
+            saveFirstBookUpdate(savedBookDTO)
         }
         return bookDTO
     }
@@ -60,7 +60,7 @@ class BookService(private val bookRepository: BookRepository,
         return bookUpdatesRepository.sortBookUpdates()
     }
 
-    private fun saveBookUpdate(bookDTO: BookDTO) {
+    private fun saveFirstBookUpdate(bookDTO: BookDTO) {
         val bookUpdates = bookUpdatesRepository.getBookUpdates()
         bookUpdates?.bookUpdates?.add(0, bookDTO.toBookUpdateDTO())
         bookUpdatesRepository.saveBookUpdate(bookUpdates ?: BookUpdatesFileDTO(mutableListOf(bookDTO.toBookUpdateDTO())))
@@ -69,15 +69,15 @@ class BookService(private val bookRepository: BookRepository,
 
     private fun saveBookUpdate(bookName: String, pagesRead: Long, date: String, bookUpdateFromToday: BookUpdateOutputDTO?,
                                bookUpdate: BookUpdateInputDTO, oldPage: Long): BookUpdatesFileDTO {
-        val oldBookUpdates = bookUpdatesRepository.getBookUpdates()?.bookUpdates?.filter {
+        val bookUpdates = bookUpdatesRepository.getBookUpdates()?.bookUpdates?.filter {
             it.date != bookUpdateFromToday?.date || it.name != bookName
         }?.toMutableList()
-        oldBookUpdates?.add(0, BookUpdateOutputDTO(
+        bookUpdates?.add(0, BookUpdateOutputDTO(
                 name = bookName,
                 pagesRead = bookUpdate.currentPage.minus(oldPage).plus(bookUpdateFromToday!!.pagesRead),
                 date = date)
         )
         progressService.saveProgress(pagesRead)
-        return bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO(oldBookUpdates ?: mutableListOf()))
+        return bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO(bookUpdates ?: mutableListOf()))
     }
 }
