@@ -26,12 +26,7 @@ class BookControllerTest {
 
     @Test
     fun createBook() {
-        val book = BookDTO(
-                name = "this is a wonderful book",
-                author = "Mr. White",
-                pagesTotal = 294
-        )
-
+        val book = BookDTO()
         bookController.createBook(book)
         verify(bookService).createBook(book)
     }
