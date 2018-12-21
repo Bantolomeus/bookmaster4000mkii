@@ -38,7 +38,7 @@ class BookService(private val bookRepository: BookRepository,
         val currentDate = dateFormat.format(Date())
         val updateFromToday = bookUpdatesRepository.getUpdateFromToday(book.name)
         return if (updateFromToday == null) {
-            saveBookUpdate(bookName, pagesRead, bookUpdate.date ?: currentDate, BookUpdateOutputDTO(), bookUpdate, oldPage)
+            saveBookUpdate(bookName, pagesRead, bookUpdate.date, BookUpdateOutputDTO(), bookUpdate, oldPage)
         } else {
             saveBookUpdate(bookName, pagesRead, currentDate, updateFromToday, bookUpdate, oldPage)
         }
@@ -61,9 +61,10 @@ class BookService(private val bookRepository: BookRepository,
     }
 
     private fun saveFirstBookUpdate(bookDTO: BookDTO) {
-        val bookUpdates = bookUpdatesRepository.getBookUpdates()
-        bookUpdates?.bookUpdates?.add(0, bookDTO.toBookUpdateDTO())
-        bookUpdatesRepository.saveBookUpdate(bookUpdates ?: BookUpdatesFileDTO(mutableListOf(bookDTO.toBookUpdateDTO())))
+        val existingUpdates = (bookUpdatesRepository.getBookUpdates() ?: BookUpdatesFileDTO()).bookUpdates
+        val newUpdate = BookUpdatesFileDTO(listOf(bookDTO.toBookUpdateDTO())).bookUpdates
+        val bookUpdates = BookUpdatesFileDTO(newUpdate + existingUpdates)
+        bookUpdatesRepository.saveBookUpdate(bookUpdates)
         progressService.saveProgress(bookDTO.currentPage)
     }
 

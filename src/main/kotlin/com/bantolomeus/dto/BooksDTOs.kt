@@ -1,5 +1,8 @@
 package com.bantolomeus.dto
 
+import com.bantolomeus.date.dateFormat
+import java.util.*
+
 data class BookDTO(
         val name: String = "",
         val author: String = "",
@@ -11,7 +14,7 @@ data class BookDTO(
 
 data class BookUpdateInputDTO(
         val currentPage: Long = 0,
-        val date: String? = null
+        val date: String = dateFormat.format(Date())
 )
 
 data class BookUpdateOutputDTO(
@@ -21,7 +24,7 @@ data class BookUpdateOutputDTO(
 )
 
 data class BookUpdatesFileDTO(
-        val bookUpdates: MutableList<BookUpdateOutputDTO> = emptyList<BookUpdateOutputDTO>().toMutableList()
+        val bookUpdates: List<BookUpdateOutputDTO> = emptyList()
 )
 
 data class BookGetDTO(

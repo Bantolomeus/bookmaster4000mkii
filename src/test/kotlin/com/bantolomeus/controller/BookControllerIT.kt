@@ -81,7 +81,6 @@ class BookControllerIT {
 
     @Test
     fun createAndUpdateBookWithUpdateAndBookUpdatesAreSortedByDateDESC() {
-
         val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
         progressRepository.saveProgress(progressDTO)
 
