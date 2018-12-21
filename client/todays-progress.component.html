@@ -1,21 +1,21 @@
 <div style="display: flex; padding: 1.5em;">
   <div
-    ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks track by $index"
+    ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks | orderBy:'name'"
     ng-mouseover="$ctrl.toggleInputActiveFor(book, true)"
     ng-mouseleave="$ctrl.toggleInputActiveFor(book, false)"
     class="card card--progress"
   >
     <div
-      ng-if="book.book.name"
-      ng-style="{background: $ctrl.nameToHexColor(book.book.name)}"
+      ng-if="book.name"
+      ng-style="{background: $ctrl.nameToHexColor(book.name)}"
       class="card-body card-body--container"
     >
-      <h5 class="card-title">{{ book.book.name }}</h5>
+      <h5 class="card-title">{{ book.name }}</h5>
 
       <div style="display: flex">
         <div>
           <small
-            >{{ book.book.currentPage }} of {{ book.book.pagesTotal }} pages
+            >{{ book.currentPage }} of {{ book.pagesTotal }} pages
             read</small
           >
         </div>
@@ -33,13 +33,13 @@
       >
         <progress-input
           ng-if="!$ctrl.progressUpdating && $ctrl.bookWithRequestConfirmation === null"
-          book="book.book"
+          book="book"
           on-progress-input="$ctrl.updateBookProgress(bookName, currentPage)"
         ></progress-input>
 
         <div ng-if="$ctrl.progressUpdating">updating ..</div>
 
-        <div ng-if="$ctrl.bookWithRequestConfirmation === book.book.name">
+        <div ng-if="$ctrl.bookWithRequestConfirmation === book.name">
           <strong>Current page successfully updated.</strong> <br />
           <a ui-sref="overall" class="href--semi-styled"
             >See Overall progress</a

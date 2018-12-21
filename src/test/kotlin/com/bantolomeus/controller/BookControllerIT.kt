@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
 import java.util.*
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
@@ -77,35 +76,36 @@ class BookControllerIT {
 
         assertNotEquals(readingStatusBefore, readingStatusAfter)
         assertEquals(readingStatusAfter, (readingStatusBefore + bookResponse.currentPage))
-        assertTrue { bookUpdatesUpdated.bookUpdates.contains(bookUpdate) }
+        assertTrue { bookUpdatesUpdated!!.bookUpdates.contains(bookUpdate) }
     }
 
     @Test
     fun createAndUpdateBookWithUpdateAndBookUpdatesAreSortedByDateDESC() {
-        val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
-        val bookUpdateDTO = BookUpdateInputDTO(27)
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+        progressRepository.saveProgress(progressDTO)
+
         val challengeDTO = ChallengeDTO(pagesPerDay = 15,
                 dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
-        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val readingStatusInit = progressService.calculateReadingState()
+
         val bookUpdates = BookUpdatesFileDTO(mutableListOf(
                 BookUpdateOutputDTO("Bugs Bunny", 152, "13/06/2018"),
                 BookUpdateOutputDTO("Fire", 2, "13/06/2018"),
                 BookUpdateOutputDTO("Ants", 4, "13/06/2018"),
                 BookUpdateOutputDTO("House in the woods", 32, "04/10/2017"),
                 BookUpdateOutputDTO("Zap", 41, "01/01/2001")))
-
-        progressRepository.saveProgress(progressDTO)
-        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
-
-        val readingStatusInit = progressService.calculateReadingState()
         bookUpdateRepository.saveBookUpdate(bookUpdates)
+
+        val bookDTO = BookDTO(name = "testBook", author = "Jim Carry", pagesTotal = 314, currentPage = 12)
         val bookResponse = bookController.createBook(bookDTO)
         val readingStatusAfterBookCreation = progressService.calculateReadingState()
         val bookUpdatesUpdated = bookUpdateRepository.getBookUpdates()
 
         assertNotEquals(readingStatusInit, readingStatusAfterBookCreation)
         assertEquals(readingStatusAfterBookCreation, (readingStatusInit + bookResponse.currentPage))
-        assertEquals(bookUpdatesUpdated.bookUpdates[0].name, bookDTO.name)
+        assertEquals(bookUpdatesUpdated!!.bookUpdates[0].name, bookDTO.name)
         assertEquals(bookUpdatesUpdated.bookUpdates[0].pagesRead, bookDTO.currentPage)
         assertEquals(bookUpdatesUpdated.bookUpdates[1].name, bookUpdates.bookUpdates[0].name)
         assertEquals(bookUpdatesUpdated.bookUpdates[2].name, bookUpdates.bookUpdates[1].name)
@@ -113,11 +113,12 @@ class BookControllerIT {
         assertEquals(bookUpdatesUpdated.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
         assertEquals(bookUpdatesUpdated.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
 
+        val bookUpdateDTO = BookUpdateInputDTO(currentPage = 27)
         val updateResponse = bookController.updateBook(bookUpdateDTO, bookDTO.name)
         val readingStatusAfterBookUpdate = progressService.calculateReadingState()
 
-        assertEquals(readingStatusAfterBookUpdate, (readingStatusInit + bookUpdateDTO.currentPage))
-        assertEquals(updateResponse.bookUpdates[0].name, bookDTO.name)
+        assertEquals((readingStatusInit + bookUpdateDTO.currentPage), readingStatusAfterBookUpdate)
+        assertEquals(bookDTO.name, updateResponse.bookUpdates[0].name)
         assertEquals(updateResponse.bookUpdates[0].pagesRead, bookUpdateDTO.currentPage)
         assertEquals(updateResponse.bookUpdates[1].name, bookUpdates.bookUpdates[0].name)
         assertEquals(updateResponse.bookUpdates[2].name, bookUpdates.bookUpdates[1].name)
@@ -155,7 +156,7 @@ class BookControllerIT {
         assertNotEquals(readingStatusBefore, readingStatusAfter)
         assertEquals(readingStatusAfter, (readingStatusBefore + bookUpdateResponse.bookUpdates[0].pagesRead))
         assertEquals(progressFileAfter.pagesEverRead, (progressFileBefore.pagesEverRead + 20))
-        assertEquals(booksFile.books[0], bookDTOAfterUpdate)
+        assertEquals(booksFile[0], bookDTOAfterUpdate)
         assertEquals(bookUpdateResponse.bookUpdates[0].name, "Zap")
         assertEquals(bookUpdateResponse.bookUpdates[0].date, today)
         assertEquals(bookUpdateResponse.bookUpdates[0].pagesRead, 20)
@@ -164,6 +165,82 @@ class BookControllerIT {
         assertEquals(bookUpdateResponse.bookUpdates[3].name, bookUpdates.bookUpdates[2].name)
         assertEquals(bookUpdateResponse.bookUpdates[4].name, bookUpdates.bookUpdates[3].name)
         assertEquals(bookUpdateResponse.bookUpdates[5].name, bookUpdates.bookUpdates[4].name)
+    }
+
+    @Test
+    fun getAllBooks() {
+        val books = mutableListOf(
+                BookDTO(name = "Bugs Bunny", author = "ich", pagesTotal = 152),
+                BookDTO(name = "Fire", author = "er", pagesTotal =  2),
+                BookDTO(name = "Ants", author = "sie", pagesTotal =  4),
+                BookDTO(name = "House in the woods", author = "es", pagesTotal = 32),
+                BookDTO(name = "Zap", author = "du", pagesTotal = 41))
+
+        bookRepository.saveBooks(books)
+
+        val response = bookController.getAllBooks()
+
+        assertEquals(books, response)
+    }
+
+    @Test
+    fun updateBookWithUserDate() {
+        val aDayInThePast = "01/11/2000"
+        val anotherDayInThePast = "12/11/2003"
+        val bookDTO = BookDTO(name = "Root of all Problems", author = "Alex Snoq", pagesTotal = 414, currentPage = 52, dateStarted = aDayInThePast)
+        val bookDTOAfterUpdate = BookDTO(name = "Root of all Problems", author = "Alex Snoq", pagesTotal = 414, currentPage = 102, dateStarted = today)
+        val bookUpdateDTO = BookUpdateInputDTO(102, anotherDayInThePast)
+        val challengeDTO = ChallengeDTO(pagesPerDay = 15,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+
+        val progressFileBefore = progressRepository.saveProgress(progressDTO)
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val readingStatusBefore = progressService.calculateReadingState()
+        bookRepository.saveBookIfItNotExists(bookDTO)
+        val bookUpdateResponse = bookController.updateBook(bookUpdateDTO, bookDTO.name)
+        val booksFile = bookRepository.getBooks()
+        val readingStatusAfter = progressService.calculateReadingState()
+        val progressFileAfter = progressRepository.getProgress()
+
+        assertNotEquals(readingStatusBefore, readingStatusAfter)
+        assertEquals(readingStatusAfter, (readingStatusBefore + bookUpdateResponse.bookUpdates[0].pagesRead))
+        assertEquals((progressFileBefore.pagesEverRead + 50), progressFileAfter.pagesEverRead)
+        assertEquals(booksFile[0], bookDTOAfterUpdate)
+        assertEquals(bookUpdateResponse.bookUpdates[0].name, bookDTO.name)
+        assertEquals(bookUpdateResponse.bookUpdates[0].date, anotherDayInThePast)
+        assertEquals(bookUpdateResponse.bookUpdates[0].pagesRead, 50)
+    }
+
+    @Test
+    fun finishBookThroughUpdateWithCorrectReadTime() {
+        val book = BookDTO(name = "The sea is blue", author = "Moby Dick", pagesTotal = 1842)
+        val bookUpdated = BookDTO(
+                name = "The sea is blue",
+                author = "Moby Dick",
+                pagesTotal = 1842,
+                currentPage = 1842,
+                dateStarted = today,
+                // TODO: after #97 set readTime to 1
+                readTime = 0)
+        val bookUpdate = BookUpdateInputDTO(1842)
+
+        val challengeDTO = ChallengeDTO(pagesPerDay = 15,
+                dateStarted = dateFormat.format(GregorianCalendar(2018, 4, 22).time))
+        val progressDTO = ProgressFileDTO(pagesReadInCurrentChallenge = 0, pagesEverRead = 1000)
+
+        progressRepository.saveProgress(progressDTO)
+
+        assertTrue { challengeRepository.getChallenge().dateStarted.isEmpty() }
+        challengeRepository.saveOrUpdateChallengeData(challengeDTO)
+
+        val bookResponse = bookController.createBook(book)
+        bookController.updateBook(bookUpdate, book.name)
+        val bookAfterUpdate = bookController.getBookWithUpdates(book.name)
+
+        assertEquals(0, bookResponse.currentPage)
+        assertEquals(bookUpdated, bookAfterUpdate.book)
     }
 
     @After

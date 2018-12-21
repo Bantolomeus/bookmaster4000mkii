@@ -23,11 +23,7 @@ function TodaysProgress($resource, $timeout) {
   };
 
   function queryBooks() {
-    Books.query().$promise.then(books => {
-      ctrl.books = books.map(book => {
-        return Books.get({bookName: book});
-      });
-    });
+    ctrl.books = Books.query();
   }
 
   ctrl.toggleInputActiveFor = (book, shouldBeActive) => {
@@ -70,14 +66,14 @@ function TodaysProgress($resource, $timeout) {
 
   ctrl.progressInPercent = book => {
     return Math.min(
-      (book.book.currentPage / book.book.pagesTotal) * 100,
-      book.book.pagesTotal
+      (book.currentPage / book.pagesTotal) * 100,
+      book.pagesTotal
     );
   };
 
   ctrl.onlyUnfinishedBooks = book => {
-    if (!angular.isDefined(book.book)) return false;
+    if (!angular.isDefined(book)) return false;
 
-    return book.book.currentPage < book.book.pagesTotal;
+    return book.currentPage < book.pagesTotal;
   };
 }

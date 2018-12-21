@@ -16,84 +16,69 @@ class BookService(private val bookRepository: BookRepository,
 
     fun createBook(bookDTO: BookDTO): BookDTO {
         val savedBookDTO = bookRepository.saveBookIfItNotExists(bookDTO)
-        if (savedBookDTO.currentPage > 0L) {
-            saveBookUpdate(savedBookDTO)
+        if (savedBookDTO.currentPage > 0) {
+            saveFirstBookUpdate(savedBookDTO)
         }
         return bookDTO
     }
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
-        var response = BookUpdatesFileDTO()
-        var books = bookRepository.getBooks().books.filter { it.name != bookName }
-        var oldPage = Long.MAX_VALUE
-        val foundBook = bookRepository.getBookByName(bookName)
-
-        if (foundBook.name == bookName) {
-            foundBook.let {
-                oldPage = it.currentPage
-                it.currentPage = bookUpdate.currentPage
-                if (it.currentPage >= it.pagesTotal) {
-                    it.readTime = (Date().time - dateFormat.parse(it.dateStarted).time) / DIVISOR_FOR_DAY
-                }
-            }
-            books = mutableListOf(foundBook) + books.toMutableList()
+        val book = bookRepository.getBookByName(bookName) ?: return BookUpdatesFileDTO()
+        if (book.currentPage == book.pagesTotal) {
+            book.readTime = ((Date().time.minus(dateFormat.parse(book.dateStarted).time)) / DIVISOR_FOR_DAY)
         }
 
-        if (oldPage < bookUpdate.currentPage && foundBook.name == bookName
-                && bookUpdate.currentPage <= foundBook.pagesTotal) {
-            bookRepository.saveBooks(BooksFileDTO(books.toMutableList()))
-            val bookUpdates = bookUpdatesRepository.getBookUpdates()
-            val currentDate = dateFormat.format(Date())
-            val foundBookUpdate = bookUpdates.bookUpdates.filter { it.date == currentDate && it.name == bookName }
-                    .getOrElse(0) { _ -> BookUpdateOutputDTO()}
-
-            val pagesRead = bookUpdate.currentPage.minus(oldPage)
-            if (pagesRead > 0 && foundBookUpdate.date.isEmpty()) {
-                bookUpdates.bookUpdates.add(0, BookUpdateOutputDTO(
-                        name = bookName,
-                        pagesRead = pagesRead,
-                        date = currentDate)
-                )
-                response = bookUpdatesRepository.saveBookUpdate(bookUpdates)
-                progressService.saveProgress(pagesRead)
-            } else if (foundBookUpdate.date.isNotEmpty()) {
-                val oldBookUpdates = bookUpdates.bookUpdates.filter {
-                    it.date != foundBookUpdate.date || it.name != bookName
-                }.toMutableList()
-                oldBookUpdates.add(0, BookUpdateOutputDTO(
-                        name = bookName,
-                        pagesRead = bookUpdate.currentPage.minus(oldPage).plus(foundBookUpdate.pagesRead),
-                        date = currentDate)
-                )
-                response = bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO(oldBookUpdates))
-                progressService.saveProgress(pagesRead)
-            }
+        val oldPage = book.currentPage.also { book.currentPage = bookUpdate.currentPage}
+        val pagesRead = bookUpdate.currentPage.minus(oldPage)
+        if (pagesRead <= 0 || bookUpdate.currentPage > book.pagesTotal) {
+            return BookUpdatesFileDTO()
         }
-        return response
+        bookRepository.updateBook(book)
+
+        val currentDate = dateFormat.format(Date())
+        val updateFromToday = bookUpdatesRepository.getUpdateFromToday(book.name)
+        return if (updateFromToday == null) {
+            saveBookUpdate(bookName, pagesRead, bookUpdate.date, BookUpdateOutputDTO(), bookUpdate, oldPage)
+        } else {
+            saveBookUpdate(bookName, pagesRead, currentDate, updateFromToday, bookUpdate, oldPage)
+        }
     }
 
     fun getBookWithUpdates(bookName: String): BookGetDTO {
         val book = bookRepository.getBookByName(bookName)
-        val bookUpdates = bookUpdatesRepository.getBookUpdates().bookUpdates
-                .filter { it.name == bookName }
-                .map { ProgressUpdateDTO(it.date, it.pagesRead)}
-        return BookGetDTO(book, bookUpdates)
+        val bookUpdates = bookUpdatesRepository.getBookUpdates()?.bookUpdates
+                ?.filter { it.name == bookName }
+                ?.map { ProgressUpdateDTO(it.date, it.pagesRead)}
+        return BookGetDTO(book ?: BookDTO(), bookUpdates ?: emptyList())
     }
 
-    fun getAllBookNames(): List<String> {
-        return bookRepository.getBooks().books.map { it.name }.sorted()
+    fun getAllBooks(): List<BookDTO> {
+        return bookRepository.getBooks()
     }
 
     fun sortBookUpdates(): BookUpdatesFileDTO {
         return bookUpdatesRepository.sortBookUpdates()
     }
 
-    private fun saveBookUpdate(bookDTO: BookDTO) {
-        if (bookDTO.currentPage > 0) {
-            val bookUpdates = bookUpdatesRepository.getBookUpdates()
-            bookUpdates.bookUpdates.add(0, bookDTO.toBookUpdateDTO())
-            bookUpdatesRepository.saveBookUpdate(bookUpdates)
-            progressService.saveProgress(bookDTO.currentPage)
-        }
+    private fun saveFirstBookUpdate(bookDTO: BookDTO) {
+        val existingUpdates = (bookUpdatesRepository.getBookUpdates() ?: BookUpdatesFileDTO()).bookUpdates
+        val newUpdate = BookUpdatesFileDTO(listOf(bookDTO.toBookUpdateDTO())).bookUpdates
+        val bookUpdates = BookUpdatesFileDTO(newUpdate + existingUpdates)
+        bookUpdatesRepository.saveBookUpdate(bookUpdates)
+        progressService.saveProgress(bookDTO.currentPage)
+    }
+
+    private fun saveBookUpdate(bookName: String, pagesRead: Long, date: String, bookUpdateFromToday: BookUpdateOutputDTO?,
+                               bookUpdate: BookUpdateInputDTO, oldPage: Long): BookUpdatesFileDTO {
+        val bookUpdates = bookUpdatesRepository.getBookUpdates()?.bookUpdates?.filter {
+            it.date != bookUpdateFromToday?.date || it.name != bookName
+        }?.toMutableList()
+        bookUpdates?.add(0, BookUpdateOutputDTO(
+                name = bookName,
+                pagesRead = bookUpdate.currentPage.minus(oldPage).plus(bookUpdateFromToday!!.pagesRead),
+                date = date)
+        )
+        progressService.saveProgress(pagesRead)
+        return bookUpdatesRepository.saveBookUpdate(BookUpdatesFileDTO(bookUpdates ?: mutableListOf()))
     }
 }

@@ -33,32 +33,28 @@ class BookServiceTest {
 
     private val bookDTOCaptor = argumentCaptor<BookDTO>()
 
-    private val booksFileDTOCaptor = argumentCaptor<BooksFileDTO>()
-
     private val bookUpdateFileDTOCaptor = argumentCaptor<BookUpdatesFileDTO>()
 
     @Test
     fun getAllBooks() {
         val bookDTO1 = BookDTO(name = "testName", author = "testAuthor", pagesTotal = 521)
         val bookDTO2 = BookDTO(name = "testName2", author = "testAuthor", pagesTotal = 51)
-        val expectedList = listOf("testName", "testName2")
-        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO2))
+        val expectedBooks = mutableListOf(bookDTO1, bookDTO2)
 
-        given(bookRepository.getBooks()).willReturn(booksFileDTO)
-        val allBooks = booksService.getAllBookNames()
+        given(bookRepository.getBooks()).willReturn(expectedBooks)
+        val allBooks = booksService.getAllBooks()
 
-        assertEquals(expectedList, allBooks)
+        assertEquals(expectedBooks, allBooks)
     }
 
     @Test
     fun getAllBooksWithoutBooks() {
-        val expectedList = listOf<String>()
-        val booksFileDTO = BooksFileDTO(mutableListOf())
+        val expectedBooks = mutableListOf(BookDTO())
 
-        given(bookRepository.getBooks()).willReturn(booksFileDTO)
-        val allBooks = booksService.getAllBookNames()
+        given(bookRepository.getBooks()).willReturn(expectedBooks)
+        val allBooks = booksService.getAllBooks()
 
-        assertEquals(expectedList, allBooks)
+        assertEquals(expectedBooks, allBooks)
     }
 
     @Test
@@ -67,7 +63,7 @@ class BookServiceTest {
         val bookDTO2 = BookDTO(name = "Hasenklo ist so fro", author = "Vin Diesel", pagesTotal = 51)
         val bookDTO3 = BookDTO()
 
-        val booksFileDTO = BooksFileDTO(mutableListOf(bookDTO1, bookDTO3))
+        val booksFileDTO = mutableListOf(bookDTO1, bookDTO3)
         given(bookRepository.getBooks()).willReturn(booksFileDTO)
         given(bookRepository.saveBookIfItNotExists(bookDTO2)).willReturn(bookDTO2)
         booksService.createBook(bookDTO2)
@@ -104,18 +100,18 @@ class BookServiceTest {
 
     @Test
     fun updateBook() {
-        val bookDTO = BookDTO(name = "Wohlfahrtsverlust durch Steuern", author = "Your Mother", pagesTotal = 521)
+        val book = BookDTO(name = "Wohlfahrtsverlust durch Steuern", author = "Your Mother", pagesTotal = 521)
         val bookDTOUpdated = BookDTO(
                 name = "Wohlfahrtsverlust durch Steuern",
                 author = "Your Mother",
                 pagesTotal = 521,
                 currentPage = 12)
         val bookUpdate = BookUpdateInputDTO(12)
-        val booksFile = BooksFileDTO(mutableListOf(bookDTO))
+        val booksFile = mutableListOf(book)
         val bookUpdates = BookUpdatesFileDTO(
                 mutableListOf(
                         BookUpdateOutputDTO(
-                            bookDTO.name,
+                            book.name,
                             bookUpdate.currentPage,
                             dateFormat.format(Date())
                         )
@@ -123,16 +119,16 @@ class BookServiceTest {
         )
 
         given(bookRepository.getBooks()).willReturn(booksFile)
-        given(bookRepository.getBookByName(any())).willReturn(bookDTO)
+        given(bookRepository.getBookByName(any())).willReturn(book)
         given(bookUpdatesRepository.saveBookUpdate(bookUpdates)).willReturn(bookUpdates)
         given(bookUpdatesRepository.getBookUpdates()).willReturn(BookUpdatesFileDTO())
 
-        booksService.updateBook(bookUpdate, bookDTO.name)
+        booksService.updateBook(bookUpdate, book.name)
 
-        verify(bookRepository).saveBooks(booksFileDTOCaptor.capture())
+        verify(bookRepository).updateBook(bookDTOCaptor.capture())
         verify(bookUpdatesRepository).saveBookUpdate(bookUpdateFileDTOCaptor.capture())
         assertEquals(bookUpdates, bookUpdateFileDTOCaptor.firstValue)
-        assertEquals(bookDTOUpdated, booksFileDTOCaptor.firstValue.books[0])
+        assertEquals(bookDTOUpdated, bookDTOCaptor.firstValue)
     }
 
     private fun compareBookDTOWithBookGetDTO(expected: BookDTO, actual: BookGetDTO) {
