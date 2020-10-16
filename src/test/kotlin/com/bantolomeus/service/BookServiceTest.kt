@@ -131,8 +131,6 @@ class BookServiceTest {
         assertEquals(bookDTOUpdated, bookDTOCaptor.firstValue)
     }
 
-//    TODO: finsh book
-
     private fun compareBookDTOWithBookGetDTO(expected: BookDTO, actual: BookGetDTO) {
         assertEquals(expected.name, actual.book.name)
         assertEquals(expected.readTime, actual.book.readTime)

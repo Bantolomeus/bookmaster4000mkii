@@ -2,7 +2,6 @@ package com.bantolomeus.repository
 
 import com.bantolomeus.date.dateFormat
 import com.bantolomeus.dto.BookDTO
-import com.bantolomeus.dto.BookUpdateOutputDTO
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.stereotype.Repository

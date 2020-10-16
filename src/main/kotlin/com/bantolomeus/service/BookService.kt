@@ -24,8 +24,8 @@ class BookService(private val bookRepository: BookRepository,
 
     fun updateBook(bookUpdate: BookUpdateInputDTO, bookName: String): BookUpdatesFileDTO {
         val book = bookRepository.getBookByName(bookName) ?: return BookUpdatesFileDTO()
-        if (book.currentPage == book.pagesTotal) {
-            book.readTime = ((Date().time.minus(dateFormat.parse(book.dateStarted).time)) / DIVISOR_FOR_DAY)
+        if (bookUpdate.currentPage == book.pagesTotal) {
+            book.readTime = ((Date().time.minus(dateFormat.parse(book.dateStarted).time)) / DIVISOR_FOR_DAY) + 1
         }
 
         val oldPage = book.currentPage.also { book.currentPage = bookUpdate.currentPage}
