@@ -51,6 +51,7 @@ class BookServiceTest {
     fun getAllBooksWithoutBooks() {
         val expectedBooks = mutableListOf(BookDTO())
 
+        
         given(bookRepository.getBooks()).willReturn(expectedBooks)
         val allBooks = booksService.getAllBooks()
 
