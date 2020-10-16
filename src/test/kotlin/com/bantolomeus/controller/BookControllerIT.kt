@@ -222,8 +222,7 @@ class BookControllerIT {
                 pagesTotal = 1842,
                 currentPage = 1842,
                 dateStarted = today,
-                // TODO: after #97 set readTime to 1
-                readTime = 0)
+                readTime = 1)
         val bookUpdate = BookUpdateInputDTO(1842)
 
         val challengeDTO = ChallengeDTO(pagesPerDay = 15,
