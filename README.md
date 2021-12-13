@@ -47,6 +47,14 @@ Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/
 
 I recommend a tool like Postman to set up the http calls. For detailed Api call description, see scripts in the API directory.
 
+### CI
+
+Every commits gets built, tested and quality checked by a GitHub workflow.
+
+For downloading CI workflow artifacts, go to the [repo's action tab](https://github.com/Bantolomeus/bookmaster4000mkii/actions) and download from a specific job's _Artifacts_ section.
+
+[Codacy](https://github.com/marketplace/actions/codacy-analysis-cli) does the code quality check. Find results in the [repo's security tab](https://github.com/Bantolomeus/bookmaster4000mkii/security/code-scanning).
+
 ### Maintainers
 
 - [Bantolomeus](https://github.com/Bantolomeus)
