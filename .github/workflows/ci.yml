@@ -1,0 +1,25 @@
+name: CI with Maven
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Build & Test Backend and Frontend
+        run: mvn --batch-mode package
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: packaged-jar
+          path: target/bookmaster*.jar

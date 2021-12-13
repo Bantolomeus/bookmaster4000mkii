@@ -1,11 +1,11 @@
 # Bookmaster 4000 MARK II _(bookmaster4000mkii)_
 
-[![Build Status](https://travis-ci.org/Bantolomeus/bookmaster4000mkii.svg?branch=master)](https://travis-ci.org/Bantolomeus/bookmaster4000mkii) 
+[![Build Status](https://travis-ci.org/Bantolomeus/bookmaster4000mkii.svg?branch=master)](https://travis-ci.org/Bantolomeus/bookmaster4000mkii)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.bantolomeus%3Abookmaster4000mkii&metric=alert_status)](https://sonarcloud.io/dashboard/index/com.bantolomeus:bookmaster4000mkii)
 
-> Improve your reading habits. Api to document your books read and your daily reading progress. 
+> Improve your reading habits. Api to document your books read and your daily reading progress.
 >
-> Featuring: Kotlin :cookie: Spring :cookie: json 
+> Featuring: Kotlin :cookie: Spring :cookie: json
 
 ### Install
 
@@ -21,11 +21,11 @@
 
 **Dependencies**
 
-* Apache Maven 3.6.x
-* Kotlin 1.2.x
-* Java 1.8.x
-* node 12.20
-* npm 6.14.x
+- Apache Maven 3.6
+- Kotlin 1.3
+- Java 1.8
+- node 12.20
+- npm 6.14
 
 ### Usage
 
@@ -49,12 +49,12 @@ I recommend a tool like Postman to set up the http calls. For detailed Api call 
 
 ### Maintainers
 
-* [Bantolomeus](https://github.com/Bantolomeus)
-* [Husterknupp](https://github.com/Husterknupp)
+- [Bantolomeus](https://github.com/Bantolomeus)
+- [Husterknupp](https://github.com/Husterknupp)
 
 ### Contribute
 
-Please check out the repo, use it yourself and come back with feature requests/bug tickets 
+Please check out the repo, use it yourself and come back with feature requests/bug tickets
 
 Also on any open issue we would be happy to get some help. So far they're not labeled with a 'good for beginner' label.
 
