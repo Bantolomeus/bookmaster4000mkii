@@ -3,7 +3,7 @@ name: CI with Maven
 on: [push]
 
 jobs:
-  build:
+  build_and_test_and_upload:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,13 +12,19 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
-          distribution: 'adopt'
+          java-version: "8"
+          distribution: "adopt"
           cache: maven
 
-      - name: Build & Test Backend and Frontend
+      # maven will trigger npm to build the UI
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12"
+
+      - name: Build, Test and Package
         run: mvn --batch-mode package
 
+      # artifacts overwrite each other if the name matches more than one
       - uses: actions/upload-artifact@v2
         with:
           name: packaged-jar
