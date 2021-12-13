@@ -21,10 +21,11 @@
 
 **Dependencies**
 
-* Apache Maven 3.5.x
+* Apache Maven 3.6.x
 * Kotlin 1.2.x
 * Java 1.8.x
-* npm 5.6.x
+* node 12.20
+* npm 6.14.x
 
 ### Usage
 
@@ -44,9 +45,7 @@ The app is now running on `localhost:8080/`
 
 Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/controller`](src/main/kotlin/com/bantolomeus/controller).
 
-I recommend a tool like Postman to set up the http calls.
-
-[`Detailed Api call description`](Api.md)
+I recommend a tool like Postman to set up the http calls. For detailed Api call description, see scripts in the API directory.
 
 ### Maintainers
 
