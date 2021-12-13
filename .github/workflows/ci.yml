@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: "Checkout repo"
+        uses: actions/checkout@v2
 
       - name: Set up JDK
         uses: actions/setup-java@v2
@@ -17,7 +18,8 @@ jobs:
           cache: maven
 
       # maven will trigger npm to build the UI
-      - uses: actions/setup-node@v2
+      - name: "Set up Node.js"
+        uses: actions/setup-node@v2
         with:
           node-version: "12"
 
@@ -25,16 +27,18 @@ jobs:
         run: mvn --batch-mode package
 
       # artifacts overwrite each other if the name matches more than one
-      - uses: actions/upload-artifact@v2
+      - name: "Upload packaged jar"
+        uses: actions/upload-artifact@v2
         with:
           name: packaged-jar
           path: target/bookmaster*.jar
 
-  code-analysis:
+  code_analysis:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: "Checkout repo"
+        uses: actions/checkout@v2
 
       - name: Codacy Analysis CLI
         uses: codacy/codacy-analysis-cli-action@master
@@ -48,7 +52,7 @@ jobs:
           max-allowed-issues: 2147483647
 
       # Upload the SARIF file generated in the previous step
-      - name: Upload SARIF results file
+      - name: Upload results file (code scanning alerts)
         uses: github/codeql-action/upload-sarif@main
         with:
           sarif_file: results.sarif
