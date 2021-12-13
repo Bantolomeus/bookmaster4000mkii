@@ -1,6 +1,5 @@
-### Create a Challenge
+#!/bin/sh
 
-```
 curl -X POST \
   http://localhost:8080/challenge \
   -H 'Content-Type: application/json' \
@@ -8,4 +7,3 @@ curl -X POST \
     "pagesPerDay": 15,
     "dateStarted": "21/05/2018"
 }'
-```

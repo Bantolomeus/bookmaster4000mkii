@@ -14,6 +14,8 @@ const val BOOK_FILE = "books.json"
 class BookRepository(private val bookFile: String = BOOK_FILE) {
     private val objectMapper = jacksonObjectMapper()
 
+    // todo check if BOOK_FILE exists, otherwise create empty file
+
     fun saveBooks(books: List<BookDTO>): List<BookDTO> {
         objectMapper.writeValue(File(bookFile), books)
         return books
