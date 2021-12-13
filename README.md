@@ -1,6 +1,6 @@
 # Bookmaster 4000 MARK II _(bookmaster4000mkii)_
 
-![example workflow](https://github.com/Bantolomeus/bookmaster4000mkii/actions/workflows/ci.yml/badge.svg?branch=master)
+![CI passing](https://github.com/Bantolomeus/bookmaster4000mkii/actions/workflows/ci.yml/badge.svg?branch=master)
 
 > Improve your reading habits. Api to document your books read and your daily reading progress.
 >
