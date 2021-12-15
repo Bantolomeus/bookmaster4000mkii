@@ -1,3 +1,6 @@
+# Maven
+mvnw
+mvnw.cmd
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
@@ -36,6 +39,7 @@ nbdist/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# frontend stuff
 .nyc_output/
 .settings/
 .vagrant/
@@ -47,14 +51,11 @@ node_modules/
 src/main/resources/public
 stats.json
 
-[^/]*-local.*
-lib/
-application.yaml
+# Mac OS
+.DS_Store
 
-mvnw
-mvnw.cmd
 books.json
 bookUpdates.json
 challenge.json
 progress.json
-.DS_Store
+repos/
