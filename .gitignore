@@ -50,6 +50,9 @@ modules/
 node_modules/
 src/main/resources/public
 stats.json
+/lib/
+.bsb.lock
+.merlin
 
 # Mac OS
 .DS_Store
@@ -59,3 +62,5 @@ bookUpdates.json
 challenge.json
 progress.json
 repos/
+client.bak/
+rescript-project-template/

@@ -4,7 +4,7 @@
 
 > Improve your reading habits. Api to document your books read and your daily reading progress.
 >
-> Featuring: Kotlin :cookie: Spring :cookie: json
+> Featuring: Kotlin :cookie: Spring :cookie: ReScript
 
 ### Install
 
@@ -16,7 +16,9 @@
 
 `$ npm install` to get all UI dependencies
 
-`$ npm start` to have webpack bundle everything. It will provide a live reload web server. `localhost:4002/` to open the UI (it expects a backend though).
+You want to keep running two processes
+1. `npm run re:start`
+2. and in another tab `npm run server`
 
 **Dependencies**
 

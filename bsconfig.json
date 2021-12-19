@@ -1,0 +1,18 @@
+{
+  "name": "bookmaster-client",
+  "version": "0.0.1",
+  "sources": {
+    "dir": "client",
+    "subdirs": true
+  },
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".js",
+  "bs-dependencies": ["@rescript/react", "rescript-request", "rescript-future", "bs-css", "bs-css-dom"],
+  "warnings": {
+    "error": "+101"
+  },
+  "reason": { "react-jsx": 3 }
+}

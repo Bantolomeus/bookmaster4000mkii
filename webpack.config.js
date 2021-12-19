@@ -2,42 +2,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-    // This is the "main" file which should include all other modules
-    entry: {app: './client/main.js'},
-    // Where should the compiled file go?
+    entry: './client/src/index.js',
     output: {
+        filename: "main.js",
         path: path.join(__dirname + '/src/main/resources/public'),
         publicPath: '/'
     },
+    mode: process.env.NODE_ENV === "production" ? "production" : "development",
     module: {
         rules: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            use: {
-                loader: 'babel-loader',
-                options: {
-                    presets: ['env'],
-                    cacheDirectory: true // see docs how to specify which directory for transpiled src
-                }
-            }
-        }, {
-            test: /\.html$/,
-            loader: 'html-loader'
-        }, { // will enable bootstrap.css to be bundled
             test: /\.css$/,
             use: [{
                 loader: 'style-loader'
             }, {
                 loader: 'css-loader'
-            }]
-        }, {
-            test: /\.less$/,
-            use: [{
-                loader: 'style-loader' // creates style nodes from JS strings
-            }, {
-                loader: 'css-loader' // translates CSS into CommonJS: interprets @import and url() like import/require()
-            }, {
-                loader: 'less-loader' // compiles Less to CSS
             }]
         }, { // required for graphics/fonts in css frameworks
             test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
@@ -82,9 +60,11 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './client/index.html',
             filename: './index.html',
-            inject: 'head'
+            templateContent: '<!DOCTYPE html><html><body> <div id="root"></div> </body></html>',
+            meta: {viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no', charset: "UTF-8"},
+            title: 'Bookmaster 4000 Mark II',
+            inject: 'body',
         })
     ]
 };
