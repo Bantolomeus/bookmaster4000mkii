@@ -10,7 +10,7 @@
     "in-source": true
   },
   "suffix": ".js",
-  "bs-dependencies": ["@rescript/react", "rescript-request", "rescript-future", "bs-css", "bs-css-dom"],
+  "bs-dependencies": ["@rescript/react", "rescript-request", "rescript-future", "bs-css", "bs-css-emotion"],
   "warnings": {
     "error": "+101"
   },
