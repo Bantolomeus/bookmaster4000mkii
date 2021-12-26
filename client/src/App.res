@@ -47,20 +47,49 @@ module Styles = {
   ])
 }
 
-type response = {"name": string}
+type progressType = int
+type challenge = {"pagesPerDay": int}
 
 @react.component
 let make = () => {
   let (progress, setProgress) = React.useState(_ => 1)
+  React.useEffect1(() => {
+    Request.make(
+      ~method=#POST,
+      ~url="/progress/calculate",
+      ~responseType=(JsonAsAny: Request.responseType<progressType>),
+      (),
+    )->Future.get(r => {
+      switch r {
+      | Ok({response}) =>
+        switch response {
+        | Some(response) => setProgress(_ => response)
+        | None => Js.log("could not parse response")
+        }
+      | Error(err) => Js.log2("request error", err)
+      }
+    })
+    None
+  }, [])
+
   let (pagesPerDay, setPagesPerDay) = React.useState(_ => 0)
-  // let progress = 1
-  // let pagesPerDay = 1
-  Js.log("doing request")
-  Request.make(
-    ~url="/books",
-    ~responseType=(JsonAsAny: Request.responseType<response>),
-    (),
-  )->Future.get(Js.log)
+  React.useEffect1(() => {
+    Request.make(
+      ~url="/challenge",
+      ~responseType=(JsonAsAny: Request.responseType<challenge>),
+      (),
+    )->Future.get(r => {
+      switch r {
+      | Ok({response}) =>
+        switch response {
+        | Some(response) => setPagesPerDay(_ => response["pagesPerDay"])
+        | None => Js.log("could not parse response")
+        }
+      | Error(err) => Js.log2("request error", err)
+      }
+    })
+    None
+  }, [])
 
   <div>
     <div className=Styles.overallProgressContainer>

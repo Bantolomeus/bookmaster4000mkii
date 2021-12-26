@@ -2,9 +2,11 @@
 'use strict';
 
 var CssJs = require("bs-css-emotion/src/CssJs.js");
+var Curry = require("rescript/lib/js/curry.js");
 var React = require("react");
 var Future = require("rescript-future/src/Future.js");
 var $$Request = require("rescript-request/src/Request.js");
+var Caml_option = require("rescript/lib/js/caml_option.js");
 
 var overallProgressContainer = CssJs.style([
       CssJs.textAlign(CssJs.center),
@@ -84,15 +86,48 @@ function App(Props) {
   var match = React.useState(function () {
         return 1;
       });
+  var setProgress = match[1];
   var progress$1 = match[0];
+  React.useEffect((function () {
+          Future.get($$Request.make("/progress/calculate", "POST", /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (r) {
+                  if (r.TAG === /* Ok */0) {
+                    var response = r._0.response;
+                    if (response !== undefined) {
+                      return Curry._1(setProgress, (function (param) {
+                                    return response;
+                                  }));
+                    } else {
+                      console.log("could not parse response");
+                      return ;
+                    }
+                  }
+                  console.log("request error", r._0);
+                  
+                }));
+          
+        }), []);
   var match$1 = React.useState(function () {
         return 0;
       });
-  console.log("doing request");
-  Future.get($$Request.make("/books", undefined, /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (prim) {
-          console.log(prim);
+  var setPagesPerDay = match$1[1];
+  React.useEffect((function () {
+          Future.get($$Request.make("/challenge", undefined, /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (r) {
+                  if (r.TAG === /* Ok */0) {
+                    var response = r._0.response;
+                    if (response !== undefined) {
+                      var response$1 = Caml_option.valFromOption(response);
+                      return Curry._1(setPagesPerDay, (function (param) {
+                                    return response$1.pagesPerDay;
+                                  }));
+                    }
+                    console.log("could not parse response");
+                    return ;
+                  }
+                  console.log("request error", r._0);
+                  
+                }));
           
-        }));
+        }), []);
   return React.createElement("div", undefined, React.createElement("div", {
                   className: overallProgressContainer
                 }, React.createElement("div", {
