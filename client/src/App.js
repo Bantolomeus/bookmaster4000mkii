@@ -82,6 +82,22 @@ var Styles = {
   challengeInfo: challengeInfo
 };
 
+function resolveRequest(request, cb) {
+  return Future.get(request, (function (resolved) {
+                if (resolved.TAG === /* Ok */0) {
+                  var response = resolved._0.response;
+                  if (response !== undefined) {
+                    return Curry._1(cb, Caml_option.valFromOption(response));
+                  } else {
+                    console.log("could not parse response");
+                    return ;
+                  }
+                }
+                console.log("request error", resolved._0);
+                
+              }));
+}
+
 function App(Props) {
   var match = React.useState(function () {
         return 1;
@@ -89,20 +105,10 @@ function App(Props) {
   var setProgress = match[1];
   var progress$1 = match[0];
   React.useEffect((function () {
-          Future.get($$Request.make("/progress/calculate", "POST", /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (r) {
-                  if (r.TAG === /* Ok */0) {
-                    var response = r._0.response;
-                    if (response !== undefined) {
-                      return Curry._1(setProgress, (function (param) {
-                                    return response;
-                                  }));
-                    } else {
-                      console.log("could not parse response");
-                      return ;
-                    }
-                  }
-                  console.log("request error", r._0);
-                  
+          resolveRequest($$Request.make("/progress/calculate", "POST", /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (response) {
+                  return Curry._1(setProgress, (function (param) {
+                                return response;
+                              }));
                 }));
           
         }), []);
@@ -111,20 +117,10 @@ function App(Props) {
       });
   var setPagesPerDay = match$1[1];
   React.useEffect((function () {
-          Future.get($$Request.make("/challenge", undefined, /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (r) {
-                  if (r.TAG === /* Ok */0) {
-                    var response = r._0.response;
-                    if (response !== undefined) {
-                      var response$1 = Caml_option.valFromOption(response);
-                      return Curry._1(setPagesPerDay, (function (param) {
-                                    return response$1.pagesPerDay;
-                                  }));
-                    }
-                    console.log("could not parse response");
-                    return ;
-                  }
-                  console.log("request error", r._0);
-                  
+          resolveRequest($$Request.make("/challenge", undefined, /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (response) {
+                  return Curry._1(setPagesPerDay, (function (param) {
+                                return response.pagesPerDay;
+                              }));
                 }));
           
         }), []);
@@ -145,5 +141,6 @@ function App(Props) {
 var make = App;
 
 exports.Styles = Styles;
+exports.resolveRequest = resolveRequest;
 exports.make = make;
 /* overallProgressContainer Not a pure module */

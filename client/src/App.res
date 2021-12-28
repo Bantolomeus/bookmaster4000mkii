@@ -47,6 +47,24 @@ module Styles = {
   ])
 }
 
+// todo extract request helper
+let resolveRequest = (
+  request: Future.t<result<Request.response<'payload>, Request.error>>,
+  cb: 'payload => unit,
+) => {
+  Future.get(request, resolved => {
+    switch resolved {
+    | Ok({response}) =>
+      switch response {
+      | Some(response) => cb(response)
+      | None => Js.log("could not parse response")
+      }
+    | Error(err) => Js.log2("request error", err)
+    }
+  })
+}
+
+// todo extract page 1 component  (leave App for routing and dom skelleton)
 type progressType = int
 type challenge = {"pagesPerDay": int}
 
@@ -59,16 +77,7 @@ let make = () => {
       ~url="/progress/calculate",
       ~responseType=(JsonAsAny: Request.responseType<progressType>),
       (),
-    )->Future.get(r => {
-      switch r {
-      | Ok({response}) =>
-        switch response {
-        | Some(response) => setProgress(_ => response)
-        | None => Js.log("could not parse response")
-        }
-      | Error(err) => Js.log2("request error", err)
-      }
-    })
+    )->resolveRequest(response => setProgress(_ => response))
     None
   }, [])
 
@@ -78,16 +87,7 @@ let make = () => {
       ~url="/challenge",
       ~responseType=(JsonAsAny: Request.responseType<challenge>),
       (),
-    )->Future.get(r => {
-      switch r {
-      | Ok({response}) =>
-        switch response {
-        | Some(response) => setPagesPerDay(_ => response["pagesPerDay"])
-        | None => Js.log("could not parse response")
-        }
-      | Error(err) => Js.log2("request error", err)
-      }
-    })
+    )->resolveRequest(response => setPagesPerDay(_ => response["pagesPerDay"]))
     None
   }, [])
 
