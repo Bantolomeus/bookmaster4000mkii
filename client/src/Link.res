@@ -1,4 +1,6 @@
-// not sure why this has an apostrophe
+// Copied from https://github.com/jihchi/rescript-react-realworld-example-app/blob/main/src/component/Link.res
+
+// not sure what this does - why does it have an apostrophe?
 type location'
 
 type onClickAction =
@@ -8,10 +10,12 @@ type onClickAction =
 let customFn = fn => CustomFn(fn)
 let location = location => Location(location)
 
-// not sure what's happening here with the %identity
+// type converters  (not changing the actual value)
 external make: string => location' = "%identity"
 external toString: location' => string = "%identity"
 
+// feels like the routes are a bit all over the place
+//  (get rid of `location'` and instead let `make` return a Route.t ?)
 let overall = make("/#/overall")
 let today = make("/#/today")
 
