@@ -1,4 +1,4 @@
-<div style="display: flex; padding: 1.5em;">
+<div style="display: flex; padding: 1.5em">
   <div
     ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks | orderBy:'name'"
     ng-mouseover="$ctrl.toggleInputActiveFor(book, true)"
@@ -7,7 +7,7 @@
   >
     <div
       ng-if="book.name"
-      ng-style="{background: $ctrl.nameToHexColor(book.name)}"
+      ng-style="{ background: $ctrl.nameToHexColor(book.name) }"
       class="card-body card-body--container"
     >
       <h5 class="card-title">{{ book.name }}</h5>
@@ -15,14 +15,13 @@
       <div style="display: flex">
         <div>
           <small
-            >{{ book.currentPage }} of {{ book.pagesTotal }} pages
-            read</small
+            >{{ book.currentPage }} of {{ book.pagesTotal }} pages read</small
           >
         </div>
         <div class="progress progress-bar--container">
           <div
             class="progress-bar color--side-information"
-            ng-style="{width: $ctrl.progressInPercent(book) + '%'}"
+            ng-style="{ width: $ctrl.progressInPercent(book) + '%' }"
           ></div>
         </div>
       </div>
@@ -32,7 +31,10 @@
         class="overlay--container--content-centered color--overlay overlay--container--fill-whole-parent"
       >
         <progress-input
-          ng-if="!$ctrl.progressUpdating && $ctrl.bookWithRequestConfirmation === null"
+          ng-if="
+            !$ctrl.progressUpdating &&
+            $ctrl.bookWithRequestConfirmation === null
+          "
           book="book"
           on-progress-input="$ctrl.updateBookProgress(bookName, currentPage)"
         ></progress-input>

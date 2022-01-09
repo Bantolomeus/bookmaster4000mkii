@@ -59,3 +59,6 @@ bookUpdates.json
 challenge.json
 progress.json
 repos/
+
+# vs code
+.history/

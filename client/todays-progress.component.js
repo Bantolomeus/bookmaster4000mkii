@@ -1,19 +1,19 @@
-import progressInputComponent from './progress-input.component';
-import './todays-progress.component.less';
+import progressInputComponent from "./progress-input.component";
+import "./todays-progress.component.less";
 
 module.exports.default = angular
-  .module('todaysProgress', [progressInputComponent.default])
-  .component('todaysProgress', {
+  .module("todaysProgress", [progressInputComponent.default])
+  .component("todaysProgress", {
     bindings: {},
     controller: TodaysProgress,
-    template: require('./todays-progress.component.html')
+    template: require("./todays-progress.component.html"),
   }).name;
 
-TodaysProgress.$inject = ['$resource', '$timeout'];
+TodaysProgress.$inject = ["$resource", "$timeout"];
 function TodaysProgress($resource, $timeout) {
   let ctrl = this;
-  let Books = $resource('/books/:bookName', null, {
-    addBookProgress: {method: 'PUT', isArray: false}
+  let Books = $resource("/books/:bookName", null, {
+    addBookProgress: { method: "PUT", isArray: false },
   });
 
   ctrl.$onInit = () => {
@@ -34,12 +34,12 @@ function TodaysProgress($resource, $timeout) {
     }
   };
 
-  ctrl.nameToHexColor = name => {
+  ctrl.nameToHexColor = (name) => {
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
-    let color = '#';
+    let color = "#";
     for (let i = 0; i < 3; i++) {
       let value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.substr(-2);
@@ -53,8 +53,8 @@ function TodaysProgress($resource, $timeout) {
 
     ctrl.progressUpdating = true;
     Books.addBookProgress(
-      {bookName: bookName},
-      {currentPage: currentPage},
+      { bookName: bookName },
+      { currentPage: currentPage },
       () => {
         ctrl.progressUpdating = false;
         ctrl.bookWithRequestConfirmation = bookName;
@@ -64,14 +64,14 @@ function TodaysProgress($resource, $timeout) {
     );
   };
 
-  ctrl.progressInPercent = book => {
+  ctrl.progressInPercent = (book) => {
     return Math.min(
       (book.currentPage / book.pagesTotal) * 100,
       book.pagesTotal
     );
   };
 
-  ctrl.onlyUnfinishedBooks = book => {
+  ctrl.onlyUnfinishedBooks = (book) => {
     if (!angular.isDefined(book)) return false;
 
     return book.currentPage < book.pagesTotal;
