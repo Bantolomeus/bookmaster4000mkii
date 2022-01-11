@@ -24,6 +24,7 @@ function TodaysProgress($resource, $timeout) {
 
   function queryBooks() {
     ctrl.books = Books.query();
+    updateFirstLetters();
   }
 
   ctrl.toggleInputActiveFor = (book, shouldBeActive) => {
@@ -76,4 +77,37 @@ function TodaysProgress($resource, $timeout) {
 
     return book.currentPage < book.pagesTotal;
   };
+
+  ctrl.onlyCompletedBooks = (book) => {
+    if (!angular.isDefined(book)) return false;
+
+    return book.currentPage === book.pagesTotal;
+  };
+
+  function updateFirstLetters() {
+    ctrl.books.$promise.then((books) => {
+      // format: { "A": ["A book", "Anarchy book"], "B": [...] }
+      const _indexedBooks = books.reduce((acc, book) => {
+        const firstLetter = book.name.charAt(0);
+        if (acc[firstLetter] === undefined) {
+          acc[firstLetter] = [book];
+        } else {
+          acc[firstLetter].push(book);
+        }
+        return acc;
+      }, {});
+
+      ctrl.indexedBooks = Object.entries(_indexedBooks)
+        .sort(([firstLetterA, _], [firstLetterB, __]) =>
+          firstLetterA.localeCompare(firstLetterB)
+        )
+        .map(([firstLetter, books]) => {
+          return [
+            { type: "letter", value: firstLetter },
+            ...books.map((book) => ({ type: "book", value: book })),
+          ];
+        })
+        .flat();
+    });
+  }
 }
