@@ -89,7 +89,13 @@ function TodaysProgress($resource, $timeout) {
       // format: { "A": ["A book", "Anarchy book"], "B": [...] }
       const _indexedBooks = books.reduce((acc, book) => {
         // todo filter out stop words?
-        const firstLetter = book.name.charAt(0);
+        let firstLetter;
+        if (/^\d/.test(book.name)) {
+          firstLetter = "#";
+        } else {
+          firstLetter = book.name.charAt(0);
+        }
+
         if (acc[firstLetter] === undefined) {
           acc[firstLetter] = [book];
         } else {
