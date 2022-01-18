@@ -3,7 +3,6 @@ package com.bantolomeus.controller
 import com.bantolomeus.date.dateFormat
 import com.bantolomeus.dto.*
 import com.bantolomeus.service.BookService
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
@@ -11,7 +10,6 @@ import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.springframework.test.context.junit4.SpringRunner
-import java.io.File
 import java.util.*
 import kotlin.test.assertEquals
 
