@@ -3,20 +3,20 @@ package com.bantolomeus.controller
 import com.bantolomeus.dto.*
 import com.bantolomeus.service.BookService
 import org.springframework.http.MediaType
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/books", produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
 class BookController(private val bookService: BookService) {
 
     @PostMapping
-    fun createBook(@Valid @RequestBody book: BookDTO): BookDTO {
+    fun createBook(@Validated @RequestBody book: BookDTO): BookDTO {
         return bookService.createBook(book)
     }
 
     @PutMapping(path = ["{bookName}"])
-    fun updateBook(@Valid @RequestBody bookUpdate: BookUpdateInputDTO, @PathVariable("bookName") bookName: String):
+    fun updateBook(@Validated @RequestBody bookUpdate: BookUpdateInputDTO, @PathVariable("bookName") bookName: String):
             BookUpdatesFileDTO {
         return bookService.updateBook(bookUpdate, bookName)
     }

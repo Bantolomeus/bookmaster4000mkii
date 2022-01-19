@@ -23,7 +23,7 @@ You want to keep running two processes
 **Dependencies**
 
 - Apache Maven 3.6
-- Kotlin 1.3
+- Kotlin 1.6
 - Java 1.8
 - node 12.20
 - npm 6.14
