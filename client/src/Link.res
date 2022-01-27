@@ -16,6 +16,7 @@ external toString: location' => string = "%identity"
 
 // feels like the routes are a bit all over the place
 //  (get rid of `location'` and instead let `make` return a Route.t ?)
+//  (maybe this is also interesting: https://rescript-lang.org/blog/release-9-0#cleaner-polyvariant-syntax)
 let overall = make("/#/overall")
 let today = make("/#/today")
 

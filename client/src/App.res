@@ -5,8 +5,8 @@ let make = () => {
   <>
     <Header />
     {switch route {
-    | Today => <Today />
     | Overall => <Overall />
+    | Today => <Today />
     }}
   </>
 }

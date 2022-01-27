@@ -2,59 +2,172 @@
 'use strict';
 
 var CssJs = require("bs-css-emotion/src/CssJs.js");
-var Curry = require("rescript/lib/js/curry.js");
 var React = require("react");
-var $$Request = require("rescript-request/src/Request.js");
-var ResponseMapper = require("./ResponseMapper.js");
+var StringToColor = require("string-to-color");
 
-var overallProgressContainer = CssJs.style([
-      CssJs.textAlign(CssJs.center),
-      CssJs.fontWeight({
-            NAME: "num",
-            VAL: 400
-          }),
-      CssJs.margin(CssJs.px(64))
+function str(s) {
+  return s;
+}
+
+var container = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.overflow("hidden"),
+      CssJs.lineHeight(CssJs.px(0)),
+      CssJs.fontSize(CssJs.px(12)),
+      CssJs.backgroundColor(CssJs.hex("e9ecef")),
+      CssJs.borderRadius(CssJs.px(4)),
+      CssJs.flex3(1, 1, CssJs.auto),
+      CssJs.alignSelf("center"),
+      CssJs.marginLeft(CssJs.px(6)),
+      CssJs.height(CssJs.px(6))
     ]);
 
-var header = CssJs.style([
-      CssJs.padding2(CssJs.px(12), CssJs.px(20)),
-      CssJs.marginBottom(CssJs.px(0)),
-      CssJs.backgroundColor(CssJs.rgba(0, 0, 0, {
-                NAME: "num",
-                VAL: 0.03
-              })),
-      CssJs.border(CssJs.px(1), CssJs.solid, CssJs.rgba(0, 0, 0, {
+function filling(_width) {
+  return CssJs.style([
+              CssJs.width(CssJs.pct(_width)),
+              CssJs.backgroundColor(CssJs.hex("a8aaad"))
+            ]);
+}
+
+var Styles = {
+  container: container,
+  filling: filling
+};
+
+function Today$ProgressBar(Props) {
+  var percent = Props.percent;
+  return React.createElement("div", {
+              className: container
+            }, React.createElement("div", {
+                  className: filling(percent)
+                }));
+}
+
+var ProgressBar = {
+  Styles: Styles,
+  make: Today$ProgressBar
+};
+
+var container$1 = CssJs.style([CssJs.padding(CssJs.px(24))]);
+
+var label = CssJs.style([
+      CssJs.fontSize(CssJs.px(13)),
+      CssJs.color(CssJs.hex("6c757d")),
+      CssJs.textTransform("uppercase"),
+      CssJs.margin(CssJs.px(8))
+    ]);
+
+var row = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.flexWrap("wrap")
+    ]);
+
+var bookContainer = CssJs.style([
+      CssJs.position("relative"),
+      CssJs.display("flex"),
+      CssJs.flexWrap("wrap"),
+      CssJs.flexDirection("column"),
+      CssJs.minWidth(CssJs.px(0)),
+      CssJs.wordWrap("breakWord"),
+      CssJs.backgroundColor(CssJs.hex("fff")),
+      CssJs.backgroundClip("borderBox"),
+      CssJs.border(CssJs.px(1), "solid", CssJs.rgba(0, 0, 0, {
                 NAME: "num",
                 VAL: 0.125
               })),
-      CssJs.borderRadius4(CssJs.px(3), CssJs.px(3), CssJs.px(0), CssJs.px(0))
+      CssJs.borderRadius(CssJs.px(4)),
+      CssJs.width(CssJs.px(288)),
+      CssJs.margin(CssJs.px(8))
     ]);
 
-var Styles = {
-  overallProgressContainer: overallProgressContainer,
-  header: header
+function bgColor(name) {
+  var color = StringToColor(name).replace("#", "");
+  return CssJs.style([CssJs.background(CssJs.hex(color + "7d"))]);
+}
+
+var book = CssJs.style([
+      CssJs.position("relative"),
+      CssJs.flex3(1, 1, CssJs.auto),
+      CssJs.minHeight(CssJs.px(1)),
+      CssJs.padding(CssJs.px(20)),
+      CssJs.selector("& > h1", [
+            CssJs.fontSize(CssJs.px(20)),
+            CssJs.fontWeight({
+                  NAME: "num",
+                  VAL: 500
+                }),
+            CssJs.lineHeight(CssJs.px(24)),
+            CssJs.margin3(CssJs.px(0), "auto", CssJs.px(12))
+          ])
+    ]);
+
+var progress = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.selector("& > div:first-child", [CssJs.fontSize(CssJs.px(12))])
+    ]);
+
+var InProgressStyles = {
+  container: container$1,
+  label: label,
+  row: row,
+  bookContainer: bookContainer,
+  bgColor: bgColor,
+  book: book,
+  progress: progress
 };
 
+var _books = [
+  {
+    name: "Ensel und Krete",
+    author: "Walter Moers",
+    pagesTotal: 255,
+    currentPage: 100,
+    dateStarted: "04/02/2018",
+    readTime: 0
+  },
+  {
+    name: "Harry Potski",
+    author: "Jon Doe",
+    pagesTotal: 255,
+    currentPage: 200,
+    dateStarted: "04/02/2018",
+    readTime: 0
+  }
+];
+
 function Today(Props) {
-  var match = React.useState(function () {
-        return 1;
-      });
-  var setProgress = match[1];
-  React.useEffect((function () {
-          ResponseMapper.resolveRequest($$Request.make("/progress/calculate", "POST", /* JsonAsAny */5, undefined, undefined, undefined, undefined, undefined, undefined, undefined), (function (response) {
-                  return Curry._1(setProgress, (function (param) {
-                                return response;
-                              }));
-                }));
-          
-        }), []);
-  return React.createElement("div", {
-              className: overallProgressContainer
-            }, "sa books");
+  var progressInPercent = function (book) {
+    return Math.min(book.currentPage / book.pagesTotal * 100.0, book.pagesTotal);
+  };
+  return React.createElement("div", undefined, React.createElement("div", {
+                  className: container$1
+                }, React.createElement("div", {
+                      className: label
+                    }, "In Progress"), React.createElement("div", {
+                      className: row
+                    }, _books.map(function (book$1) {
+                          var name = book$1.name;
+                          return React.createElement("div", {
+                                      key: name,
+                                      className: bookContainer
+                                    }, React.createElement("div", {
+                                          className: CssJs.merge([
+                                                book,
+                                                bgColor(name)
+                                              ])
+                                        }, React.createElement("h1", undefined, name), React.createElement("div", {
+                                              className: progress
+                                            }, React.createElement("div", undefined, book$1.currentPage.toString() + " of " + book$1.pagesTotal.toString() + " pages read"), React.createElement(Today$ProgressBar, {
+                                                  percent: progressInPercent(book$1)
+                                                }))));
+                        }))), React.createElement("div", undefined, "Completed"));
 }
 
 var make = Today;
 
-exports.Styles = Styles;
+exports.str = str;
+exports.ProgressBar = ProgressBar;
+exports.InProgressStyles = InProgressStyles;
+exports._books = _books;
 exports.make = make;
-/* overallProgressContainer Not a pure module */
+/* container Not a pure module */
