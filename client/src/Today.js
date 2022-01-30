@@ -2,6 +2,7 @@
 'use strict';
 
 var CssJs = require("bs-css-emotion/src/CssJs.js");
+var Curry = require("rescript/lib/js/curry.js");
 var React = require("react");
 var StringToColor = require("string-to-color");
 
@@ -25,7 +26,7 @@ var container = CssJs.style([
 function filling(_width) {
   return CssJs.style([
               CssJs.width(CssJs.pct(_width)),
-              CssJs.backgroundColor(CssJs.hex("a8aaad"))
+              CssJs.backgroundColor(CssJs.darkgrey)
             ]);
 }
 
@@ -47,20 +48,6 @@ var ProgressBar = {
   Styles: Styles,
   make: Today$ProgressBar
 };
-
-var container$1 = CssJs.style([CssJs.padding(CssJs.px(24))]);
-
-var label = CssJs.style([
-      CssJs.fontSize(CssJs.px(13)),
-      CssJs.color(CssJs.hex("6c757d")),
-      CssJs.textTransform("uppercase"),
-      CssJs.margin(CssJs.px(8))
-    ]);
-
-var row = CssJs.style([
-      CssJs.display("flex"),
-      CssJs.flexWrap("wrap")
-    ]);
 
 var bookContainer = CssJs.style([
       CssJs.position("relative"),
@@ -106,14 +93,69 @@ var progress = CssJs.style([
       CssJs.selector("& > div:first-child", [CssJs.fontSize(CssJs.px(12))])
     ]);
 
-var InProgressStyles = {
-  container: container$1,
-  label: label,
-  row: row,
+var overlay = CssJs.style([
+      CssJs.background(CssJs.rgba(255, 255, 255, {
+                NAME: "num",
+                VAL: 0.8
+              })),
+      CssJs.display("flex"),
+      CssJs.justifyContent("center"),
+      CssJs.alignItems("center"),
+      CssJs.position("absolute"),
+      CssJs.top(CssJs.px(0)),
+      CssJs.left(CssJs.px(0)),
+      CssJs.width(CssJs.pct(100)),
+      CssJs.height(CssJs.pct(100))
+    ]);
+
+var Styles$1 = {
   bookContainer: bookContainer,
   bgColor: bgColor,
   book: book,
-  progress: progress
+  progress: progress,
+  overlay: overlay
+};
+
+function Today$Book(Props) {
+  var name = Props.name;
+  var currentPage = Props.currentPage;
+  var pagesTotal = Props.pagesTotal;
+  var match = React.useState(function () {
+        return false;
+      });
+  var setHover = match[1];
+  var progressInPercent = function (currentPage, pagesTotal) {
+    return Math.min(currentPage / pagesTotal * 100.0, pagesTotal);
+  };
+  return React.createElement("div", {
+              className: bookContainer,
+              onMouseLeave: (function (param) {
+                  return Curry._1(setHover, (function (param) {
+                                return false;
+                              }));
+                }),
+              onMouseOver: (function (param) {
+                  return Curry._1(setHover, (function (param) {
+                                return true;
+                              }));
+                })
+            }, React.createElement("div", {
+                  className: CssJs.merge([
+                        book,
+                        bgColor(name)
+                      ])
+                }, React.createElement("h1", undefined, name), React.createElement("div", {
+                      className: progress
+                    }, React.createElement("div", undefined, currentPage.toString() + " of " + pagesTotal.toString() + " pages read"), React.createElement(Today$ProgressBar, {
+                          percent: progressInPercent(currentPage, pagesTotal)
+                        })), match[0] ? React.createElement("div", {
+                        className: overlay
+                      }, "") : React.createElement(React.Fragment, undefined)));
+}
+
+var Book = {
+  Styles: Styles$1,
+  make: Today$Book
 };
 
 var _books = [
@@ -135,31 +177,49 @@ var _books = [
   }
 ];
 
+var container$1 = CssJs.style([CssJs.padding(CssJs.px(24))]);
+
+var label = CssJs.style([
+      CssJs.fontSize(CssJs.px(13)),
+      CssJs.color(CssJs.hex("6c757d")),
+      CssJs.textTransform("uppercase"),
+      CssJs.margin(CssJs.px(8))
+    ]);
+
+var row = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.flexWrap("wrap")
+    ]);
+
+var Styles$2 = {
+  container: container$1,
+  label: label,
+  row: row
+};
+
 function Today(Props) {
-  var progressInPercent = function (book) {
-    return Math.min(book.currentPage / book.pagesTotal * 100.0, book.pagesTotal);
-  };
   return React.createElement("div", undefined, React.createElement("div", {
                   className: container$1
                 }, React.createElement("div", {
                       className: label
                     }, "In Progress"), React.createElement("div", {
                       className: row
-                    }, _books.map(function (book$1) {
-                          var name = book$1.name;
-                          return React.createElement("div", {
-                                      key: name,
-                                      className: bookContainer
-                                    }, React.createElement("div", {
-                                          className: CssJs.merge([
-                                                book,
-                                                bgColor(name)
-                                              ])
-                                        }, React.createElement("h1", undefined, name), React.createElement("div", {
-                                              className: progress
-                                            }, React.createElement("div", undefined, book$1.currentPage.toString() + " of " + book$1.pagesTotal.toString() + " pages read"), React.createElement(Today$ProgressBar, {
-                                                  percent: progressInPercent(book$1)
-                                                }))));
+                    }, _books.filter(function (param) {
+                              return param.currentPage <= param.pagesTotal;
+                            }).sort(function (_1, _2) {
+                            if (_1.name < _2.name) {
+                              return -1;
+                            } else {
+                              return 1;
+                            }
+                          }).map(function (param) {
+                          var name = param.name;
+                          return React.createElement(Today$Book, {
+                                      name: name,
+                                      currentPage: param.currentPage,
+                                      pagesTotal: param.pagesTotal,
+                                      key: name
+                                    });
                         }))), React.createElement("div", undefined, "Completed"));
 }
 
@@ -167,7 +227,8 @@ var make = Today;
 
 exports.str = str;
 exports.ProgressBar = ProgressBar;
-exports.InProgressStyles = InProgressStyles;
+exports.Book = Book;
 exports._books = _books;
+exports.Styles = Styles$2;
 exports.make = make;
 /* container Not a pure module */
