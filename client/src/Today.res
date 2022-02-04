@@ -79,11 +79,84 @@ module Book = {
       width(pct(100.)),
       height(pct(100.)),
     ])
+
+    // todo cleanup css: Look at dev tools what styles get overwritten
+    let inputGroup = style(. [
+      position(#relative),
+      display(#flex),
+      flexWrap(#wrap),
+      alignItems(#stretch),
+      width(pct(100.)),
+      selector(.
+        "& > input",
+        [
+          borderTopRightRadius(px(0)),
+          borderBottomRightRadius(px(0)),
+          position(#relative),
+          flex3(~grow=1., ~shrink=1., ~basis=auto),
+          width(pct(1.)),
+          minWidth(#zero),
+          marginBottom(#zero),
+          margin(px(0)),
+        ],
+      ),
+    ])
+
+    let formControl = style(. [
+      display(#block),
+      width(pct(100.)),
+      height(px(24)),
+      padding2(~v=px(6), ~h=px(12)),
+      fontSize(px(16)),
+      fontWeight(#num(400)),
+      lineHeight(px(24)),
+      color(hex("495057")),
+      backgroundColor(hex("fff")),
+      backgroundClip(#paddingBox),
+      border(px(1), #solid, hex("ced4da")),
+      borderRadius(px(4)),
+      transition("border-color .15s ease-in-out,box-shadow .15s ease-in-out"),
+      label("formControl"),
+    ])
+
+    let inputGroupAppend = style(. [display(#flex), marginLeft(px(-1))])
+
+    let btnOutlinePrimary = style(. [
+      // btn
+      cursor(#pointer),
+      display(#inlineBlock),
+      fontWeight(#num(400)),
+      color(hex("212529")),
+      textAlign(#center),
+      verticalAlign(#middle),
+      userSelect(#none),
+      backgroundColor(#transparent),
+      border(px(1), #solid, #transparent),
+      padding2(~v=px(6), ~h=px(12)),
+      borderTopRightRadius(px(4)),
+      borderBottomRightRadius(px(4)),
+      fontSize(px(16)),
+      lineHeight(px(24)),
+      transition(
+        "color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+      ),
+      whiteSpace(#nowrap),
+      textTransform(#none),
+      margin(px(0)),
+      // btn-outline
+      color(hex("fff")),
+      backgroundColor(hex("007bff")) /* #6c757d is secondary color */,
+      borderColor(hex("007bff")),
+      position(relative),
+      zIndex(2),
+    ])
   }
+
+  type overlay = ReceivingInput | WaitingForResponse | SuccessResponse
 
   @react.component
   let make = (~name, ~currentPage, ~pagesTotal) => {
-    let (hover, setHover) = React.useState(() => false)
+    let (overlay, setOverlay) = React.useState(() => None)
 
     let progressInPercent = (~currentPage, ~pagesTotal) =>
       Js_math.min_float(
@@ -93,8 +166,8 @@ module Book = {
 
     <div
       className=Styles.bookContainer
-      onMouseOver={_ => setHover(_ => true)}
-      onMouseLeave={_ => setHover(_ => false)}>
+      onMouseOver={_ => setOverlay(_ => Some(ReceivingInput))}
+      onMouseLeave={_ => setOverlay(_ => None)}>
       <div className={CssJs.merge(. [Styles.book, Styles.bgColor(name)])}>
         <h1> {str(name)} </h1>
         <div className=Styles.progress>
@@ -103,15 +176,34 @@ module Book = {
           </div>
           <ProgressBar percent={progressInPercent(~currentPage, ~pagesTotal)} />
         </div>
-        {hover ? <div className=Styles.overlay> {str("")} </div> : <> </>}
-
-        // todo
-        // {switch Optional<updateStatus> {
-        // | WaitingForResponse => expression
-        // | ReceivingInput => expression
-        // | SuccessResponse => expression
-        // | NoHover => expression
-        // }}
+        {switch overlay {
+        | Some(ReceivingInput) =>
+          <div className=Styles.overlay>
+            <div className=Styles.inputGroup>
+              // <input onChange=setNewCurrentPage onEnter=(Some(WaitingForResponse) && await callbackend(), Some(SuccessResponse) && parent.onUpdate()) />
+              // ng-model="currentPage"
+              // ng-keydown="$event.which === 13 && $ctrl.onProgressInput({bookName: $ctrl.book.name, currentPage: currentPage})"
+              <input
+                type_="number"
+                min="1"
+                placeholder="Current page .."
+                id="progress-input"
+                className=Styles.formControl
+                autoFocus=true
+              />
+              <div className=Styles.inputGroupAppend>
+                // ng-click="$ctrl.onProgressInput({bookName: $ctrl.book.name, currentPage: currentPage})"
+                <button className=Styles.btnOutlinePrimary type_="button" id="button-addon2">
+                  {str("Submit")}
+                </button>
+              </div>
+            </div>
+          </div>
+        | Some(WaitingForResponse) =>
+          <div className=Styles.overlay> {str("WaitingForResponse")} </div>
+        | Some(SuccessResponse) => <div className=Styles.overlay> {str("SuccessResponse")} </div>
+        | None => <> </>
+        }}
 
         //       <div
         //         ng-if="$ctrl.inputsActiveOn === book"
@@ -139,8 +231,6 @@ module Book = {
     </div>
   }
 }
-
-type progressType = int
 
 type book = {
   name: string,

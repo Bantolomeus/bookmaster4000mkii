@@ -108,12 +108,88 @@ var overlay = CssJs.style([
       CssJs.height(CssJs.pct(100))
     ]);
 
+var inputGroup = CssJs.style([
+      CssJs.position("relative"),
+      CssJs.display("flex"),
+      CssJs.flexWrap("wrap"),
+      CssJs.alignItems("stretch"),
+      CssJs.width(CssJs.pct(100)),
+      CssJs.selector("& > input", [
+            CssJs.borderTopRightRadius(CssJs.px(0)),
+            CssJs.borderBottomRightRadius(CssJs.px(0)),
+            CssJs.position("relative"),
+            CssJs.flex3(1, 1, CssJs.auto),
+            CssJs.width(CssJs.pct(1)),
+            CssJs.minWidth("zero"),
+            CssJs.marginBottom("zero"),
+            CssJs.margin(CssJs.px(0))
+          ])
+    ]);
+
+var formControl = CssJs.style([
+      CssJs.display("block"),
+      CssJs.width(CssJs.pct(100)),
+      CssJs.height(CssJs.px(24)),
+      CssJs.padding2(CssJs.px(6), CssJs.px(12)),
+      CssJs.fontSize(CssJs.px(16)),
+      CssJs.fontWeight({
+            NAME: "num",
+            VAL: 400
+          }),
+      CssJs.lineHeight(CssJs.px(24)),
+      CssJs.color(CssJs.hex("495057")),
+      CssJs.backgroundColor(CssJs.hex("fff")),
+      CssJs.backgroundClip("paddingBox"),
+      CssJs.border(CssJs.px(1), "solid", CssJs.hex("ced4da")),
+      CssJs.borderRadius(CssJs.px(4)),
+      CssJs.transition(undefined, undefined, undefined, "border-color .15s ease-in-out,box-shadow .15s ease-in-out"),
+      CssJs.label("formControl")
+    ]);
+
+var inputGroupAppend = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.marginLeft(CssJs.px(-1))
+    ]);
+
+var btnOutlinePrimary = CssJs.style([
+      CssJs.cursor("pointer"),
+      CssJs.display("inlineBlock"),
+      CssJs.fontWeight({
+            NAME: "num",
+            VAL: 400
+          }),
+      CssJs.color(CssJs.hex("212529")),
+      CssJs.textAlign("center"),
+      CssJs.verticalAlign("middle"),
+      CssJs.userSelect("none"),
+      CssJs.backgroundColor("transparent"),
+      CssJs.border(CssJs.px(1), "solid", "transparent"),
+      CssJs.padding2(CssJs.px(6), CssJs.px(12)),
+      CssJs.borderTopRightRadius(CssJs.px(4)),
+      CssJs.borderBottomRightRadius(CssJs.px(4)),
+      CssJs.fontSize(CssJs.px(16)),
+      CssJs.lineHeight(CssJs.px(24)),
+      CssJs.transition(undefined, undefined, undefined, "color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out"),
+      CssJs.whiteSpace("nowrap"),
+      CssJs.textTransform("none"),
+      CssJs.margin(CssJs.px(0)),
+      CssJs.color(CssJs.hex("fff")),
+      CssJs.backgroundColor(CssJs.hex("007bff")),
+      CssJs.borderColor(CssJs.hex("007bff")),
+      CssJs.position(CssJs.relative),
+      CssJs.zIndex(2)
+    ]);
+
 var Styles$1 = {
   bookContainer: bookContainer,
   bgColor: bgColor,
   book: book,
   progress: progress,
-  overlay: overlay
+  overlay: overlay,
+  inputGroup: inputGroup,
+  formControl: formControl,
+  inputGroupAppend: inputGroupAppend,
+  btnOutlinePrimary: btnOutlinePrimary
 };
 
 function Today$Book(Props) {
@@ -121,22 +197,61 @@ function Today$Book(Props) {
   var currentPage = Props.currentPage;
   var pagesTotal = Props.pagesTotal;
   var match = React.useState(function () {
-        return false;
+        
       });
-  var setHover = match[1];
+  var setOverlay = match[1];
+  var overlay$1 = match[0];
   var progressInPercent = function (currentPage, pagesTotal) {
     return Math.min(currentPage / pagesTotal * 100.0, pagesTotal);
   };
+  var tmp;
+  if (overlay$1 !== undefined) {
+    switch (overlay$1) {
+      case /* ReceivingInput */0 :
+          tmp = React.createElement("div", {
+                className: overlay
+              }, React.createElement("div", {
+                    className: inputGroup
+                  }, React.createElement("input", {
+                        className: formControl,
+                        id: "progress-input",
+                        autoFocus: true,
+                        min: "1",
+                        placeholder: "Current page ..",
+                        type: "number"
+                      }), React.createElement("div", {
+                        className: inputGroupAppend
+                      }, React.createElement("button", {
+                            className: btnOutlinePrimary,
+                            id: "button-addon2",
+                            type: "button"
+                          }, "Submit"))));
+          break;
+      case /* WaitingForResponse */1 :
+          tmp = React.createElement("div", {
+                className: overlay
+              }, "WaitingForResponse");
+          break;
+      case /* SuccessResponse */2 :
+          tmp = React.createElement("div", {
+                className: overlay
+              }, "SuccessResponse");
+          break;
+      
+    }
+  } else {
+    tmp = React.createElement(React.Fragment, undefined);
+  }
   return React.createElement("div", {
               className: bookContainer,
               onMouseLeave: (function (param) {
-                  return Curry._1(setHover, (function (param) {
-                                return false;
+                  return Curry._1(setOverlay, (function (param) {
+                                
                               }));
                 }),
               onMouseOver: (function (param) {
-                  return Curry._1(setHover, (function (param) {
-                                return true;
+                  return Curry._1(setOverlay, (function (param) {
+                                return /* ReceivingInput */0;
                               }));
                 })
             }, React.createElement("div", {
@@ -148,9 +263,7 @@ function Today$Book(Props) {
                       className: progress
                     }, React.createElement("div", undefined, currentPage.toString() + " of " + pagesTotal.toString() + " pages read"), React.createElement(Today$ProgressBar, {
                           percent: progressInPercent(currentPage, pagesTotal)
-                        })), match[0] ? React.createElement("div", {
-                        className: overlay
-                      }, "") : React.createElement(React.Fragment, undefined)));
+                        })), tmp));
 }
 
 var Book = {
