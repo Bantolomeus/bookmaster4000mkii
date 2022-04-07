@@ -150,13 +150,17 @@ module Book = {
       position(relative),
       zIndex(2),
     ])
+
+    let hrefSemiStyled = style(. [textDecoration(#underline), color(black)])
   }
 
   type overlay = ReceivingInput | WaitingForResponse | SuccessResponse
 
   @react.component
-  let make = (~name, ~currentPage, ~pagesTotal) => {
+  let make = (~name, ~currentPage, ~pagesTotal, ~onCurrentPageUpdate) => {
+    // let (overlay, setOverlay) = React.useState(() => Some(SuccessResponse))
     let (overlay, setOverlay) = React.useState(() => None)
+    let (userInput, setUserInput) = React.useState(() => None)
 
     let progressInPercent = (~currentPage, ~pagesTotal) =>
       Js_math.min_float(
@@ -164,9 +168,30 @@ module Book = {
         pagesTotal->Belt.Float.fromInt,
       )
 
+    let submitToBackend = () => {
+      if userInput->Belt_Option.isSome {
+        setOverlay(_ => Some(WaitingForResponse))
+        setUserInput(_ => None)
+        Request.make(
+          ~method=#PUT,
+          ~url=`/books/${name}`,
+          ~body={"currentPage": userInput->Belt_Option.getUnsafe}->Js_json.stringifyAny,
+          ~headers=Js_dict.fromArray([("Content-Type", "application/json")]),
+          ~responseType=Json,
+          (),
+        )->ResponseMapper.resolveRequest(_ => {
+          setOverlay(_ => Some(SuccessResponse))
+          onCurrentPageUpdate()
+        })
+      }
+    }
+
     <div
       className=Styles.bookContainer
-      onMouseOver={_ => setOverlay(_ => Some(ReceivingInput))}
+      onMouseEnter={_ =>
+        setOverlay(_ => {
+          Some(ReceivingInput)
+        })}
       onMouseLeave={_ => setOverlay(_ => None)}>
       <div className={CssJs.merge(. [Styles.book, Styles.bgColor(name)])}>
         <h1> {str(name)} </h1>
@@ -180,28 +205,45 @@ module Book = {
         | Some(ReceivingInput) =>
           <div className=Styles.overlay>
             <div className=Styles.inputGroup>
-              // <input onChange=setNewCurrentPage onEnter=(Some(WaitingForResponse) && await callbackend(), Some(SuccessResponse) && parent.onUpdate()) />
-              // ng-model="currentPage"
-              // ng-keydown="$event.which === 13 && $ctrl.onProgressInput({bookName: $ctrl.book.name, currentPage: currentPage})"
               <input
                 type_="number"
-                min="1"
                 placeholder="Current page .."
-                id="progress-input"
+                value={switch userInput {
+                | Some(value) => Js_int.toString(value)
+                | None => ""
+                }}
+                onChange={evt => {
+                  let value = (evt->ReactEvent.Form.target)["value"]
+                  setUserInput(_ => value != "" ? Some(value) : None)
+                }}
+                onKeyDown={evt => {
+                  if ReactEvent.Keyboard.key(evt) == "Enter" {
+                    submitToBackend()
+                  }
+                }}
+                min="1"
                 className=Styles.formControl
                 autoFocus=true
               />
               <div className=Styles.inputGroupAppend>
-                // ng-click="$ctrl.onProgressInput({bookName: $ctrl.book.name, currentPage: currentPage})"
-                <button className=Styles.btnOutlinePrimary type_="button" id="button-addon2">
+                <button
+                  onClick={_ => submitToBackend()}
+                  type_="button"
+                  className=Styles.btnOutlinePrimary>
                   {str("Submit")}
                 </button>
               </div>
             </div>
           </div>
-        | Some(WaitingForResponse) =>
-          <div className=Styles.overlay> {str("WaitingForResponse")} </div>
-        | Some(SuccessResponse) => <div className=Styles.overlay> {str("SuccessResponse")} </div>
+        | Some(WaitingForResponse) => <div className=Styles.overlay> {str("Waiting...")} </div>
+        | Some(SuccessResponse) =>
+          <div className=Styles.overlay>
+            <strong> {str(" Current page successfully updated.")} </strong>
+            <br />
+            <Link onClick={Link.location(Link.overall)} className=Styles.hrefSemiStyled>
+              {str("See Overall progress")}
+            </Link>
+          </div>
         | None => <> </>
         }}
 
@@ -232,34 +274,6 @@ module Book = {
   }
 }
 
-type book = {
-  name: string,
-  author: string,
-  pagesTotal: int,
-  currentPage: int,
-  dateStarted: string,
-  readTime: int,
-}
-
-let _books: array<book> = [
-  {
-    name: "Ensel und Krete",
-    author: "Walter Moers",
-    pagesTotal: 255,
-    currentPage: 100,
-    dateStarted: "04/02/2018",
-    readTime: 0,
-  },
-  {
-    name: "Harry Potski",
-    author: "Jon Doe",
-    pagesTotal: 255,
-    currentPage: 200,
-    dateStarted: "04/02/2018",
-    readTime: 0,
-  },
-]
-
 module Styles = {
   open CssJs
 
@@ -275,29 +289,44 @@ module Styles = {
   let row = style(. [display(#flex), flexWrap(#wrap)])
 }
 
+type book = {
+  name: string,
+  author: string,
+  pagesTotal: int,
+  currentPage: int,
+  dateStarted: string,
+  readTime: int,
+}
+
 @react.component
 let make = () => {
-  // todo get stuff from real backend
-  // let (books, setBooks) = React.useState(_ => [])
-  // React.useEffect1(() => {
-  //   Request.make(
-  //     ~method=#POST,
-  //     ~url="/progress/calculate",
-  //     ~responseType=(JsonAsAny: Request.responseType<array<{"name": string}>>),
-  //     (),
-  //   )->ResponseMapper.resolveRequest(books => setBooks(_ => books))
-  //   None
-  // }, [])
+  let (books, setBooks) = React.useState(_ => [])
+
+  let loadBooks = () => {
+    Request.make(
+      ~method=#GET,
+      ~url="/books",
+      ~responseType=(JsonAsAny: Request.responseType<array<book>>),
+      (),
+    )->ResponseMapper.resolveRequest(books => setBooks(_ => books))
+  }
+
+  React.useEffect1(() => {
+    loadBooks()
+    None
+  }, [])
 
   open Js.Array2
   <div>
     <div className=Styles.container>
       <div className=Styles.label> {str("In Progress")} </div>
       <div className=Styles.row>
-        {_books
-        ->filter(({pagesTotal, currentPage}) => currentPage <= pagesTotal)
-        ->sortInPlaceWith((_1, _2) => _1.name < _2.name ? -1 : 1) // ascending
-        ->map(({name, currentPage, pagesTotal}) => <Book name currentPage pagesTotal key=name />)
+        {books
+        ->filter(({pagesTotal, currentPage}) => currentPage < pagesTotal)
+        ->sortInPlaceWith((_1, _2) => _1.name < _2.name ? -1 : 1)
+        ->map(({name, currentPage, pagesTotal}) =>
+          <Book name currentPage pagesTotal onCurrentPageUpdate=loadBooks key=name />
+        )
         ->React.array}
       </div>
 
