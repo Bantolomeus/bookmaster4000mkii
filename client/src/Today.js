@@ -354,11 +354,37 @@ var secondaryContainer = CssJs.style([
       CssJs.borderTopWidth(CssJs.px(1))
     ]);
 
+var completedBooksContainer = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.flexWrap(CssJs.wrap)
+    ]);
+
+var letter = CssJs.style([
+      CssJs.lineHeight(CssJs.px(24)),
+      CssJs.selector("& > span", [
+            CssJs.textTransform(CssJs.uppercase),
+            CssJs.marginLeft(CssJs.px(12)),
+            CssJs.marginRight(CssJs.px(-6)),
+            CssJs.borderRadius(CssJs.pct(50.0)),
+            CssJs.backgroundColor(CssJs.hex("6c757d")),
+            CssJs.padding2(CssJs.px(4), CssJs.px(8)),
+            CssJs.color(CssJs.hex("f8f9fa"))
+          ])
+    ]);
+
+var bookName = CssJs.style([
+      CssJs.lineHeight(CssJs.px(24)),
+      CssJs.selector("& > small", [CssJs.marginLeft(CssJs.px(16))])
+    ]);
+
 var Styles$2 = {
   container: container$1,
   label: label,
   row: row,
-  secondaryContainer: secondaryContainer
+  secondaryContainer: secondaryContainer,
+  completedBooksContainer: completedBooksContainer,
+  letter: letter,
+  bookName: bookName
 };
 
 function Today(Props) {
@@ -388,31 +414,19 @@ function Today(Props) {
                   }
                 })));
     return React.createElement("div", {
-                style: {
-                  display: "flex",
-                  flexWrap: "wrap"
-                }
-              }, letters.map(function (letter) {
+                className: completedBooksContainer
+              }, letters.map(function (letter$1) {
                     return React.createElement(React.Fragment, {
                                 children: null,
-                                key: letter
+                                key: letter$1
                               }, React.createElement("div", {
-                                    style: {
-                                      lineHeight: "24px"
-                                    }
-                                  }, React.createElement("span", {
-                                        style: {
-                                          marginLeft: "12px",
-                                          textTransform: "uppercase"
-                                        }
-                                      }, letter)), books.filter(function (book) {
-                                      return book.name.toLowerCase().startsWith(letter);
-                                    }).map(function (book, i) {
+                                    className: letter
+                                  }, React.createElement("span", undefined, letter$1)), books.filter(function (book) {
+                                      return book.name.toLowerCase().startsWith(letter$1);
+                                    }).map(function (book) {
                                     return React.createElement("div", {
                                                 key: book.name,
-                                                style: {
-                                                  lineHeight: "24px"
-                                                }
+                                                className: bookName
                                               }, React.createElement("small", undefined, book.name));
                                   }));
                   }));
@@ -447,7 +461,7 @@ function Today(Props) {
                       ])
                 }, React.createElement("div", {
                       className: label
-                    }, "Completed"), completedBooks(undefined)));
+                    }, "Completed • " + books.length.toString()), completedBooks(undefined)));
 }
 
 var make = Today;

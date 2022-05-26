@@ -4,6 +4,7 @@ module Styles = {
   let link = style(. [marginLeft(px(8))])
 }
 
+// todo proper styling for menu bar
 @react.component
 let make = () => {
   <div className=Styles.header>

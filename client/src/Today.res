@@ -294,6 +294,28 @@ module Styles = {
     borderTopColor(hex("dee2ef")),
     borderTopWidth(px(1)),
   ])
+
+  // COMPLETED BOOKS COMPONENT
+  let completedBooksContainer = style(. [display(#flex), flexWrap(wrap)])
+
+  let letter = style(. [
+    lineHeight(px(24)),
+    selector(.
+      "& > span",
+      [
+        textTransform(uppercase),
+        marginLeft(px(12)),
+        marginRight(px(-6)),
+        // circle styles
+        borderRadius(pct(50.0)),
+        backgroundColor(hex("6c757d")),
+        padding2(~v=px(4), ~h=px(8)),
+        color(hex("f8f9fa")),
+      ],
+    ),
+  ])
+
+  let bookName = style(. [lineHeight(px(24)), selector(. "& > small", [marginLeft(px(16))])])
 }
 
 type book = {
@@ -359,25 +381,18 @@ let make = () => {
         }
  */
 
-    // todo move styles into CssJs
-    <div style={ReactDOMStyle.make(~display="flex", ~flexWrap="wrap", ())}>
+    <div className=Styles.completedBooksContainer>
       {letters
       ->Js_array2.map(letter => {
         <React.Fragment key={letter}>
-          <div style={ReactDOMStyle.make(~lineHeight="24px", ())}>
-            <span style={ReactDOMStyle.make(~textTransform="uppercase", ~marginLeft="12px", ())}>
-              {str(letter)}
-            </span>
-          </div>
+          <div className=Styles.letter> <span> {str(letter)} </span> </div>
           {books
           ->Js_array2.filter(book => {
             // todo #.starsWith(1,2,..) funzt nich
             Js_string2.startsWith(book.name->Js_string2.toLowerCase, letter)
           })
-          ->Js_array2.mapi((book, i) => {
-            <div style={ReactDOMStyle.make(~lineHeight="24px", ())} key={book.name}>
-              // todo hier weiter stylen, 25.5.22
-              // todo prepend with comma - but only when it's not the first (i==0)
+          ->Js_array2.map(book => {
+            <div className={Styles.bookName} key={book.name}>
               <small> {str(book.name)} </small>
             </div>
           })
@@ -524,7 +539,7 @@ let make = () => {
     </div>
     <div className={CssJs.merge(. [Styles.container, Styles.secondaryContainer])}>
       // todo make *Completed* a component
-      <div className=Styles.label> {str("Completed")} </div>
+      <div className=Styles.label> {str(`Completed • ${length(books)->Js_int.toString}`)} </div>
       {completedBooks()}
     </div>
     // <InProgressContainer> {books.filterByIncomplete... => <Card onUpdate={_ => reloadBooks)} />} </InProgressContainer>
