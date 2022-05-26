@@ -333,7 +333,13 @@ var Book = {
   make: Today$Book
 };
 
-var container$1 = CssJs.style([CssJs.padding(CssJs.px(24))]);
+var container$1 = CssJs.style([
+      CssJs.height(CssJs.pct(100)),
+      CssJs.display("flex"),
+      CssJs.flexDirection(CssJs.column)
+    ]);
+
+var inProgressContainer = CssJs.style([CssJs.padding(CssJs.px(24))]);
 
 var label = CssJs.style([
       CssJs.fontSize(CssJs.px(13)),
@@ -347,7 +353,9 @@ var row = CssJs.style([
       CssJs.flexWrap("wrap")
     ]);
 
-var secondaryContainer = CssJs.style([
+var secondary = CssJs.style([
+      CssJs.flexGrow(1),
+      CssJs.padding(CssJs.px(24)),
       CssJs.backgroundColor(CssJs.hex("f8f9fa")),
       CssJs.borderTopStyle("solid"),
       CssJs.borderTopColor(CssJs.hex("dee2ef")),
@@ -379,9 +387,10 @@ var bookName = CssJs.style([
 
 var Styles$2 = {
   container: container$1,
+  inProgressContainer: inProgressContainer,
   label: label,
   row: row,
-  secondaryContainer: secondaryContainer,
+  secondary: secondary,
   completedBooksContainer: completedBooksContainer,
   letter: letter,
   bookName: bookName
@@ -431,8 +440,10 @@ function Today(Props) {
                                   }));
                   }));
   };
-  return React.createElement("div", undefined, React.createElement("div", {
-                  className: container$1
+  return React.createElement("div", {
+              className: container$1
+            }, React.createElement("div", {
+                  className: inProgressContainer
                 }, React.createElement("div", {
                       className: label
                     }, "In Progress"), React.createElement("div", {
@@ -455,10 +466,7 @@ function Today(Props) {
                                       key: name
                                     });
                         }))), React.createElement("div", {
-                  className: CssJs.merge([
-                        container$1,
-                        secondaryContainer
-                      ])
+                  className: secondary
                 }, React.createElement("div", {
                       className: label
                     }, "Completed • " + books.length.toString()), completedBooks(undefined)));

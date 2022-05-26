@@ -277,7 +277,9 @@ module Book = {
 module Styles = {
   open CssJs
 
-  let container = style(. [padding(px(24))])
+  let container = style(. [height(pct(100.)), display(#flex), flexDirection(column)])
+
+  let inProgressContainer = style(. [padding(px(24))])
 
   let label = style(. [
     fontSize(px(13)),
@@ -288,14 +290,16 @@ module Styles = {
 
   let row = style(. [display(#flex), flexWrap(#wrap)])
 
-  let secondaryContainer = style(. [
+  // COMPLETED BOOKS COMPONENT
+  let secondary = style(. [
+    flexGrow(1.) ,
+    padding(px(24)),
     backgroundColor(hex("f8f9fa")),
     borderTopStyle(#solid),
     borderTopColor(hex("dee2ef")),
     borderTopWidth(px(1)),
   ])
 
-  // COMPLETED BOOKS COMPONENT
   let completedBooksContainer = style(. [display(#flex), flexWrap(wrap)])
 
   let letter = style(. [
@@ -327,7 +331,6 @@ type book = {
   readTime: int,
 }
 
-// todo height: 100% ("completed" section soll ganz bis runter spannen)
 @react.component
 let make = () => {
   let (books, setBooks) = React.useState(_ => [])
@@ -468,8 +471,8 @@ let make = () => {
  */
 
   open Js.Array2
-  <div>
-    <div className=Styles.container>
+  <div className=Styles.container>
+    <div className=Styles.inProgressContainer>
       <div className=Styles.label> {str("In Progress")} </div>
       <div className=Styles.row>
         {books
@@ -537,7 +540,7 @@ let make = () => {
 
       // {_books->map(book => {<div key={book["name"]}> {str(book["name"])} </div>})->React.array}
     </div>
-    <div className={CssJs.merge(. [Styles.container, Styles.secondaryContainer])}>
+    <div className=Styles.secondary>
       // todo make *Completed* a component
       <div className=Styles.label> {str(`Completed • ${length(books)->Js_int.toString}`)} </div>
       {completedBooks()}
