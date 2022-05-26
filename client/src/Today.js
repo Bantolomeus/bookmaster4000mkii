@@ -17,6 +17,17 @@ function str(s) {
   return s;
 }
 
+var label = CssJs.style([
+      CssJs.fontSize(CssJs.px(13)),
+      CssJs.color(CssJs.hex("6c757d")),
+      CssJs.textTransform("uppercase"),
+      CssJs.margin(CssJs.px(8))
+    ]);
+
+var GlobalStyles = {
+  label: label
+};
+
 var container = CssJs.style([
       CssJs.display("flex"),
       CssJs.overflow("hidden"),
@@ -333,26 +344,6 @@ var Book = {
   make: Today$Book
 };
 
-var container$1 = CssJs.style([
-      CssJs.height(CssJs.pct(100)),
-      CssJs.display("flex"),
-      CssJs.flexDirection(CssJs.column)
-    ]);
-
-var inProgressContainer = CssJs.style([CssJs.padding(CssJs.px(24))]);
-
-var label = CssJs.style([
-      CssJs.fontSize(CssJs.px(13)),
-      CssJs.color(CssJs.hex("6c757d")),
-      CssJs.textTransform("uppercase"),
-      CssJs.margin(CssJs.px(8))
-    ]);
-
-var row = CssJs.style([
-      CssJs.display("flex"),
-      CssJs.flexWrap("wrap")
-    ]);
-
 var secondary = CssJs.style([
       CssJs.flexGrow(1),
       CssJs.padding(CssJs.px(24)),
@@ -367,7 +358,7 @@ var completedBooksContainer = CssJs.style([
       CssJs.flexWrap(CssJs.wrap)
     ]);
 
-var letter = CssJs.style([
+var highlight = CssJs.style([
       CssJs.lineHeight(CssJs.px(24)),
       CssJs.selector("& > span", [
             CssJs.textTransform(CssJs.uppercase),
@@ -386,14 +377,74 @@ var bookName = CssJs.style([
     ]);
 
 var Styles$2 = {
-  container: container$1,
-  inProgressContainer: inProgressContainer,
-  label: label,
-  row: row,
   secondary: secondary,
   completedBooksContainer: completedBooksContainer,
-  letter: letter,
+  highlight: highlight,
   bookName: bookName
+};
+
+function Today$CompletedBooks(Props) {
+  var books = Props.books;
+  var isNumber = function (maybeNumber) {
+    return /\d/.test(maybeNumber);
+  };
+  var letters = Belt_SetString.toArray(Belt_SetString.fromArray(books.map(function (book) {
+                var $$char = book.name.charAt(0).toLowerCase();
+                if (isNumber($$char)) {
+                  return "#";
+                } else {
+                  return $$char;
+                }
+              })));
+  return React.createElement("div", {
+              className: secondary
+            }, React.createElement("div", {
+                  className: label
+                }, "Completed • " + books.length.toString()), React.createElement("div", {
+                  className: completedBooksContainer
+                }, letters.map(function (letter) {
+                      return React.createElement(React.Fragment, {
+                                  children: null,
+                                  key: letter
+                                }, React.createElement("div", {
+                                      className: highlight
+                                    }, React.createElement("span", undefined, letter)), books.filter(function (book) {
+                                        if (letter === "#") {
+                                          return isNumber(book.name.charAt(0));
+                                        } else {
+                                          return book.name.toLowerCase().startsWith(letter);
+                                        }
+                                      }).map(function (book) {
+                                      return React.createElement("div", {
+                                                  key: book.name,
+                                                  className: bookName
+                                                }, React.createElement("small", undefined, book.name));
+                                    }));
+                    })));
+}
+
+var CompletedBooks = {
+  Styles: Styles$2,
+  make: Today$CompletedBooks
+};
+
+var container$1 = CssJs.style([
+      CssJs.height(CssJs.pct(100)),
+      CssJs.display("flex"),
+      CssJs.flexDirection(CssJs.column)
+    ]);
+
+var inProgressContainer = CssJs.style([CssJs.padding(CssJs.px(24))]);
+
+var row = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.flexWrap("wrap")
+    ]);
+
+var Styles$3 = {
+  container: container$1,
+  inProgressContainer: inProgressContainer,
+  row: row
 };
 
 function Today(Props) {
@@ -413,77 +464,44 @@ function Today(Props) {
           loadBooks(undefined);
           
         }), []);
-  var completedBooks = function (param) {
-    var isNumber = function (maybeNumber) {
-      return /\d/.test(maybeNumber);
-    };
-    var letters = Belt_SetString.toArray(Belt_SetString.fromArray(books.map(function (book) {
-                  var $$char = book.name.charAt(0).toLowerCase();
-                  if (isNumber($$char)) {
-                    return "#";
+  var inProgressBooks = React.createElement("div", {
+        className: inProgressContainer
+      }, React.createElement("div", {
+            className: label
+          }, "In Progress"), React.createElement("div", {
+            className: row
+          }, books.filter(function (param) {
+                    return param.currentPage < param.pagesTotal;
+                  }).sort(function (_1, _2) {
+                  if (_1.name < _2.name) {
+                    return -1;
                   } else {
-                    return $$char;
+                    return 1;
                   }
-                })));
-    return React.createElement("div", {
-                className: completedBooksContainer
-              }, letters.map(function (letter$1) {
-                    return React.createElement(React.Fragment, {
-                                children: null,
-                                key: letter$1
-                              }, React.createElement("div", {
-                                    className: letter
-                                  }, React.createElement("span", undefined, letter$1)), books.filter(function (book) {
-                                      if (letter$1 === "#") {
-                                        return isNumber(book.name.charAt(0));
-                                      } else {
-                                        return book.name.toLowerCase().startsWith(letter$1);
-                                      }
-                                    }).map(function (book) {
-                                    return React.createElement("div", {
-                                                key: book.name,
-                                                className: bookName
-                                              }, React.createElement("small", undefined, book.name));
-                                  }));
-                  }));
-  };
+                }).map(function (param) {
+                var name = param.name;
+                return React.createElement(Today$Book, {
+                            name: name,
+                            currentPage: param.currentPage,
+                            pagesTotal: param.pagesTotal,
+                            onCurrentPageUpdate: loadBooks,
+                            key: name
+                          });
+              })));
   return React.createElement("div", {
               className: container$1
-            }, React.createElement("div", {
-                  className: inProgressContainer
-                }, React.createElement("div", {
-                      className: label
-                    }, "In Progress"), React.createElement("div", {
-                      className: row
-                    }, books.filter(function (param) {
-                              return param.currentPage < param.pagesTotal;
-                            }).sort(function (_1, _2) {
-                            if (_1.name < _2.name) {
-                              return -1;
-                            } else {
-                              return 1;
-                            }
-                          }).map(function (param) {
-                          var name = param.name;
-                          return React.createElement(Today$Book, {
-                                      name: name,
-                                      currentPage: param.currentPage,
-                                      pagesTotal: param.pagesTotal,
-                                      onCurrentPageUpdate: loadBooks,
-                                      key: name
-                                    });
-                        }))), React.createElement("div", {
-                  className: secondary
-                }, React.createElement("div", {
-                      className: label
-                    }, "Completed • " + books.length.toString()), completedBooks(undefined)));
+            }, inProgressBooks, React.createElement(Today$CompletedBooks, {
+                  books: books
+                }));
 }
 
 var make = Today;
 
 exports.str = str;
+exports.GlobalStyles = GlobalStyles;
 exports.ProgressBar = ProgressBar;
 exports.Book = Book;
-exports.Styles = Styles$2;
+exports.CompletedBooks = CompletedBooks;
+exports.Styles = Styles$3;
 exports.make = make;
-/* container Not a pure module */
+/* label Not a pure module */

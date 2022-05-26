@@ -1,5 +1,24 @@
 let str = s => React.string(s)
 
+module GlobalStyles = {
+  open CssJs
+  let label = style(. [
+    fontSize(px(13)),
+    color(hex("6c757d")),
+    textTransform(#uppercase),
+    margin(px(8)),
+  ])
+}
+
+type book = {
+  name: string,
+  author: string,
+  pagesTotal: int,
+  currentPage: int,
+  dateStarted: string,
+  readTime: int,
+}
+
 module ProgressBar = {
   module Styles = {
     open CssJs
@@ -158,7 +177,6 @@ module Book = {
 
   @react.component
   let make = (~name, ~currentPage, ~pagesTotal, ~onCurrentPageUpdate) => {
-    // let (overlay, setOverlay) = React.useState(() => Some(SuccessResponse))
     let (overlay, setOverlay) = React.useState(() => None)
     let (userInput, setUserInput) = React.useState(() => None)
 
@@ -246,29 +264,90 @@ module Book = {
           </div>
         | None => <> </>
         }}
+      </div>
+    </div>
+  }
+}
 
-        //       <div
-        //         ng-if="$ctrl.inputsActiveOn === book"
-        //         class="overlay--container--content-centered color--overlay overlay--container--fill-whole-parent"
-        //       >
-        //         <progress-input
-        //           ng-if="
-        //             !$ctrl.progressUpdating &&
-        //             $ctrl.bookWithRequestConfirmation === null
-        //           "
-        //           book="book"
-        //           on-progress-input="$ctrl.updateBookProgress(bookName, currentPage)"
-        //         ></progress-input>
+module CompletedBooks = {
+  module Styles = {
+    open CssJs
 
-        //         <div ng-if="$ctrl.progressUpdating">updating ..</div>
+    let secondary = style(. [
+      flexGrow(1.),
+      padding(px(24)),
+      backgroundColor(hex("f8f9fa")),
+      borderTopStyle(#solid),
+      borderTopColor(hex("dee2ef")),
+      borderTopWidth(px(1)),
+    ])
 
-        //         <div ng-if="$ctrl.bookWithRequestConfirmation === book.name">
-        //           <strong>Current page successfully updated.</strong> <br />
-        //           <a ui-sref="overall" class="href--semi-styled"
-        //             >See Overall progress</a
-        //           >
-        //         </div>
-        //       </div>
+    let completedBooksContainer = style(. [display(#flex), flexWrap(wrap)])
+
+    let highlight = style(. [
+      lineHeight(px(24)),
+      selector(.
+        "& > span",
+        [
+          textTransform(uppercase),
+          marginLeft(px(12)),
+          marginRight(px(-6)),
+          // circle styles
+          borderRadius(pct(50.0)),
+          backgroundColor(hex("6c757d")),
+          padding2(~v=px(4), ~h=px(8)),
+          color(hex("f8f9fa")),
+        ],
+      ),
+    ])
+
+    let bookName = style(. [lineHeight(px(24)), selector(. "& > small", [marginLeft(px(16))])])
+  }
+
+  @react.component
+  let make = (~books) => {
+    let isNumber = maybeNumber => Js_re.test_(%re("/\d/"), maybeNumber)
+
+    open Js_array2
+    let letters =
+      books
+      ->map(book => {
+        let char = book.name->Js_string2.charAt(0)->Js_string2.toLowerCase
+        if char->isNumber {
+          "#"
+        } else {
+          char
+        }
+      })
+      ->Belt_SetString.fromArray // de-duplication
+      ->Belt_SetString.toArray
+
+    <div className=Styles.secondary>
+      <div className=GlobalStyles.label>
+        {str(`Completed • ${Js_array2.length(books)->Js_int.toString}`)}
+      </div>
+      <div className=Styles.completedBooksContainer>
+        {letters
+        ->map(letter => {
+          <React.Fragment key={letter}>
+            <div className=Styles.highlight> <span> {str(letter)} </span> </div>
+            {books
+            ->filter(book => {
+              open Js_string2
+              switch letter {
+              | "#" => isNumber(book.name->charAt(0))
+              | _ => startsWith(book.name->toLowerCase, letter)
+              }
+            })
+            ->map(book => {
+              <div className={Styles.bookName} key={book.name}>
+                <small> {str(book.name)} </small>
+              </div>
+            })
+            ->React.array}
+          </React.Fragment>
+        })
+        ->React.array}
       </div>
     </div>
   }
@@ -276,59 +355,9 @@ module Book = {
 
 module Styles = {
   open CssJs
-
   let container = style(. [height(pct(100.)), display(#flex), flexDirection(column)])
-
   let inProgressContainer = style(. [padding(px(24))])
-
-  let label = style(. [
-    fontSize(px(13)),
-    color(hex("6c757d")),
-    textTransform(#uppercase),
-    margin(px(8)),
-  ])
-
   let row = style(. [display(#flex), flexWrap(#wrap)])
-
-  // COMPLETED BOOKS COMPONENT
-  let secondary = style(. [
-    flexGrow(1.),
-    padding(px(24)),
-    backgroundColor(hex("f8f9fa")),
-    borderTopStyle(#solid),
-    borderTopColor(hex("dee2ef")),
-    borderTopWidth(px(1)),
-  ])
-
-  let completedBooksContainer = style(. [display(#flex), flexWrap(wrap)])
-
-  let letter = style(. [
-    lineHeight(px(24)),
-    selector(.
-      "& > span",
-      [
-        textTransform(uppercase),
-        marginLeft(px(12)),
-        marginRight(px(-6)),
-        // circle styles
-        borderRadius(pct(50.0)),
-        backgroundColor(hex("6c757d")),
-        padding2(~v=px(4), ~h=px(8)),
-        color(hex("f8f9fa")),
-      ],
-    ),
-  ])
-
-  let bookName = style(. [lineHeight(px(24)), selector(. "& > small", [marginLeft(px(16))])])
-}
-
-type book = {
-  name: string,
-  author: string,
-  pagesTotal: int,
-  currentPage: int,
-  dateStarted: string,
-  readTime: int,
 }
 
 @react.component
@@ -349,137 +378,10 @@ let make = () => {
     None
   }, [])
 
-  /* Alte Version:
-  div display: flex; flex-wrap: wrap
-    div line-height: 24px <!-- egal ob Anfangsbuchstabe oder Book.name, beides ist inline-block auf selber Ebene -->
-      span <!-- if Anfangsbuchstabe --> rounded-circle round-evenly margin-left: 12px
-      small <!-- if Book --> books-completed
- */
-
-  // erst Liste von Anfangsbuchstaben
-  // dann im zweiten Schritt ein lookup fuer jeden der Anfangsbuchstaben
-  let completedBooks = () => {
-    let isNumber = maybeNumber => Js_re.test_(%re("/\d/"), maybeNumber)
-    open Js_array2
-
-    let letters =
-      books
-      ->map(book => {
-        let char = book.name->Js_string2.charAt(0)->Js_string2.toLowerCase
-        if char->isNumber {
-          "#"
-        } else {
-          char
-        }
-      })
-      ->Belt_SetString.fromArray // de-duplication
-      ->Belt_SetString.toArray
-
-    /*
-      div display: flex; flex-wrap: wrap
-        for letter {
-          div line-height: 24px
-            span rounded-circle round-evenly margin-left: 12px letter
-          for book {
-            div line-height: 24px
-              small books-completed book.name
-          }
-        }
- */
-
-    <div className=Styles.completedBooksContainer>
-      {letters
-      ->map(letter => {
-        <React.Fragment key={letter}>
-          <div className=Styles.letter> <span> {str(letter)} </span> </div>
-          {books
-          ->filter(book => {
-            open Js_string2
-            switch letter {
-            | "#" => isNumber(book.name->charAt(0))
-            | _ => startsWith(book.name->toLowerCase, letter)
-            }
-          })
-          ->map(book => {
-            <div className={Styles.bookName} key={book.name}>
-              <small> {str(book.name)} </small>
-            </div>
-          })
-          ->React.array}
-        </React.Fragment>
-      })
-      ->React.array}
-    </div>
-  }
-
-  /* folgende Version geht auch, aber komplizierter!
-  let groupedAlphabetically = books->Js_array2.reduce((acc, book) => {
-    let firstLetter = if Js_re.test_(%re("/^\d/"), book.name) {
-      "#"
-    } else {
-      book.name->Js.String2.charAt(0)
-    }
-
-    switch acc->Belt.MutableMap.String.get(firstLetter) {
-    | Some(row) =>
-      row->Js.Array2.push(book)->ignore
-    | None =>
-      acc->Belt.MutableMap.String.set(firstLetter, [book])
-    }
-    acc
-
-    // if acc->Belt.MutableMap.String.has(firstLetter) {
-    //   acc->Belt.MutableMap.String.get(firstLetter)->Js.Array2.push(book)
-    // } else {
-    //   acc[firstLetter] = [book]
-    // }
-
-    // switch acc[firstLetter] {
-    // | Some(_) => acc[firstLetter]->Js.Array2.push(book)
-    // | None => acc[firstLetter] = [book]
-    // }
-    // acc
-  }, Belt.MutableMap.String.make())
-
-  Js_console.log(groupedAlphabetically->Belt.MutableMap.String.getUndefined("#"))  // funzt!
- */
-
-  // Ich wollte Logik ähnlich machen wie in der Angular Version, die Zeilen hier drunter sind kopiert von dort
-  /*
-      const _indexedBooks = books.reduce((acc, book) => {
-       let firstLetter;
-       if (/^\d/.test(book.name)) {
-         firstLetter = "#";
-       } else {
-         firstLetter = book.name.charAt(0);
-       }
-
-       if (acc[firstLetter] === undefined) {
-         acc[firstLetter] = [book];
-       } else {
-         acc[firstLetter].push(book);
-       }
-       return acc;
-     }, {});
-
-     ctrl.indexedBooks = Object.entries(_indexedBooks)
-       .sort(([firstLetterA, _], [firstLetterB, __]) =>
-         firstLetterA.localeCompare(firstLetterB)
-       )
-       .map(([firstLetter, books]) => {
-         return [
-           { type: "letter", value: firstLetter },
-           ...books.map((book) => ({ type: "book", value: book })),
-         ];
-       })
-       .flat();
-   });
- */
-
   open Js.Array2
-  <div className=Styles.container>
+  let inProgressBooks =
     <div className=Styles.inProgressContainer>
-      <div className=Styles.label> {str("In Progress")} </div>
+      <div className=GlobalStyles.label> {str("In Progress")} </div>
       <div className=Styles.row>
         {books
         ->filter(({pagesTotal, currentPage}) => currentPage < pagesTotal)
@@ -489,70 +391,7 @@ let make = () => {
         )
         ->React.array}
       </div>
-
-      // <div style="display: flex; flex-wrap: wrap">
-      //   <div
-      //     ng-repeat="book in $ctrl.books | filter:$ctrl.onlyUnfinishedBooks | orderBy:'name'"
-      //     ng-mouseover="$ctrl.toggleInputActiveFor(book, true)"
-      //     ng-mouseleave="$ctrl.toggleInputActiveFor(book, false)"
-      //     class="card card--progress"
-      //   >
-      //     <div
-      //       ng-if="book.name"
-      //       ng-style="{ background: $ctrl.nameToHexColor(book.name) }"
-      //       class="card-body card-body--container"
-      //     >
-      //       <h5 class="card-title">{{ book.name }}</h5>
-
-      //       <div style="display: flex">
-      //         <div>
-      //           <small
-      //             >{{ book.currentPage }} of {{ book.pagesTotal }} pages read</small
-      //           >
-      //         </div>
-      //         <div class="progress progress-bar--container">
-      //           <div
-      //             class="progress-bar color--side-information"
-      //             ng-style="{ width: $ctrl.progressInPercent(book) + '%' }"
-      //           ></div>
-      //         </div>
-      //       </div>
-
-      //       <div
-      //         ng-if="$ctrl.inputsActiveOn === book"
-      //         class="overlay--container--content-centered color--overlay overlay--container--fill-whole-parent"
-      //       >
-      //         <progress-input
-      //           ng-if="
-      //             !$ctrl.progressUpdating &&
-      //             $ctrl.bookWithRequestConfirmation === null
-      //           "
-      //           book="book"
-      //           on-progress-input="$ctrl.updateBookProgress(bookName, currentPage)"
-      //         ></progress-input>
-
-      //         <div ng-if="$ctrl.progressUpdating">updating ..</div>
-
-      //         <div ng-if="$ctrl.bookWithRequestConfirmation === book.name">
-      //           <strong>Current page successfully updated.</strong> <br />
-      //           <a ui-sref="overall" class="href--semi-styled"
-      //             >See Overall progress</a
-      //           >
-      //         </div>
-      //       </div>
-      //     </div>
-      //   </div>
-      // </div>
-
-      // {_books->map(book => {<div key={book["name"]}> {str(book["name"])} </div>})->React.array}
     </div>
-    <div className=Styles.secondary>
-      // todo make *Completed* a component
-      <div className=Styles.label> {str(`Completed • ${length(books)->Js_int.toString}`)} </div>
-      {completedBooks()}
-    </div>
-    // <InProgressContainer> {books.filterByIncomplete... => <Card onUpdate={_ => reloadBooks)} />} </InProgressContainer>
-    // <InProgressContainer> {books.filterByIncomplete... => <Card state={"hover-and-type" | "submitted-waiting" | "success"} onUpdate />} </InProgressContainer>
-    // <CompletedContainer> {books.filterByComplete... => <TextOrLetter />} </CompletedContainer>
-  </div>
+
+  <div className=Styles.container> {inProgressBooks} <CompletedBooks books /> </div>
 }
