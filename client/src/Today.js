@@ -414,9 +414,12 @@ function Today(Props) {
           
         }), []);
   var completedBooks = function (param) {
+    var isNumber = function (maybeNumber) {
+      return /\d/.test(maybeNumber);
+    };
     var letters = Belt_SetString.toArray(Belt_SetString.fromArray(books.map(function (book) {
                   var $$char = book.name.charAt(0).toLowerCase();
-                  if (/\d/.test($$char)) {
+                  if (isNumber($$char)) {
                     return "#";
                   } else {
                     return $$char;
@@ -431,7 +434,11 @@ function Today(Props) {
                               }, React.createElement("div", {
                                     className: letter
                                   }, React.createElement("span", undefined, letter$1)), books.filter(function (book) {
-                                      return book.name.toLowerCase().startsWith(letter$1);
+                                      if (letter$1 === "#") {
+                                        return isNumber(book.name.charAt(0));
+                                      } else {
+                                        return book.name.toLowerCase().startsWith(letter$1);
+                                      }
                                     }).map(function (book) {
                                     return React.createElement("div", {
                                                 key: book.name,

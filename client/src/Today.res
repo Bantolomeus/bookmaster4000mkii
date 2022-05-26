@@ -292,7 +292,7 @@ module Styles = {
 
   // COMPLETED BOOKS COMPONENT
   let secondary = style(. [
-    flexGrow(1.) ,
+    flexGrow(1.),
     padding(px(24)),
     backgroundColor(hex("f8f9fa")),
     borderTopStyle(#solid),
@@ -359,11 +359,14 @@ let make = () => {
   // erst Liste von Anfangsbuchstaben
   // dann im zweiten Schritt ein lookup fuer jeden der Anfangsbuchstaben
   let completedBooks = () => {
+    let isNumber = maybeNumber => Js_re.test_(%re("/\d/"), maybeNumber)
+    open Js_array2
+
     let letters =
       books
-      ->Js_array2.map(book => {
+      ->map(book => {
         let char = book.name->Js_string2.charAt(0)->Js_string2.toLowerCase
-        if Js_re.test_(%re("/\d/"), char) {
+        if char->isNumber {
           "#"
         } else {
           char
@@ -386,15 +389,18 @@ let make = () => {
 
     <div className=Styles.completedBooksContainer>
       {letters
-      ->Js_array2.map(letter => {
+      ->map(letter => {
         <React.Fragment key={letter}>
           <div className=Styles.letter> <span> {str(letter)} </span> </div>
           {books
-          ->Js_array2.filter(book => {
-            // todo #.starsWith(1,2,..) funzt nich
-            Js_string2.startsWith(book.name->Js_string2.toLowerCase, letter)
+          ->filter(book => {
+            open Js_string2
+            switch letter {
+            | "#" => isNumber(book.name->charAt(0))
+            | _ => startsWith(book.name->toLowerCase, letter)
+            }
           })
-          ->Js_array2.map(book => {
+          ->map(book => {
             <div className={Styles.bookName} key={book.name}>
               <small> {str(book.name)} </small>
             </div>
