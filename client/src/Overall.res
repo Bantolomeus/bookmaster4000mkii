@@ -1,3 +1,5 @@
+let str = s => React.string(s)
+
 // css docs: https://github.com/giraud/bs-css/blob/master/bs-css/src/Css_Js_Core.rei
 module Styles = {
   // Open the Css module, so we can access the style properties below without prefixing them with Css
@@ -74,14 +76,12 @@ let make = () => {
   }, [])
 
   <div className=Styles.overallProgressContainer>
-    <div className=Styles.header>
-      {React.string("Your reading progress compared to the challenge")}
-    </div>
+    <div className=Styles.header> {str("Your reading progress compared to the challenge")} </div>
     <div className={CssJs.merge(. [Styles.progress, Styles.background(progress)])}>
-      <h5> {React.int(progress)} </h5> <p> {React.string("Pages Ahead of Plan")} </p>
+      <h5> {React.int(progress)} </h5> <p> {str("Pages Ahead of Plan")} </p>
     </div>
     <div className=Styles.challengeInfo>
-      {React.string(`You should read ${Belt.Int.toString(pagesPerDay)} Pages per Day`)}
+      {str(`You should read ${pagesPerDay->Js_int.toString} Pages per Day`)}
     </div>
   </div>
 }
