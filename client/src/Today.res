@@ -287,6 +287,13 @@ module Styles = {
   ])
 
   let row = style(. [display(#flex), flexWrap(#wrap)])
+
+  let secondaryContainer = style(. [
+    backgroundColor(hex("f8f9fa")),
+    borderTopStyle(#solid),
+    borderTopColor(hex("dee2ef")),
+    borderTopWidth(px(1)),
+  ])
 }
 
 type book = {
@@ -298,6 +305,7 @@ type book = {
   readTime: int,
 }
 
+// todo height: 100% ("completed" section soll ganz bis runter spannen)
 @react.component
 let make = () => {
   let (books, setBooks) = React.useState(_ => [])
@@ -315,6 +323,134 @@ let make = () => {
     loadBooks()
     None
   }, [])
+
+  /* Alte Version:
+  div display: flex; flex-wrap: wrap
+    div line-height: 24px <!-- egal ob Anfangsbuchstabe oder Book.name, beides ist inline-block auf selber Ebene -->
+      span <!-- if Anfangsbuchstabe --> rounded-circle round-evenly margin-left: 12px
+      small <!-- if Book --> books-completed
+ */
+
+  // erst Liste von Anfangsbuchstaben
+  // dann im zweiten Schritt ein lookup fuer jeden der Anfangsbuchstaben
+  let completedBooks = () => {
+    let letters =
+      books
+      ->Js_array2.map(book => {
+        let char = book.name->Js_string2.charAt(0)->Js_string2.toLowerCase
+        if Js_re.test_(%re("/\d/"), char) {
+          "#"
+        } else {
+          char
+        }
+      })
+      ->Belt_SetString.fromArray // de-duplication
+      ->Belt_SetString.toArray
+
+    /*
+      div display: flex; flex-wrap: wrap
+        for letter {
+          div line-height: 24px
+            span rounded-circle round-evenly margin-left: 12px letter
+          for book {
+            div line-height: 24px
+              small books-completed book.name
+          }
+        }
+ */
+
+    // todo move styles into CssJs
+    <div style={ReactDOMStyle.make(~display="flex", ~flexWrap="wrap", ())}>
+      {letters
+      ->Js_array2.map(letter => {
+        <React.Fragment key={letter}>
+          <div style={ReactDOMStyle.make(~lineHeight="24px", ())}>
+            <span style={ReactDOMStyle.make(~textTransform="uppercase", ~marginLeft="12px", ())}>
+              {str(letter)}
+            </span>
+          </div>
+          {books
+          ->Js_array2.filter(book => {
+            // todo #.starsWith(1,2,..) funzt nich
+            Js_string2.startsWith(book.name->Js_string2.toLowerCase, letter)
+          })
+          ->Js_array2.mapi((book, i) => {
+            <div style={ReactDOMStyle.make(~lineHeight="24px", ())} key={book.name}>
+              // todo hier weiter stylen, 25.5.22
+              // todo prepend with comma - but only when it's not the first (i==0)
+              <small> {str(book.name)} </small>
+            </div>
+          })
+          ->React.array}
+        </React.Fragment>
+      })
+      ->React.array}
+    </div>
+  }
+
+  /* folgende Version geht auch, aber komplizierter!
+  let groupedAlphabetically = books->Js_array2.reduce((acc, book) => {
+    let firstLetter = if Js_re.test_(%re("/^\d/"), book.name) {
+      "#"
+    } else {
+      book.name->Js.String2.charAt(0)
+    }
+
+    switch acc->Belt.MutableMap.String.get(firstLetter) {
+    | Some(row) =>
+      row->Js.Array2.push(book)->ignore
+    | None =>
+      acc->Belt.MutableMap.String.set(firstLetter, [book])
+    }
+    acc
+
+    // if acc->Belt.MutableMap.String.has(firstLetter) {
+    //   acc->Belt.MutableMap.String.get(firstLetter)->Js.Array2.push(book)
+    // } else {
+    //   acc[firstLetter] = [book]
+    // }
+
+    // switch acc[firstLetter] {
+    // | Some(_) => acc[firstLetter]->Js.Array2.push(book)
+    // | None => acc[firstLetter] = [book]
+    // }
+    // acc
+  }, Belt.MutableMap.String.make())
+
+  Js_console.log(groupedAlphabetically->Belt.MutableMap.String.getUndefined("#"))  // funzt!
+ */
+
+  // Ich wollte Logik ähnlich machen wie in der Angular Version, die Zeilen hier drunter sind kopiert von dort
+  /*
+      const _indexedBooks = books.reduce((acc, book) => {
+       let firstLetter;
+       if (/^\d/.test(book.name)) {
+         firstLetter = "#";
+       } else {
+         firstLetter = book.name.charAt(0);
+       }
+
+       if (acc[firstLetter] === undefined) {
+         acc[firstLetter] = [book];
+       } else {
+         acc[firstLetter].push(book);
+       }
+       return acc;
+     }, {});
+
+     ctrl.indexedBooks = Object.entries(_indexedBooks)
+       .sort(([firstLetterA, _], [firstLetterB, __]) =>
+         firstLetterA.localeCompare(firstLetterB)
+       )
+       .map(([firstLetter, books]) => {
+         return [
+           { type: "letter", value: firstLetter },
+           ...books.map((book) => ({ type: "book", value: book })),
+         ];
+       })
+       .flat();
+   });
+ */
 
   open Js.Array2
   <div>
@@ -386,7 +522,11 @@ let make = () => {
 
       // {_books->map(book => {<div key={book["name"]}> {str(book["name"])} </div>})->React.array}
     </div>
-    <div> {str("Completed")} </div>
+    <div className={CssJs.merge(. [Styles.container, Styles.secondaryContainer])}>
+      // todo make *Completed* a component
+      <div className=Styles.label> {str("Completed")} </div>
+      {completedBooks()}
+    </div>
     // <InProgressContainer> {books.filterByIncomplete... => <Card onUpdate={_ => reloadBooks)} />} </InProgressContainer>
     // <InProgressContainer> {books.filterByIncomplete... => <Card state={"hover-and-type" | "submitted-waiting" | "success"} onUpdate />} </InProgressContainer>
     // <CompletedContainer> {books.filterByComplete... => <TextOrLetter />} </CompletedContainer>

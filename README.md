@@ -17,8 +17,9 @@
 `$ npm install` to get all UI dependencies
 
 You want to keep running two processes
-1. `npm run re:start`
-2. and in another tab `npm run server`
+1. start the backend in an own process to get some book info
+2. `npm run re:start`
+3. and in another process `npm run server`
 
 **Dependencies**
 
