@@ -16,7 +16,8 @@
 
 `$ npm install` to get all UI dependencies
 
-You want to keep running two processes
+You want to keep running several processes in parallel
+
 1. start the backend in an own process to get some book info
 2. `npm run re:start`
 3. and in another process `npm run server`
@@ -53,7 +54,7 @@ I recommend a tool like Postman to set up the http calls. For detailed Api call 
 
 Every commits gets built, tested and quality checked by a GitHub workflow.
 
-For downloading CI workflow artifacts, go to the [repo's action tab](https://github.com/Bantolomeus/bookmaster4000mkii/actions) and download from a specific job's _Artifacts_ section.
+For downloading CI workflow artifacts, go to the [repo's action tab](https://github.com/Bantolomeus/bookmaster4000mkii/actions) (see _Artifacts_ section of a specific job).
 
 [Codacy](https://github.com/marketplace/actions/codacy-analysis-cli) does the code quality check. Find results in the [repo's security tab](https://github.com/Bantolomeus/bookmaster4000mkii/security/code-scanning).
 

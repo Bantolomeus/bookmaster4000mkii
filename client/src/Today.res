@@ -99,7 +99,6 @@ module Book = {
       height(pct(100.)),
     ])
 
-    // todo cleanup css: Look at dev tools what styles get overwritten
     let inputGroup = style(. [
       position(#relative),
       display(#flex),
@@ -115,7 +114,6 @@ module Book = {
           flex3(~grow=1., ~shrink=1., ~basis=auto),
           width(pct(1.)),
           minWidth(#zero),
-          marginBottom(#zero),
           margin(px(0)),
         ],
       ),
@@ -123,7 +121,6 @@ module Book = {
 
     let formControl = style(. [
       display(#block),
-      width(pct(100.)),
       height(px(24)),
       padding2(~v=px(6), ~h=px(12)),
       fontSize(px(16)),

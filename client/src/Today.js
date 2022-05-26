@@ -139,14 +139,12 @@ var inputGroup = CssJs.style([
             CssJs.flex3(1, 1, CssJs.auto),
             CssJs.width(CssJs.pct(1)),
             CssJs.minWidth("zero"),
-            CssJs.marginBottom("zero"),
             CssJs.margin(CssJs.px(0))
           ])
     ]);
 
 var formControl = CssJs.style([
       CssJs.display("block"),
-      CssJs.width(CssJs.pct(100)),
       CssJs.height(CssJs.px(24)),
       CssJs.padding2(CssJs.px(6), CssJs.px(12)),
       CssJs.fontSize(CssJs.px(16)),
