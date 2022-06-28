@@ -62,11 +62,11 @@ function Header(Props) {
             }, React.createElement("span", {
                   className: icon
                 }, "📚"), React.createElement(Link.make, {
-                  onClick: Link.$$location(Link.overall),
-                  children: "Overall"
+                  onClick: Link.$$location(Link.challenge),
+                  children: "Challenge"
                 }), React.createElement(Link.make, {
-                  onClick: Link.$$location(Link.today),
-                  children: "Today"
+                  onClick: Link.$$location(Link.books),
+                  children: "Books"
                 }));
 }
 

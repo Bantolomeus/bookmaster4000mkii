@@ -53,7 +53,7 @@ var Styles = {
   filling: filling
 };
 
-function Today$ProgressBar(Props) {
+function Books$ProgressBar(Props) {
   var percent = Props.percent;
   return React.createElement("div", {
               className: container
@@ -64,7 +64,7 @@ function Today$ProgressBar(Props) {
 
 var ProgressBar = {
   Styles: Styles,
-  make: Today$ProgressBar
+  make: Books$ProgressBar
 };
 
 var bookContainer = CssJs.style([
@@ -214,7 +214,7 @@ var Styles$1 = {
   hrefSemiStyled: hrefSemiStyled
 };
 
-function Today$Book(Props) {
+function Books$Book(Props) {
   var name = Props.name;
   var currentPage = Props.currentPage;
   var pagesTotal = Props.pagesTotal;
@@ -304,8 +304,8 @@ function Today$Book(Props) {
                 className: overlay
               }, React.createElement("strong", undefined, " Current page successfully updated."), React.createElement("br", undefined), React.createElement(Link.make, {
                     className: hrefSemiStyled,
-                    onClick: Link.$$location(Link.overall),
-                    children: "See Overall progress"
+                    onClick: Link.$$location(Link.challenge),
+                    children: "See challenge summary"
                   }));
           break;
       
@@ -332,14 +332,14 @@ function Today$Book(Props) {
                       ])
                 }, React.createElement("h1", undefined, name), React.createElement("div", {
                       className: progress
-                    }, React.createElement("div", undefined, currentPage.toString() + " of " + pagesTotal.toString() + " pages read"), React.createElement(Today$ProgressBar, {
+                    }, React.createElement("div", undefined, currentPage.toString() + " of " + pagesTotal.toString() + " pages read"), React.createElement(Books$ProgressBar, {
                           percent: progressInPercent(currentPage, pagesTotal)
                         })), tmp));
 }
 
 var Book = {
   Styles: Styles$1,
-  make: Today$Book
+  make: Books$Book
 };
 
 var secondary = CssJs.style([
@@ -381,7 +381,7 @@ var Styles$2 = {
   bookName: bookName
 };
 
-function Today$CompletedBooks(Props) {
+function Books$CompletedBooks(Props) {
   var books = Props.books;
   var isNumber = function (maybeNumber) {
     return /\d/.test(maybeNumber);
@@ -423,7 +423,7 @@ function Today$CompletedBooks(Props) {
 
 var CompletedBooks = {
   Styles: Styles$2,
-  make: Today$CompletedBooks
+  make: Books$CompletedBooks
 };
 
 var container$1 = CssJs.style([
@@ -445,7 +445,7 @@ var Styles$3 = {
   row: row
 };
 
-function Today(Props) {
+function Books(Props) {
   var match = React.useState(function () {
         return [];
       });
@@ -478,7 +478,7 @@ function Today(Props) {
                   }
                 }).map(function (param) {
                 var name = param.name;
-                return React.createElement(Today$Book, {
+                return React.createElement(Books$Book, {
                             name: name,
                             currentPage: param.currentPage,
                             pagesTotal: param.pagesTotal,
@@ -488,12 +488,12 @@ function Today(Props) {
               })));
   return React.createElement("div", {
               className: container$1
-            }, inProgressBooks, React.createElement(Today$CompletedBooks, {
+            }, inProgressBooks, React.createElement(Books$CompletedBooks, {
                   books: books
                 }));
 }
 
-var make = Today;
+var make = Books;
 
 exports.str = str;
 exports.GlobalStyles = GlobalStyles;

@@ -24,7 +24,7 @@ module Styles = {
 let make = () => {
   <div className={CssJs.merge(. [Styles.fontStyles, Styles.background, Styles.shadow])}>
     <span className=Styles.icon> {React.string(`📚`)} </span>
-    <Link onClick={Link.location(Link.overall)}> {React.string("Overall")} </Link>
-    <Link onClick={Link.location(Link.today)}> {React.string("Today")} </Link>
+    <Link onClick={Link.location(Link.challenge)}> {React.string("Challenge")} </Link>
+    <Link onClick={Link.location(Link.books)}> {React.string("Books")} </Link>
   </div>
 }

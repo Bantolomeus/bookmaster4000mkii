@@ -255,8 +255,8 @@ module Book = {
           <div className=Styles.overlay>
             <strong> {str(" Current page successfully updated.")} </strong>
             <br />
-            <Link onClick={Link.location(Link.overall)} className=Styles.hrefSemiStyled>
-              {str("See Overall progress")}
+            <Link onClick={Link.location(Link.challenge)} className=Styles.hrefSemiStyled>
+              {str("See challenge summary")}
             </Link>
           </div>
         | None => <> </>

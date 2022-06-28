@@ -82,16 +82,16 @@ var Button = {
   make: Link$Button
 };
 
-var overall = "/#/overall";
+var challenge = "/#/challenge";
 
-var today = "/#/today";
+var books = "/#/books";
 
 var make = Link;
 
 exports.customFn = customFn;
 exports.$$location = $$location;
-exports.overall = overall;
-exports.today = today;
+exports.challenge = challenge;
+exports.books = books;
 exports.push = push;
 exports.handleClick = handleClick;
 exports.activeClass = activeClass;

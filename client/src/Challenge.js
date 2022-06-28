@@ -85,7 +85,7 @@ var Styles = {
   challengeInfo: challengeInfo
 };
 
-function Overall(Props) {
+function Challenge(Props) {
   var match = React.useState(function () {
         return 1;
       });
@@ -125,7 +125,7 @@ function Overall(Props) {
                 }, "You should read " + match$1[0].toString() + " Pages per Day"));
 }
 
-var make = Overall;
+var make = Challenge;
 
 exports.str = str;
 exports.Styles = Styles;

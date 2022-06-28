@@ -5,8 +5,8 @@ require("./index.css");
 /* todo folder structure:
  --index
  --Header (Navbar?)
- --Today
- --Overall
+ --Books
+ --Challenge
  --Router
  ----Link
  ----Route
@@ -14,8 +14,6 @@ require("./index.css");
  ----ResponseMapper
  ----StringToColor (move!)
 */
-
-// todo rename Overall + Today
 
 module App = {
   @react.component
@@ -28,8 +26,8 @@ module App = {
     <div className=verticalAlign>
       <Header />
       {switch route {
-      | Overall => <Overall />
-      | Today => <Today />
+      | Challenge => <Challenge />
+      | Books => <Books />
       }}
     </div>
   }

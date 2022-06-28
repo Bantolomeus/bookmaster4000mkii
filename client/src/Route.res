@@ -1,6 +1,6 @@
 type t =
-  | Overall
-  | Today
+  | Challenge
+  | Books
 
 // Find more inspiration on https://github.com/jihchi/rescript-react-realworld-example-app/blob/main/src/App.res
 let useRoute: unit => t = () => {
@@ -8,8 +8,8 @@ let useRoute: unit => t = () => {
   let hash = url.hash->Js.String2.split("/")
 
   switch hash {
-  | ["", "overall"] => Overall
-  | ["", "today"] => Today
-  | _ => Overall
+  | ["", "challenge"] => Challenge
+  | ["", "books"] => Books
+  | _ => Challenge
   }
 }
