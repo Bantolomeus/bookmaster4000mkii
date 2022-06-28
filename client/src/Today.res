@@ -161,8 +161,8 @@ module Book = {
       margin(px(0)),
       // btn-outline
       color(hex("fff")),
-      backgroundColor(hex("007bff")) /* #6c757d is secondary color */,
-      borderColor(hex("007bff")),
+      backgroundColor(hex("1999e5")),
+      borderColor(hex("1999e5")),
       position(relative),
       zIndex(2),
     ])

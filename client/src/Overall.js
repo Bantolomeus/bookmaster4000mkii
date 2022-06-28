@@ -7,6 +7,10 @@ var React = require("react");
 var $$Request = require("rescript-request/src/Request.js");
 var ResponseMapper = require("./ResponseMapper.js");
 
+function str(s) {
+  return s;
+}
+
 var overallProgressContainer = CssJs.style([
       CssJs.textAlign(CssJs.center),
       CssJs.fontWeight({
@@ -118,11 +122,12 @@ function Overall(Props) {
                       ])
                 }, React.createElement("h5", undefined, progress$1), React.createElement("p", undefined, "Pages Ahead of Plan")), React.createElement("div", {
                   className: challengeInfo
-                }, "You should read " + String(match$1[0]) + " Pages per Day"));
+                }, "You should read " + match$1[0].toString() + " Pages per Day"));
 }
 
 var make = Overall;
 
+exports.str = str;
 exports.Styles = Styles;
 exports.make = make;
 /* overallProgressContainer Not a pure module */

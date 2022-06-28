@@ -32,6 +32,8 @@ function handleClick(onClick, $$event) {
   
 }
 
+var activeClass = "active";
+
 function Link(Props) {
   var classNameOpt = Props.className;
   var styleOpt = Props.style;
@@ -39,10 +41,13 @@ function Link(Props) {
   var children = Props.children;
   var className = classNameOpt !== undefined ? classNameOpt : "";
   var style = styleOpt !== undefined ? Caml_option.valFromOption(styleOpt) : ({});
+  var match = RescriptReactRouter.useUrl(undefined, undefined);
+  var isActive;
+  isActive = onClick.TAG === /* Location */0 ? onClick._0.toLowerCase().includes(match.hash.toLowerCase()) : false;
   var href;
   href = onClick.TAG === /* Location */0 ? onClick._0 : undefined;
   var tmp = {
-    className: className,
+    className: isActive ? className + (" " + activeClass) : className,
     style: style,
     onClick: (function (param) {
         return handleClick(onClick, param);
@@ -89,6 +94,7 @@ exports.overall = overall;
 exports.today = today;
 exports.push = push;
 exports.handleClick = handleClick;
+exports.activeClass = activeClass;
 exports.make = make;
 exports.Button = Button;
 /* react Not a pure module */

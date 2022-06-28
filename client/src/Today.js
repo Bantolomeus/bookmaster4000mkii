@@ -190,8 +190,8 @@ var btnOutlinePrimary = CssJs.style([
       CssJs.textTransform("none"),
       CssJs.margin(CssJs.px(0)),
       CssJs.color(CssJs.hex("fff")),
-      CssJs.backgroundColor(CssJs.hex("007bff")),
-      CssJs.borderColor(CssJs.hex("007bff")),
+      CssJs.backgroundColor(CssJs.hex("1999e5")),
+      CssJs.borderColor(CssJs.hex("1999e5")),
       CssJs.position(CssJs.relative),
       CssJs.zIndex(2)
     ]);

@@ -32,15 +32,33 @@ let handleClick = (onClick, event) => {
   ignore()
 }
 
+let activeClass = "active"
+
 @react.component
 let make = (~className="", ~style=ReactDOM.Style.make(), ~onClick, ~children) => {
+  let {hash} = RescriptReactRouter.useUrl()
+
+  open Js_string2
+  let isActive = switch onClick {
+  | Location(location) => includes(location->toString->toLowerCase, hash->toLowerCase)
+  | _ => false
+  }
+
   let href = switch onClick {
   | Location(location) => Some(location->toString)
   | CustomFn(_fn) => None
   }
-  <a className ?href style onClick={handleClick(onClick)}> children </a>
+
+  <a
+    className={isActive ? className ++ ` ${activeClass}` : className}
+    ?href
+    style
+    onClick={handleClick(onClick)}>
+    children
+  </a>
 }
 
+// todo not used - maybe remove?
 module Button = {
   @react.component
   let make = (~className="", ~style=ReactDOM.Style.make(), ~onClick, ~disabled=false, ~children) =>

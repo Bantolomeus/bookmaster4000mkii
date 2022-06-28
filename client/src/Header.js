@@ -4,28 +4,67 @@
 var Link = require("./Link.js");
 var CssJs = require("bs-css-emotion/src/CssJs.js");
 var React = require("react");
+var Css_Js_Core = require("bs-css/src/Css_Js_Core.js");
 
-var header = CssJs.style([
+var fontStyles = CssJs.style([
       CssJs.display("flex"),
-      CssJs.padding(CssJs.px(16))
+      CssJs.padding(CssJs.px(16)),
+      CssJs.selector("& > *", [CssJs.marginRight(CssJs.px(24))]),
+      CssJs.selector("& > a", [
+            CssJs.fontFamily({
+                  NAME: "custom",
+                  VAL: "Libre Baskerville"
+                }),
+            CssJs.important(CssJs.color(CssJs.white)),
+            CssJs.textDecoration(CssJs.none)
+          ]),
+      CssJs.selector("& > ." + Link.activeClass, [CssJs.textDecoration(CssJs.underline)])
     ]);
 
-var link = CssJs.style([CssJs.marginLeft(CssJs.px(8))]);
+var background = CssJs.style([
+      CssJs.backgroundColor(CssJs.hex("0093E9")),
+      CssJs.backgroundImage(CssJs.linearGradient(CssJs.deg(2), [
+                [
+                  {
+                    NAME: "percent",
+                    VAL: 0
+                  },
+                  CssJs.hex("0093E9")
+                ],
+                [
+                  {
+                    NAME: "percent",
+                    VAL: 100
+                  },
+                  CssJs.hex("80D0C7")
+                ]
+              ]))
+    ]);
+
+var shadow = CssJs.style([CssJs.boxShadow(Css_Js_Core.Shadow.box(CssJs.zero, CssJs.zero, CssJs.px(7), undefined, undefined, CssJs.black))]);
+
+var icon = CssJs.style([CssJs.cursor("default")]);
 
 var Styles = {
-  header: header,
-  link: link
+  fontStyles: fontStyles,
+  background: background,
+  shadow: shadow,
+  icon: icon
 };
 
 function Header(Props) {
   return React.createElement("div", {
-              className: header
-            }, React.createElement(Link.make, {
-                  className: link,
+              className: CssJs.merge([
+                    fontStyles,
+                    background,
+                    shadow
+                  ])
+            }, React.createElement("span", {
+                  className: icon
+                }, "📚"), React.createElement(Link.make, {
                   onClick: Link.$$location(Link.overall),
                   children: "Overall"
                 }), React.createElement(Link.make, {
-                  className: link,
                   onClick: Link.$$location(Link.today),
                   children: "Today"
                 }));
@@ -35,4 +74,4 @@ var make = Header;
 
 exports.Styles = Styles;
 exports.make = make;
-/* header Not a pure module */
+/* fontStyles Not a pure module */
