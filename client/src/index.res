@@ -2,19 +2,6 @@
 require("./index.css");
 `)
 
-/* todo folder structure:
- --index
- --Header (Navbar?)
- --Books
- --Challenge
- --Router
- ----Link
- ----Route
- --Http
- ----ResponseMapper
- ----StringToColor (move!)
-*/
-
 module App = {
   @react.component
   let make = () => {
@@ -24,7 +11,7 @@ module App = {
     let verticalAlign = style(. [height(#vh(100.)), display(#flex), flexDirection(column)])
 
     <div className=verticalAlign>
-      <Header />
+      <Navbar />
       {switch route {
       | Challenge => <Challenge />
       | Books => <Books />

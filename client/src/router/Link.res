@@ -58,7 +58,7 @@ let make = (~className="", ~style=ReactDOM.Style.make(), ~onClick, ~children) =>
   </a>
 }
 
-// todo not used - maybe remove?
+// keep for later
 module Button = {
   @react.component
   let make = (~className="", ~style=ReactDOM.Style.make(), ~onClick, ~disabled=false, ~children) =>

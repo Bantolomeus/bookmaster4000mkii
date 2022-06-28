@@ -44,6 +44,8 @@ module ProgressBar = {
 }
 
 module Book = {
+  @module external stringToColorHex: string => string = "string-to-color"
+
   module Styles = {
     open CssJs
 
@@ -63,7 +65,7 @@ module Book = {
     ])
 
     let bgColor = name => {
-      let color = StringToColor.toHex(name)->Js_string2.replace("#", "")
+      let color = stringToColorHex(name)->Js_string2.replace("#", "")
       let lessOpaque = "7d"
       style(. [background(hex(color ++ lessOpaque))])
     }

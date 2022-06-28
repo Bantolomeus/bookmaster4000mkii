@@ -5,7 +5,7 @@ var CssJs = require("bs-css-emotion/src/CssJs.js");
 var Curry = require("rescript/lib/js/curry.js");
 var React = require("react");
 var $$Request = require("rescript-request/src/Request.js");
-var ResponseMapper = require("./ResponseMapper.js");
+var ResponseMapper = require("./http/ResponseMapper.js");
 
 function str(s) {
   return s;

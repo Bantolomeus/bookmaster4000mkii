@@ -3,9 +3,9 @@
 
 var Books = require("./Books.js");
 var CssJs = require("bs-css-emotion/src/CssJs.js");
-var Route = require("./Route.js");
+var Route = require("./router/Route.js");
 var React = require("react");
-var Header = require("./Header.js");
+var Navbar = require("./Navbar.js");
 var Challenge = require("./Challenge.js");
 var ReactDom = require("react-dom");
 
@@ -24,7 +24,7 @@ function Index$App(Props) {
       ]);
   return React.createElement("div", {
               className: verticalAlign
-            }, React.createElement(Header.make, {}), route ? React.createElement(Books.make, {}) : React.createElement(Challenge.make, {}));
+            }, React.createElement(Navbar.make, {}), route ? React.createElement(Books.make, {}) : React.createElement(Challenge.make, {}));
 }
 
 var App = {
