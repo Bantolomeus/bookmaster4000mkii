@@ -9,6 +9,9 @@ let useRoute: unit => t = () => {
   switch hash {
   | "/challenge" => Challenge
   | "/books" => Books
-  | _ => Books
+  | _ => {
+      Link.push(Link.books)
+      Books
+    }
   }
 }
