@@ -24,7 +24,17 @@ function Index$App(Props) {
       ]);
   return React.createElement("div", {
               className: verticalAlign
-            }, React.createElement(Navbar.make, {}), route ? React.createElement(Books.make, {}) : React.createElement(Challenge.make, {}));
+            }, React.createElement("link", {
+                  href: "https://fonts.googleapis.com",
+                  rel: "preconnect"
+                }), React.createElement("link", {
+                  crossOrigin: "anonymous",
+                  href: "https://fonts.gstatic.com",
+                  rel: "preconnect"
+                }), React.createElement("link", {
+                  href: "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Work+Sans:ital,wght@0,200;0,400;0,800;1,200;1,400;1,800&display=swap",
+                  rel: "stylesheet"
+                }), React.createElement(Navbar.make, {}), route ? React.createElement(Books.make, {}) : React.createElement(Challenge.make, {}));
 }
 
 var App = {
