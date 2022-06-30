@@ -342,6 +342,52 @@ var Book = {
   make: Books$Book
 };
 
+var container$1 = CssJs.style([CssJs.padding(CssJs.px(24))]);
+
+var row = CssJs.style([
+      CssJs.display("flex"),
+      CssJs.flexWrap("wrap")
+    ]);
+
+var Styles$2 = {
+  container: container$1,
+  row: row
+};
+
+function Books$InProgress(Props) {
+  var books = Props.books;
+  var onCurrentPageUpdate = Props.onCurrentPageUpdate;
+  return React.createElement("div", {
+              className: container$1
+            }, React.createElement("div", {
+                  className: label
+                }, "In Progress"), React.createElement("div", {
+                  className: row
+                }, books.filter(function (param) {
+                          return param.currentPage < param.pagesTotal;
+                        }).sort(function (_1, _2) {
+                        if (_1.name < _2.name) {
+                          return -1;
+                        } else {
+                          return 1;
+                        }
+                      }).map(function (param) {
+                      var name = param.name;
+                      return React.createElement(Books$Book, {
+                                  name: name,
+                                  currentPage: param.currentPage,
+                                  pagesTotal: param.pagesTotal,
+                                  onCurrentPageUpdate: onCurrentPageUpdate,
+                                  key: name
+                                });
+                    })));
+}
+
+var InProgress = {
+  Styles: Styles$2,
+  make: Books$InProgress
+};
+
 var secondary = CssJs.style([
       CssJs.flexGrow(1),
       CssJs.padding(CssJs.px(24)),
@@ -374,14 +420,14 @@ var bookName = CssJs.style([
       CssJs.selector("& > small", [CssJs.marginLeft(CssJs.px(16))])
     ]);
 
-var Styles$2 = {
+var Styles$3 = {
   secondary: secondary,
   completedBooksContainer: completedBooksContainer,
   highlight: highlight,
   bookName: bookName
 };
 
-function Books$CompletedBooks(Props) {
+function Books$Completed(Props) {
   var books = Props.books;
   var isNumber = function (maybeNumber) {
     return /\d/.test(maybeNumber);
@@ -421,28 +467,19 @@ function Books$CompletedBooks(Props) {
                     })));
 }
 
-var CompletedBooks = {
-  Styles: Styles$2,
-  make: Books$CompletedBooks
+var Completed = {
+  Styles: Styles$3,
+  make: Books$Completed
 };
 
-var container$1 = CssJs.style([
+var container$2 = CssJs.style([
       CssJs.height(CssJs.pct(100)),
       CssJs.display("flex"),
       CssJs.flexDirection(CssJs.column)
     ]);
 
-var inProgressContainer = CssJs.style([CssJs.padding(CssJs.px(24))]);
-
-var row = CssJs.style([
-      CssJs.display("flex"),
-      CssJs.flexWrap("wrap")
-    ]);
-
-var Styles$3 = {
-  container: container$1,
-  inProgressContainer: inProgressContainer,
-  row: row
+var Styles$4 = {
+  container: container$2
 };
 
 function Books(Props) {
@@ -462,33 +499,12 @@ function Books(Props) {
           loadBooks(undefined);
           
         }), []);
-  var inProgressBooks = React.createElement("div", {
-        className: inProgressContainer
-      }, React.createElement("div", {
-            className: label
-          }, "In Progress"), React.createElement("div", {
-            className: row
-          }, books.filter(function (param) {
-                    return param.currentPage < param.pagesTotal;
-                  }).sort(function (_1, _2) {
-                  if (_1.name < _2.name) {
-                    return -1;
-                  } else {
-                    return 1;
-                  }
-                }).map(function (param) {
-                var name = param.name;
-                return React.createElement(Books$Book, {
-                            name: name,
-                            currentPage: param.currentPage,
-                            pagesTotal: param.pagesTotal,
-                            onCurrentPageUpdate: loadBooks,
-                            key: name
-                          });
-              })));
   return React.createElement("div", {
-              className: container$1
-            }, inProgressBooks, React.createElement(Books$CompletedBooks, {
+              className: container$2
+            }, React.createElement(Books$InProgress, {
+                  books: books,
+                  onCurrentPageUpdate: loadBooks
+                }), React.createElement(Books$Completed, {
                   books: books
                 }));
 }
@@ -499,7 +515,8 @@ exports.str = str;
 exports.GlobalStyles = GlobalStyles;
 exports.ProgressBar = ProgressBar;
 exports.Book = Book;
-exports.CompletedBooks = CompletedBooks;
-exports.Styles = Styles$3;
+exports.InProgress = InProgress;
+exports.Completed = Completed;
+exports.Styles = Styles$4;
 exports.make = make;
 /* label Not a pure module */

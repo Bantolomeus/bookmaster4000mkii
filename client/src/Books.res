@@ -19,6 +19,7 @@ type book = {
   readTime: int,
 }
 
+// todo cleanup all the styles in this file - copied over from Bootstrap, many may be simplified
 module ProgressBar = {
   module Styles = {
     open CssJs
@@ -268,7 +269,32 @@ module Book = {
   }
 }
 
-module CompletedBooks = {
+module InProgress = {
+  module Styles = {
+    open CssJs
+    let container = style(. [padding(px(24))])
+    let row = style(. [display(#flex), flexWrap(#wrap)])
+  }
+
+  @react.component
+  let make = (~books, ~onCurrentPageUpdate) => {
+    open Js_array2
+    <div className=Styles.container>
+      <div className=GlobalStyles.label> {str("In Progress")} </div>
+      <div className=Styles.row>
+        {books
+        ->filter(({pagesTotal, currentPage}) => currentPage < pagesTotal)
+        ->sortInPlaceWith((_1, _2) => _1.name < _2.name ? -1 : 1)
+        ->map(({name, currentPage, pagesTotal}) =>
+          <Book name currentPage pagesTotal onCurrentPageUpdate key=name />
+        )
+        ->React.array}
+      </div>
+    </div>
+  }
+}
+
+module Completed = {
   module Styles = {
     open CssJs
 
@@ -323,7 +349,7 @@ module CompletedBooks = {
 
     <div className=Styles.secondary>
       <div className=GlobalStyles.label>
-        {str(`Completed • ${Js_array2.length(books)->Js_int.toString}`)}
+        {str(`Completed • ${books->length->Js_int.toString}`)}
       </div>
       <div className=Styles.completedBooksContainer>
         {letters
@@ -355,8 +381,6 @@ module CompletedBooks = {
 module Styles = {
   open CssJs
   let container = style(. [height(pct(100.)), display(#flex), flexDirection(column)])
-  let inProgressContainer = style(. [padding(px(24))])
-  let row = style(. [display(#flex), flexWrap(#wrap)])
 }
 
 @react.component
@@ -377,20 +401,7 @@ let make = () => {
     None
   }, [])
 
-  open Js.Array2
-  let inProgressBooks =
-    <div className=Styles.inProgressContainer>
-      <div className=GlobalStyles.label> {str("In Progress")} </div>
-      <div className=Styles.row>
-        {books
-        ->filter(({pagesTotal, currentPage}) => currentPage < pagesTotal)
-        ->sortInPlaceWith((_1, _2) => _1.name < _2.name ? -1 : 1)
-        ->map(({name, currentPage, pagesTotal}) =>
-          <Book name currentPage pagesTotal onCurrentPageUpdate=loadBooks key=name />
-        )
-        ->React.array}
-      </div>
-    </div>
-
-  <div className=Styles.container> {inProgressBooks} <CompletedBooks books /> </div>
+  <div className=Styles.container>
+    <InProgress books onCurrentPageUpdate=loadBooks /> <Completed books />
+  </div>
 }
