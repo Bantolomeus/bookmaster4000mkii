@@ -13,7 +13,7 @@ var fontStyles = CssJs.style([
       CssJs.selector("& > a", [
             CssJs.fontFamily({
                   NAME: "custom",
-                  VAL: "Libre Baskerville"
+                  VAL: "\"Libre Baskerville\", serif"
                 }),
             CssJs.important(CssJs.color(CssJs.white)),
             CssJs.textDecoration(CssJs.none)

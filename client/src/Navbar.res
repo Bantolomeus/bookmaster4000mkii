@@ -6,7 +6,11 @@ module Styles = {
     selector(. "& > *", [marginRight(px(24))]),
     selector(.
       "& > a",
-      [fontFamily(#custom("Libre Baskerville")), important(color(white)), textDecoration(none)],
+      [
+        fontFamily(#custom(`"Libre Baskerville", serif`)),
+        important(color(white)),
+        textDecoration(none),
+      ],
     ),
     selector(. `& > .${Link.activeClass}`, [textDecoration(underline)]),
   ])
