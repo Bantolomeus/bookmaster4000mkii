@@ -62,7 +62,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: './index.html',
             templateContent: '<!DOCTYPE html><html><body> <div id="root"></div> </body></html>',
-            meta: {viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no', charset: "UTF-8"},
+            meta: {viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no', charset: "UTF-8", 'Content-Type': {'http-equiv': "Content-Type", content: "text/html; charset=utf-8"}},
             title: 'Bookmaster 4000 Mark II',
             inject: 'body',
         })

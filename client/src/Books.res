@@ -349,6 +349,7 @@ module Completed = {
 
     <div className=Styles.secondary>
       <div className=GlobalStyles.label>
+      // todo https://stackoverflow.com/questions/44606147/how-to-set-charset-utf-8-in-the-javascript-file-itself
         {str(`Completed • ${books->length->Js_int.toString}`)}
       </div>
       <div className=Styles.completedBooksContainer>
