@@ -15,7 +15,6 @@ jobs:
         with:
           java-version: "8"
           distribution: "adopt"
-          cache: maven
 
       # maven will trigger npm to build the UI
       - name: "Set up Node.js"
