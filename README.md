@@ -21,7 +21,7 @@ You want to keep running several processes in parallel
 1. start the backend in an own process to get some book info
 2. `npm run re:start`
 3. and in another process `npm run server`
-4. in your browser, open http://localhost:4002
+4. in your browser, open <http://localhost:4002>
 
 **Dependencies**
 
