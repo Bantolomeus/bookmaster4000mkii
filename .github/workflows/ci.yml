@@ -28,7 +28,7 @@ jobs:
 
       # artifacts overwrite each other if the name matches more than one
       - name: "Upload packaged jar"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: packaged-jar
           path: target/bookmaster*.jar
