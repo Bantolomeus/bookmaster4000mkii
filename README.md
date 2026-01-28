@@ -45,6 +45,10 @@ You should see an output similar to this
 
 The app is now running on `localhost:8080/`
 
+**UI looks like this** (the library overview):
+
+<img width="3584" height="2278" alt="image" src="https://github.com/user-attachments/assets/b141530a-a23a-453d-aa23-6f3109357ffe" />
+
 ### API
 
 Find a description of the api endpoints under [`src/main/kotlin/com/bantolomeus/controller`](src/main/kotlin/com/bantolomeus/controller).
